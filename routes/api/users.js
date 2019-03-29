@@ -26,7 +26,6 @@ router.post('/login', [
         body('password').trim().isLength(6)],
     userController.loginUser);
 
-
 router.post('/info',isauth,userController.info);
 
 router.post('/changeProfile', [body('firstname').trim().not().isEmpty(),body('lastname').trim().not().isEmpty(),

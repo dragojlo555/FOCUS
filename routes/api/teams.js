@@ -9,5 +9,6 @@ const isauth=require('../../middlware/is-auth');
 
 router.post('/create',[body('name').trim().not().isEmpty()],isauth,teamController.create);
 router.post('/addMember',[body('idrole').isNumeric(),body('iduser').isNumeric(),body('idteam').isNumeric()],isauth,teamController.addMember);
+router.post('/removeMember',[body('iduser').isNumeric(),body('idteam').isNumeric()],isauth,teamController.removeMember);
 
 module.exports= router;

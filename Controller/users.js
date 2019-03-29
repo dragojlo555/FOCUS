@@ -1,7 +1,5 @@
 const User = require('../models/user');
-const Team = require('../models/team');
 const Reminder = require('../models/reminder');
-const RoleUserTeam = require('../models/role-user-team');
 const {validationResult} = require('express-validator/check');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -10,7 +8,7 @@ exports.getDefault = (req, res) => {
     res.json({msg: 'Users Works'});
 };
 
-exports.createUser = (req, res, next) => {
+exports.createUser = (req, res) => {
     const pass = req.body.password;
     const emailReq = req.body.email;
     const firstNameReq = req.body.firstname;
@@ -20,6 +18,7 @@ exports.createUser = (req, res, next) => {
     if (!errors.isEmpty()) {
         return res.status(422).json(errors.array());
     }
+
     bcrypt.hash(pass, 10).then(hashPas => {
             return User.create({
                 lastName: lastNameReq,
@@ -91,13 +90,12 @@ exports.changeProfile = (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(422).json(errors.array());
     }
-    console.log(req.userId,firstNameReq,lastNameReq,emailReq);
-    User.update({firstName: firstNameReq,lastName: lastNameReq}, {where: {id: req.userId}}).then(user => {
-            console.log(user);
-            return res.status(200).json({msg:'Success',user: user});
+    console.log(req.userId, firstNameReq, lastNameReq, emailReq);
+    User.update({firstName: firstNameReq, lastName: lastNameReq}, {where: {id: req.userId}}).then(result => {
+            return res.status(200).json({msg: 'Success', updated: result});
         }
     ).catch(err => {
-            return res.status(404).json({msg: 'Failed'});
+            return res.status(404).json({msg: 'Failed', error: err});
         }
     );
 };

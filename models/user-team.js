@@ -14,7 +14,7 @@ const UserTeam = sequelize.define('userTeam', {
         allowNull: false,
         defaultValue: false
     },
-    endedAt:{
+    deletedAt:{
         type:Sequelize.DATE,
         allowNull: true
     },
