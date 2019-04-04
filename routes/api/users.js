@@ -38,18 +38,4 @@ router.post('/changeProfile', isauth,[upload.single('image'),body('firstname').t
     body('email').isEmail().withMessage('Please enter valid email!!!')],userController.changeProfile);
 
 
-
-router.post('/upload',isauth,[upload.single('productImage'),body('name').trim().not().isEmpty()],(req,res)=>{
-    let name=req.body.name;
-    let image=req.file.path;
-    const errors = validationResult(req);
-    let error=2;
-    if (!errors.isEmpty()) {
-        error=errors.array();
-    }
-    return res.status(200).json({nam:name,i:image,h:req.headers,er:error});
-});
-
-
-
 module.exports = router;
