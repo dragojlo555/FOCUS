@@ -13,6 +13,8 @@ exports.createUser = (req, res) => {
     const emailReq = req.body.email;
     const firstNameReq = req.body.firstname;
     const lastNameReq = req.body.lastname;
+    const avatarReq= req.file.path;
+
     const errors = validationResult(req);
     // check middleware validation
     if (!errors.isEmpty()) {
@@ -24,9 +26,10 @@ exports.createUser = (req, res) => {
                 lastName: lastNameReq,
                 password: hashPas,
                 mail: emailReq,
-                firstName: firstNameReq
+                firstName: firstNameReq,
+                Avatar:avatarReq
             }).then(result => {
-                return res.status(201).json({message: 'User created !!!', userId: result.id});
+                return res.status(201).json({message: 'User created !!!', userId: result});
             }).catch(err => {
                     return res.status(500).json({msg: 'Internal server error !!!'});
                 }
@@ -38,7 +41,7 @@ exports.createUser = (req, res) => {
 exports.loginUser = (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).json(errors.array());
+        return res.status(422).json({err:errors.array(),mail:req.body});
     }
     const email = req.body.email;
     const pass = req.body.password;
@@ -84,14 +87,15 @@ exports.info = (req, res) => {
 exports.changeProfile = (req, res) => {
     const firstNameReq = req.body.firstname;
     const lastNameReq = req.body.lastname;
-    const emailReq = req.body.email;
+    const avatarReq= req.file.path;
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(422).json(errors.array());
     }
-    console.log(req.userId, firstNameReq, lastNameReq, emailReq);
-    User.update({firstName: firstNameReq, lastName: lastNameReq}, {where: {id: req.userId}}).then(result => {
+    console.log(req.userId, firstNameReq, lastNameReq,avatarReq);
+    User.update({firstName: firstNameReq, lastName: lastNameReq,Avatar:avatarReq}, {where: {id: req.userId}}).then(result => {
             return res.status(200).json({msg: 'Success', updated: result});
         }
     ).catch(err => {

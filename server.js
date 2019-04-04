@@ -4,13 +4,13 @@ const bodyParser=require('body-parser');
 const path = require('path');
 const teams_route=require('./routes/api/teams');
 const users_route=require('./routes/api/users');
-const profile =require('./routes/api/profile');
+
 
 const app=express();
 //Body parser middleware
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
-
+app.use('/public',express.static('public'));
 
 app.get('/', (req, res) => res.send('Hello World'));
 //use Routes

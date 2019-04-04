@@ -13,11 +13,13 @@ exports.create = (req, res) => {
         return res.status(422).json(errors.array());
     }
     const teamNameReq = req.body.name;
-    const avatarReq = req.body.name;
+    const avatarReq = req.file.path;
+
     console.log('Create team');
     Team.create({
         creatorUserId: req.userId,
-        name: teamNameReq
+        name: teamNameReq,
+        avatar: avatarReq
     }).then(team => {
             idTeam = team.id;
             return UserTeam.create({
@@ -29,7 +31,7 @@ exports.create = (req, res) => {
         return RoleUserTeam.create({
             userTeamId: userTeam.id,
             roleId: 1
-        })
+        });
     }).then(roleUserTeam => {
         return res.status(201).json({msg: 'Team created !!!', team: {id: idTeam, name: teamNameReq}})
     }).catch(err => {
@@ -113,5 +115,10 @@ exports.removeMember = (req, res) => {
         }
     );
 };
+
+exports.leaveTeam=(req,res)=>{
+
+
+}
 
 
