@@ -1,0 +1,14 @@
+
+.ImgUpload{
+  text-align: center;
+  label img{
+    width: 400px;
+    height: 300px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  input{
+    display: none;
+  }
+
+}

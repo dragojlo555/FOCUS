@@ -1,0 +1,62 @@
+$buttonMinusColor: #ff452a;
+$buttonPlusColor: #05ff53;
+$buttonFontColor: white;
+$ultimateButtonColor: #3E98C7;
+$ultimateButtonHoverColor: #35a7c7;
+.SetDuration {
+  width: 200px;
+  font-weight: bold;
+
+  .Setter {
+    border: #211562 1px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+    & > span {
+      width: 50%;
+      text-align: center;
+    }
+
+
+    .Button {
+      border: none;
+      width: 25%;
+      font-size: 150%;
+      font-weight: bold;
+      flex: 1;
+      cursor: pointer;
+      color: $buttonFontColor;
+
+      &.ButtonMinus {
+        background-color: $ultimateButtonColor;
+        &:hover {
+          background-color: $ultimateButtonHoverColor;
+        }
+        &:disabled {
+          background-color: #cccccc;
+
+          &:hover {
+            background-color: #cccccc;
+          }
+        }
+      }
+
+      &.ButtonPlus {
+        background-color: $ultimateButtonColor;
+        &:hover {
+          background-color: $ultimateButtonHoverColor;
+        }
+      }
+
+    }
+
+
+  }
+
+
+}
+
+
+

@@ -10,7 +10,15 @@ const app=express();
 //Body parser middleware
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
 app.use('/public',express.static('public'));
+
+
 
 app.get('/', (req, res) => res.send('Hello World'));
 //use Routes
@@ -18,14 +26,14 @@ app.use('/api/users',users_route);
 app.use('/api/team',teams_route);
 //app.use('/api/profile',profile);
 
-const port=process.env.PORT || 3000;
+const port=process.env.PORT || 5000;
 
-
+//alter:true
 sequelize
-    .sync({alter:true})
+    .sync({})
     .then(result => {
       //   console.log(result)
-        app.listen(3000);
+        app.listen(port);
     })
     .catch(err => {
         console.log(err);

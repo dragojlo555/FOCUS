@@ -1,0 +1,32 @@
+
+.TeamCard{
+  margin: 5px auto;
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border:2px solid #342daa;
+  border-radius: 10%;
+  cursor: pointer;
+  padding: 15px;
+
+  &:hover{
+    background-color: #00B7FF;
+  }
+
+  .TeamAvatar{
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+  }
+
+  .TeamName{
+    margin: 0;
+    font-weight: bold;
+    font-size: 2em;
+    color: white;
+  }
+
+
+
+}

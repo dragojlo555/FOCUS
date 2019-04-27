@@ -1,0 +1,52 @@
+$disabled-color:#888888;
+$disabled-bg-color:#ccc;
+$primary-bg-color:#3b0062;
+$font:inherit;
+$border-standard: 1px primary-bg-color solid;
+$active-color:white;
+
+.button{
+
+  margin: auto;
+  font :$font;
+  margin-top: 0.5rem;
+  border:$border-standard;
+  color: $primary-bg-color;
+  background: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  text-decoration: none;
+
+  &:focus{
+      outline: none;
+  }
+
+  &:disabled{
+    background: $disabled-bg-color;
+    color: $disabled-color;
+    cursor: not-allowed;
+    border: $disabled-color;
+    box-shadow: none;
+  }
+  &:disabled:hover,&:disabled:active{
+    background: $disabled-bg-color;
+    color:$disabled-color;
+    border:$disabled-bg-color;
+  }
+  &:hover,&:active{
+    background: $primary-bg-color;
+    color: $active-color;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+

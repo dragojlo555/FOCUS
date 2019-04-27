@@ -1,0 +1,18 @@
+
+.Teams{
+  width: 100%;
+  display: flex;
+  flex-shrink: 1;
+  .MenuTeams{
+    height: 100%;
+    width: 25%;
+    background-color: #342daa;
+  }
+
+  .ContentTeams{
+  width: 75%;
+  background-color: white;
+  }
+
+
+}

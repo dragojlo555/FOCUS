@@ -8,6 +8,15 @@ exports.getDefault = (req, res) => {
     res.json({msg: 'Users Works'});
 };
 
+
+exports.allUser=(req,res)=>{
+    User.findAll().then(data=>
+        res.status(200).json({msg:'Success',users:data})
+    ).catch(err=>{
+        res.status(400).json({msg:'Failed',error:err})
+    })
+};
+
 exports.createUser = (req, res) => {
     const pass = req.body.password;
     const emailReq = req.body.email;
@@ -58,6 +67,7 @@ exports.loginUser = (req, res) => {
                 errorMsg = 'A user with this email could not be found.';
                 return Promise.resolve(null);
             } else {
+                console.log(req.body.email,req.body.password);
                 loadedUser = result.dataValues;
                 return bcrypt.compare(pass, loadedUser.password);
             }
@@ -72,35 +82,50 @@ exports.loginUser = (req, res) => {
                     'secret',
                     {expiresIn: '1h'}
                 );
-                return res.status(200).json({token: token, userId: loadedUser.id.toString()});
-            }
+                return res.status(200).json({token: token, userId: loadedUser.id.toString(),expireIn: '1'});
+            }else{
             if (!errorMsg) errorMsg = 'Wrong password !!!';
-            return res.status(401).json({msg: errorMsg});
+            return res.status(401).json({msg: errorMsg});}
         }
     )
 };
 
 exports.info = (req, res) => {
-    return res.status(200).json({id: req.userId});
+    const idUserReq=req.body.id;
+    User.findOne({where:{id:idUserReq}}).then(data=>{
+      res.status(200).json({msg:'Success',user:data})
+    }).catch(err=>{
+        res.status(400).json({msg:'Failed',error:data})
+    })
 };
 
-exports.changeProfile = (req, res) => {
+exports.changeProfile = async(req, res) => {
     const firstNameReq = req.body.firstname;
     const lastNameReq = req.body.lastname;
     const avatarReq= req.file.path;
-
+    let updatedUser;
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(422).json(errors.array());
     }
-    console.log(req.userId, firstNameReq, lastNameReq,avatarReq);
-    User.update({firstName: firstNameReq, lastName: lastNameReq,Avatar:avatarReq}, {where: {id: req.userId}}).then(result => {
-            return res.status(200).json({msg: 'Success', updated: result});
+    try {
+        let result = await User.update({
+            firstName: firstNameReq,
+            lastName: lastNameReq,
+            Avatar: avatarReq
+        }, {where: {id: req.userId}});
+        if (result[0] !== 0) {
+            updatedUser = await User.findOne({where: {id: req.userId}});
+            res.status(200).json({msg: 'Success', updated: updatedUser})
+        }else{
+            const error = new Error('Error update!!!');
+            error.statusCode = 401;
+            throw error;
         }
-    ).catch(err => {
-            return res.status(404).json({msg: 'Failed', error: err});
+    }catch(err){
+        if(!err.statusCode)err.statusCode=500;
+            return res.status(err.statusCode).json({msg: 'Failed', error: err});
         }
-    );
 };
 

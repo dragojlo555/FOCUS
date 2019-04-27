@@ -12,9 +12,9 @@ const {validationResult} = require('express-validator/check');
 
 // @desc    Tests users route
 // @access  Public
-router.get('/test', userController.getDefault);
+router.get('/',isauth,userController.allUser);
 
-router.put('/create', [upload.single('image'),
+router.post('/create', [upload.single('image'),
     body('email').isEmail().withMessage('Please enter valid email!!!').custom((value, {req}) => {
         return User.findOne({where: {mail: value}}).then(userDoc => {
             if (userDoc) {
@@ -31,7 +31,7 @@ router.post('/login', [
         body('password').trim().isLength(6)],
     userController.loginUser);
 
-router.post('/info',isauth,userController.info);
+router.get('/info',isauth,userController.info);
 
 
 router.post('/changeProfile', isauth,[upload.single('image'),body('firstname').trim().not().isEmpty(),body('lastname').trim().not().isEmpty(),

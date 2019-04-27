@@ -1,0 +1,42 @@
+.Input{
+  width: calc(100% - 1rem);
+  margin:1rem 0.25rem 0.25rem 0.25rem;
+  box-sizing: border-box;
+
+  label{
+    display: block;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+
+  input,textarea{
+    display: block;
+    font: inherit;
+    padding: 0.25rem 0.5rem;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  .Touched.Invalid{
+    border-color: red;
+    background: #ffc2c2;
+    box-shadow: 0 1px 8px red;
+  }
+
+  .Touched.Valid{
+    border-color: chartreuse;
+    box-shadow: 0 1px 8px chartreuse;
+  }
+
+  input:focus,input:focus{
+    outline: none;
+    box-shadow: 0 1px 8px blue;
+    border-color: #3b0062;
+    color: #3b0062;
+  }
+
+}
+
+
+

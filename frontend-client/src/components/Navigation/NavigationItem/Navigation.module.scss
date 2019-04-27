@@ -1,0 +1,48 @@
+$primary-bg-color:#3b0062;
+$focus-bt-color: #211562;
+$active-border-color:#40A4C8;
+
+.NavigationItem {
+  margin: 10px 0;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+
+  a{
+    color: $primary-bg-color;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+  }
+}
+
+.NavigationItem a:hover,
+.NavigationItem a:active,
+.NavigationItem a.active {
+  color: #40A4C8;
+}
+
+@media (min-width: 500px) {
+  .NavigationItem {
+    margin: 0;
+    display: flex;
+    height: 100%;
+    width: auto;
+    align-items: center;
+
+    a {
+      color: white;
+      height: 100%;
+      padding: 16px 10px;
+      border-bottom: 4px solid transparent;
+    }
+    a:hover,a:active,a.active{
+      background-color: $focus-bt-color;
+      border-bottom: 4px solid $active-border-color;
+      color: white;
+    }
+
+
+  }
+}

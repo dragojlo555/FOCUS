@@ -1,0 +1,13 @@
+$primary-color:yellow;
+$p-color:white;
+
+
+
+.First{
+    color: red;
+    background-color: $primary-color;
+    p{
+        background-color: black;
+        color: $p-color;
+    }
+}
