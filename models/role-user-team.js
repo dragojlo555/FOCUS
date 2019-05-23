@@ -26,5 +26,6 @@ const RoleUserTeam = sequelize.define('roleUserTeam', {
 
 RoleUserTeam.belongsTo(Role,{foreignKey:'roleId',targetKey:'id'});
 RoleUserTeam.belongsTo(UserTeam,{foreignKey:'userTeamId',targetKey:'id'});
+UserTeam.hasMany(RoleUserTeam);
 
 module.exports = RoleUserTeam;

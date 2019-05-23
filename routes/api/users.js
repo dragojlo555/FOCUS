@@ -3,10 +3,10 @@ const {body} = require('express-validator/check');
 const router = express.Router();
 const User = require('../../models/user');
 const userController = require('../../Controller/users');
-const isauth=require('../../middlware/is-auth');
+const isauth=require('../../middleware/is-auth');
 // @route   GET api/users/test
 const multer = require('multer');
-const upload=require('../../middlware/upload-image');
+const upload=require('../../middleware/upload-image');
 const {validationResult} = require('express-validator/check');
 
 

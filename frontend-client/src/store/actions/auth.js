@@ -89,7 +89,6 @@ export const auth = (email, password) => {
 
 export const signUp=(email,password,firstname,lastname,img)=>{
     return dispatch=>{
-        console.log(email,password,firstname,lastname,img);
         const url='users/create';
         const formData=new FormData();
         formData.append('email',email);

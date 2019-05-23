@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const sequelize = require('../util/database');
 const User=require('../models/user');
 const Team=require('../models/team');
+const Role=require('./role');
 
 const UserTeam = sequelize.define('userTeam', {
     id: {
@@ -29,6 +30,5 @@ const UserTeam = sequelize.define('userTeam', {
 });
 UserTeam.belongsTo(User,{foreignKey:'userId',targetKey: 'id'});
 UserTeam.belongsTo(Team,{foreignKey:'teamId',targetKey:'id'});
-
 
 module.exports = UserTeam;

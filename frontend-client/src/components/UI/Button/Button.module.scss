@@ -1,6 +1,7 @@
 $disabled-color:#888888;
 $disabled-bg-color:#ccc;
-$primary-bg-color:#3b0062;
+//$primary-bg-color:#3b0062;
+$primary-bg-color:#1890ff;
 $font:inherit;
 $border-standard: 1px primary-bg-color solid;
 $active-color:white;
@@ -12,6 +13,7 @@ $active-color:white;
   margin-top: 0.5rem;
   border:$border-standard;
   color: $primary-bg-color;
+
   background: none;
   padding: 0.5rem 1rem;
   cursor: pointer;

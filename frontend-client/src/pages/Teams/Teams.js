@@ -1,62 +1,88 @@
-import React,{Component,Fragment} from 'react';
-import axios from "../../axios-conf";
+import React, {Component, Fragment} from 'react';
+import * as actions from '../../store/actions/index';
 import {connect} from "react-redux";
-import TeamCard from './Team/Team';
+import TeamCard from './Team/TeamMenuCard';
 import classes from './Teams.module.scss';
+import Modal from '../../components/UI/Modal/Modal';
+import NewTeam from './NewTeam/NewTeam';
+import InfoTeam from './InfoTeam/InfoTeam';
+import {Alert, Button, Icon} from 'antd';
+import {DEFAULT_TEAM_AVATAR} from '../../axios-conf';
 
-class Teams extends Component{
+class Teams extends Component {
+
+    state = {
+        teams: [],
+        creatingTeam: false,
+        selectedTeamId: null
+    };
 
     componentDidMount() {
-        const data= {
-        };
-        let url='team/myteams';
-        let options={
-            method:'POST',
-            url:url,
-            data:data,
-            headers:{
-                'Authorization': `bearer ${this.props.token}`,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json;charset=UTF-8'
-            }
-        };
-        axios(options).then(response=> {
-            console.log(response.data);
-        }).catch(err=>{
-            console.log(err.response);
-        });
+        this.props.onGetMyTeams(this.props.token);
     }
 
+    closeCreateTeamHandler = () => {
+        this.setState({creatingTeam: false})
+    };
 
-    render(){
-        return(
-    <div className={classes.Teams}>
-        <div className={classes.MenuTeams}>
-           <TeamCard></TeamCard>
-        </div>
+    createTeamHandler = () => {
+        this.setState({creatingTeam: true})
+    };
 
-        <div className={classes.ContentTeams}>
+    selectTeamCardHandler = (id) => {
+        console.log('Drago', id);
+        this.setState({selectedTeamId: id});
+        this.props.onSelectedTeam(id,this.props.token);
+        console.log(this.props.selectedTeam);
+    };
 
-        </div>
-    </div>
-        );
+    render() {
+        let teams = this.props.myTeams != null ? this.props.myTeams.map((value, key) => {
+            return <TeamCard key={key} selectedId={this.state.selectedTeamId} team={value} onSelectedCard={() => {
+                this.selectTeamCardHandler(value.team.id)
+            }}/>
+        }) : null;
+       let info=this.props.selectedTeam?<InfoTeam team={this.props.selectedTeam.team} role={this.props.selectedTeam.myRole} users={this.props.selectedTeam.teamUsers}/>:null;
+        return (
+            <Fragment>
+                <Modal show={this.state.creatingTeam} cancel={this.closeCreateTeamHandler}>
+                    <NewTeam cancel={this.closeCreateTeamHandler}/>
+                </Modal>
+                <div className={classes.Teams}>
+                    <div className={classes.MenuTeams}>
+                        <div className={classes.HeaderName}>Teams</div>
+                        {teams}
+                        <div>
+                            <Button type="primary" size='large' onClick={this.createTeamHandler}>New Team</Button>
+                        </div>
+                        </div>
+
+                        <div className={classes.ContentTeams}>
+                            {info}
+                        </div>
+                    </div>
+            </Fragment>
+    );
     }
-}
-
-const mapStateToProps= state=>{
-    return{
-        loading:state.auth.loading,
-        isAuthenticated: state.auth.token !=null,
-        token:state.auth.token,
-        error: state.auth.error
     }
-};
 
-
-const mapDispatchToProps= state=>{
-    return{
-
+    const mapStateToProps = state => {
+        return {
+        loading: state.auth.loading,
+        isAuthenticated: state.auth.token != null,
+        token: state.auth.token,
+        error: state.auth.error,
+        myTeams: state.team.myTeams,
+        selectedTeam: state.team.selectedTeam
     }
-};
+    };
 
-export default connect(mapStateToProps,mapDispatchToProps)(Teams);
+
+    const mapDispatchToProps = dispatch => {
+        return {
+        onGetMyTeams: (token) => dispatch(actions.getMyTeams(token)),
+        onSelectedTeam:(id,token)=>dispatch(actions.selectedTeam(token,id))
+    }
+    };
+
+    export default connect(mapStateToProps, mapDispatchToProps)(Teams);

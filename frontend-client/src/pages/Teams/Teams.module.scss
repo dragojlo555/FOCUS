@@ -1,18 +1,63 @@
+$newTeamBtColor: #3b0062;
+$newTeamBtHoverColor: #54007f;
 
-.Teams{
+
+.Teams {
+  height: 100%;
   width: 100%;
   display: flex;
   flex-shrink: 1;
-  .MenuTeams{
+  justify-content: center;
+  box-sizing: border-box;
+
+  .MenuTeams {
+    padding: 15px 0;
     height: 100%;
     width: 25%;
-    background-color: #342daa;
+    background-color: white;
+    display: flex;
+    flex-flow: column;
+    justify-content: start;
+    align-items: center;
+    overflow: auto;
+    border-right: #E8E8E8 1px solid;
+
+    .HeaderName{
+        color: #001529;
+      font-weight: bold;
+    }
+
+
+    .NewTeamButton {
+      justify-content: center;
+      width: 75%;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      background-color: $newTeamBtColor;
+      color: white;
+      padding: 0.5rem 1rem;
+      &:hover {
+        background-color: $newTeamBtHoverColor;
+      }
+
+    }
   }
 
-  .ContentTeams{
-  width: 75%;
-  background-color: white;
+  .ContentTeams {
+    overflow: auto;
+    padding: 15px;
+    width: 75%;
+    background-color: white;
   }
 
+  @media (min-width: 700px) {
+    .ContentTeams {
+      width: 85%;
+    }
+    .MenuTeams{
+      width: 15%;
+    }
+  }
 
 }

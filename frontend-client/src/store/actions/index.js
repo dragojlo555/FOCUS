@@ -4,3 +4,10 @@ export {auth,
     signUp,
     afterSignUp
 } from './auth';
+
+export{
+    getMyTeams,
+    createTeam,
+    createTeamEnd,
+    selectedTeam,
+}from './team';

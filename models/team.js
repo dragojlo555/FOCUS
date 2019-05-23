@@ -1,5 +1,6 @@
 const Sequelize=require('sequelize');
 const sequelize=require('../util/database');
+const User=require('./user');
 
 const Team=sequelize.define('team',{
    id:{
@@ -25,5 +26,5 @@ const Team=sequelize.define('team',{
     }
 });
 
-
+Team.belongsTo(User,{foreignKey:'creatorUserId',targetKey:'id'});
 module.exports = Team;

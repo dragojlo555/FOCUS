@@ -9,8 +9,7 @@ import * as actions from './store/actions/index';
 import Layout from './components/Layout/Layout';
 import Logout from './pages/Auth/Logout/Logout';
 import Teams from  './pages/Teams/Teams';
-
-
+import 'antd/dist/antd.css';
 
 
 class App extends Component {

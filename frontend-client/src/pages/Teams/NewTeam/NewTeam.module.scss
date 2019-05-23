@@ -1,0 +1,26 @@
+.HeaderNewTeam{
+  text-align: center;
+  font-size: 2em;
+  color: #3b0062;
+  margin-bottom: 10px;
+}
+
+.ButtonsNewTeam{
+  margin-top: 10px;
+  justify-content: space-between;
+  display: flex;
+}
+
+
+.ImgUploadNewTeam{
+  text-align: center;
+  label img{
+    width: 75%;
+    height: 250px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  input{
+    display: none;
+  }
+}
