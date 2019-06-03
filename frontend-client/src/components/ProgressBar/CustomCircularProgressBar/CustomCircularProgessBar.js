@@ -5,11 +5,10 @@ import classes from './CustomCircularProgressBar.module.scss';
 
 const CustomContentProgressbar = (props) => {
     const {children, ...otherProps} = props;
-
     return (
         <div className={classes.CustomContentProgressBar}>
             <div className={classes.Bar}>
-                <CircularProgressbar {...otherProps} />
+                <CircularProgressbar  {...otherProps}  />
             </div>
             <div className={classes.Children}>
                 {props.children}

@@ -6,7 +6,8 @@ const initialState = {
     userId:null,
     error:null,
     loading:false,
-    afterSignUp:false
+    afterSignUp:false,
+    socket:null
 };
 
 const authStart=(state,action)=>{
@@ -29,12 +30,13 @@ const authSuccess= (state,action) =>{
       token:action.token,
       userId:action.userId,
       error:null,
-      loading: false
+      loading: false,
+      socket:action.socket
   })
 };
 
 const authLogout =(state,action)=>{
-  return updateObject(state,{token:null,userId:null});
+  return updateObject(state,{token:null,userId:null,socket:null});
 };
 
 const signUp=(state,action)=>{

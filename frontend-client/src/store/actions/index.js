@@ -11,3 +11,8 @@ export{
     createTeamEnd,
     selectedTeam,
 }from './team';
+
+export{
+    openChat,
+    changeMyState
+}from './chat'

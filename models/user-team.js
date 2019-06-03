@@ -2,7 +2,6 @@ const Sequelize = require('sequelize');
 const sequelize = require('../util/database');
 const User=require('../models/user');
 const Team=require('../models/team');
-const Role=require('./role');
 
 const UserTeam = sequelize.define('userTeam', {
     id: {

@@ -1,0 +1,52 @@
+
+.GroupMessage{
+padding:15px;
+display: flex;
+  flex-flow: column;
+
+.Message{
+  margin-bottom: 10px;
+  display: flex;
+  flex-flow: row;
+  width: 100%;
+  .MessageAvatar{
+  }
+
+  .MessageContent {
+    margin-top: 10px;
+    margin-left: 5px;
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    .MessageTime {
+      width: 90%;
+      text-align: right;
+
+    &.TimeAway{
+      text-align: left;
+      padding-left: 10%;
+    }
+    }
+
+    .MessageText {
+      border-radius: 5%;
+      padding: 20px;
+      width: 100%;
+      background-color: #2eddff;
+
+      &.TextAway{
+        background-color: #55f409;
+      }
+    }
+  }
+  .MessageContent.MessageAway{
+    margin-left: 0;
+    margin-right: 5px;
+  }
+}
+
+
+
+
+
+}

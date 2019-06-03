@@ -1,14 +1,17 @@
 .PomodoroTimer{
   display: flex;
   flex-flow: row;
+  flex-wrap: wrap;
   align-items: center;
+  flex-shrink: 1;
+  flex-grow: 1;
+  justify-content: center;
   .Duration{
   margin: 1rem;
 
   }
 
   .Timer{
-
 
 
   }

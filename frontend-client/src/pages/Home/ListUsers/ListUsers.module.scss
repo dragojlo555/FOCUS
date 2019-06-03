@@ -1,0 +1,47 @@
+.ListUsers{
+  display: flex;
+  flex-flow: column;
+  overflow: auto;
+
+
+  .HeaderList{
+    display: flex;
+    height: 42px;
+    width: 100%;
+    cursor: pointer;
+    //background-color: #cccccc;
+    //background-color: #e6f7ff;
+    border-bottom: 1px solid #cccccc;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+  }
+
+  .UserCard{
+    display: flex;
+    cursor: pointer;
+    padding: 10px;
+    &:hover{
+      border-right: #1890ff 3px solid ;
+      background-color: #e6f7ff;
+      .NameUser{
+        color: #00B7FF;
+      }
+    }
+    &.SelectedUserCard{
+      //background-color: #00B7FF;
+      border-right: #1890ff 3px solid ;
+     // background-color: #e6f7ff;
+      background-color: #efeff9;
+      .NameUser{
+        color: #00B7FF;
+      }
+    }
+  }
+
+  .NameUser{
+
+  }
+
+
+}

@@ -2,7 +2,7 @@
 .InfoTeam{
   display: flex;
   flex-direction: column;
-  justify-content: center;
+ // justify-content: center;
   align-items: center;
 
   .ListIcon{
@@ -53,7 +53,7 @@
     flex-direction: row;
     margin-top: 20px;
     margin-bottom: 20px;
-    align-items: start;
+    align-items: flex-start;
     .ConfirmButton{
       margin-left: 20px;
     }

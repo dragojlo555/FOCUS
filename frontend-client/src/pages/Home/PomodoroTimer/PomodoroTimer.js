@@ -3,6 +3,9 @@ import CircularProgessBar from "../../../components/ProgressBar/CircularProgress
 import classes from './PomodoroTimer.module.scss'
 import SetDuration from '../../../components/TimerComponents/SetDuration/SetDuration';
 import CommandButton from "../../../components/TimerComponents/CommandButton/CommandButton";
+import {connect} from 'react-redux';
+import * as actions from "../../../store/actions";
+import {Modal} from 'antd';
 
 class PomodoroTimer extends Component {
     state = {
@@ -25,6 +28,7 @@ class PomodoroTimer extends Component {
        const storageState=JSON.parse(localStorage.getItem('timer'));
         if(storageState!=null) {
             this.setState({session: storageState.session, duration: storageState.duration}, this.startSession);
+            this.props.onChangeMyState(this.props.token,storageState.session.current);
         }
     }
     componentWillUnmount() {
@@ -33,65 +37,15 @@ class PomodoroTimer extends Component {
         clearInterval(timer);
     }
 
-    incBreakDurationHandler = () => {
-        let updatedBreak = this.state.duration['break'];
-        updatedBreak = updatedBreak + 1;
+    changeDurationHandler=(type,duration)=>{
+        let updatedBreak = this.state.duration[type];
+        updatedBreak = updatedBreak + duration;
         const updatedDuration = {
             ...this.state.duration,
-            break: updatedBreak
+
         };
+        updatedDuration[type]=updatedBreak;
         this.setState({duration: updatedDuration})
-    };
-
-    decBreakDurationHandler = () => {
-        let updatedBreak = this.state.duration['break'];
-        updatedBreak = updatedBreak - 1;
-        const updatedDuration = {
-            ...this.state.duration,
-            break: updatedBreak
-        };
-        this.setState({duration: updatedDuration});
-    };
-
-
-    incPauseDurationHandler = () => {
-        let updatedPause = this.state.duration['pause'];
-        updatedPause = updatedPause + 1;
-        const updatedDuration = {
-            ...this.state.duration,
-            pause: updatedPause
-        };
-        this.setState({duration: updatedDuration})
-    };
-
-    decPauseDurationHandler = () => {
-        let updatedPause = this.state.duration['pause'];
-        updatedPause = updatedPause - 1;
-        const updatedDuration = {
-            ...this.state.duration,
-            pause: updatedPause
-        };
-        this.setState({duration: updatedDuration});
-    };
-
-    decWorkDuration = () => {
-        let updatedWork = this.state.duration['work'];
-        updatedWork = updatedWork - 1;
-        const updatedDuration = {
-            ...this.state.duration,
-            work: updatedWork
-        };
-        this.setState({duration: updatedDuration});
-    };
-
-    incWorkDuration = () => {
-        let updatedWork = this.state.duration['work'];
-        updatedWork = updatedWork + 1;
-        const updatedDuration = {
-            ...this.state.duration,
-            work: updatedWork
-        };
-        this.setState({duration: updatedDuration});
     };
 
     pauseSession = () => {
@@ -116,7 +70,20 @@ class PomodoroTimer extends Component {
         this.setState({session: updatedSession});
     };
 
+     info=(state,msg,method)=>{
+        Modal.info({
+            title: 'The '+state+' time is over !!!',
+            content: (
+                <div>
+                    <p>{msg}</p>
+                </div>
+            ),
+            onOk() {method()},
+        });
+    };
+
     startSession = () => {
+        this.props.onChangeMyState(this.props.token,this.state.session.current);
         let curSession = this.state.session.current;
         let maxDur = this.state.duration[curSession] * 60;
         let updatedTime = this.state.session.time;
@@ -129,68 +96,73 @@ class PomodoroTimer extends Component {
             endTime=new Date(new Date().getTime() + (this.state.duration[curSession] * 60*1000));
         }
 
-        if (updatedTime === maxDur) {
-            updatedTime = 0;
-            if (curSession === 'work') {
-                curSession = 'pause';
-            } else if (curSession === 'pause') {
-                curSession = 'break';
-            } else {
-                curSession = 'work';
-                if (number === 3) {
-                    number = 1;
-                } else {
-                    number = number + 1;
-                }
-            }
-            const updatedSession = {
-                ...this.state.session,
-                current: curSession,
-                time: updatedTime,
-                number: number,
-                startTime:startTime,
-                endTime: endTime
-            };
-            this.setState({session: updatedSession});
-
-        }
-
         const timer = setInterval(() => {
             maxDur = this.state.duration[curSession] * 60;
             updatedTime = updatedTime + 1;
             if (updatedTime === maxDur) {
                 clearInterval(timer);
+                updatedTime = 0;
+                if (curSession === 'work') {
+                    curSession = 'pause';
+                    this.info('work','Take a pause!!!',this.startSession);
+                } else if (curSession === 'pause') {
+                    curSession = 'break';
+                    this.info('pause','Take a break!!!',this.startSession);
+                } else {
+                    curSession = 'work';
+                    this.info('break','Go to work!!!',this.startSession);
+                    clearInterval(this.state.session.timer);
+                    if (number === 3) {
+                        number = 1;
+                    } else {
+                        number = number + 1;
+                    }
+                }
             }
             const updatedSession = {
                 ...this.state.session,
                 time: updatedTime,
-                timer: timer
+                timer: timer,
+                current: curSession,
+                number: number,
+                startTime:startTime,
+                endTime: endTime
             };
             this.setState({session: updatedSession});
         }, 1000);
     };
 
+
+
+
     render() {
         return (
             <div className={classes.PomodoroTimer}>
-                <div className={classes.Duration}>
-                    <SetDuration incDuration={this.incWorkDuration} decDuration={this.decWorkDuration}
-                                 label={'Work duration'} time={this.state.duration.work}/>
-                    <SetDuration incDuration={this.incPauseDurationHandler} decDuration={this.decPauseDurationHandler}
-                                 label={'Pause duration'} time={this.state.duration.pause}/>
-                    <SetDuration incDuration={this.incBreakDurationHandler} decDuration={this.decBreakDurationHandler}
-                                 label={'Break duration'} time={this.state.duration.break}/>
-                    <CommandButton start={this.startSession} reset={this.resetSession} pause={this.pauseSession}/>
-                </div>
                 <div className={classes.Timer}>
                     <CircularProgessBar duration={this.state.duration} session={this.state.session}/>
+                </div>
+                <div className={classes.Duration}>
+                    <SetDuration incDuration={()=>{this.changeDurationHandler('work',1)}} decDuration={()=>{this.changeDurationHandler('work',-1)}}
+                                 label={'Work duration'} time={this.state.duration.work}/>
+                    <SetDuration incDuration={()=>{this.changeDurationHandler('pause',1)}} decDuration={()=>{this.changeDurationHandler('pause',-1)}}
+                                 label={'Pause duration'} time={this.state.duration.pause}/>
+                    <SetDuration incDuration={()=>{this.changeDurationHandler('break',1)}} decDuration={()=>{this.changeDurationHandler('break',-1)}}
+                                 label={'Break duration'} time={this.state.duration.break}/>
+                    <CommandButton start={this.startSession} reset={this.resetSession} pause={this.pauseSession}/>
                 </div>
             </div>
         );
     }
-
-
 }
+const mapStateToProps=(state)=>{
+  return {
+    token:state.auth.token
+  }
+};
 
-
-export default PomodoroTimer;
+const mapDispatchToProps=(dispatch)=>{
+    return{
+        onChangeMyState: (token,state) => dispatch(actions.changeMyState(token,state)),
+    }
+};
+export default connect(mapStateToProps,mapDispatchToProps)(PomodoroTimer);

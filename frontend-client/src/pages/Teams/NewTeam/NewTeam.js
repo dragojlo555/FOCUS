@@ -129,7 +129,6 @@ class NewTeam extends Component {
         if (this.props.loading) {
             dialog = <Spinner/>;
         }
-        console.log(this.props.createTeamData);
         if ( this.props.createTeamData !=null) {
             console.log(this.props.createTeamData.msg);
             if(this.props.createTeamData.msg==='Success'){

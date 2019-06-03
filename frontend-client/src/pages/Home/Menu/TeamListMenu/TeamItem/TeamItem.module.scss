@@ -1,17 +1,17 @@
 
 .TeamCard{
   box-sizing: border-box;
-  margin: 5px auto;
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
   padding: 10px;
+  align-items: center;
 
   &:hover{
     //background-color: #00B7FF;
-    border-right: #1890ff 3px solid ;
+   // border-right: #1890ff 3px solid ;
+    margin-left: 20px;
+    width: calc(100% - 20px);
     background-color: #e6f7ff;
     .TeamName{
       color: #00B7FF;
@@ -20,22 +20,19 @@
 
   &.SelectedTeamCard{
     //background-color: #00B7FF;
-    border-right: #1890ff 3px solid ;
-    background-color: #e6f7ff;
+    margin-left: 20px;
+    width: calc(100% - 20px);
+    //border-right: #1890ff 3px solid ;
+   // background-color: #e6f7ff;
+    background-color: white;
     .TeamName{
-      color: #00B7FF;
+     // color: #00B7FF;
+      color:black;
     }
   }
 
-  .TeamAvatar{
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-
   .TeamName{
-    margin: 0;
+    padding: 5px;
     font-size: 1em;
   }
 

@@ -9,15 +9,15 @@ const Reminder = sequelize.define('reminder', {
         primaryKey: true,
         autoIncrement: true
     },
-    sendTime: {
-        type: Sequelize.DATE,
-        allowNull: false
-    },
     seenTime: {
         type: Sequelize.DATE,
         allowNull: true
     },
-    text: {
+    content: {
+        type: Sequelize.STRING(1000),
+        allowNull: false
+    },
+    typecontent:{
         type: Sequelize.STRING(1000),
         allowNull: false
     },
@@ -31,8 +31,8 @@ const Reminder = sequelize.define('reminder', {
     }
 });
 
-Reminder.belongsTo(User,{foreignKey:'senderUserId',targetKey:'id'});
-Reminder.belongsTo(User,{foreignKey: 'receivedUserId', targetKey:  'id'});
+Reminder.belongsTo(User,{as:'sender',foreignKey:'senderUserId',targetKey:'id'});
+Reminder.belongsTo(User,{as:'receiver',foreignKey: 'receivedUserId', targetKey:  'id'});
 
 
 module.exports = Reminder;

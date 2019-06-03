@@ -1,5 +1,6 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-conf';
+import {init,close} from '../../confSocketIO';
 
 export const authStart = () => {
     return {
@@ -8,10 +9,12 @@ export const authStart = () => {
 };
 
 export const authSuccess = (token, userId) => {
+    const socket=init(token);
     return {
         type: actionTypes.AUTH_SUCCESS,
         token: token,
-        userId: userId
+        userId: userId,
+        socket:socket
     }
 };
 
@@ -35,6 +38,7 @@ export const signUpSuccess=()=>{
 };
 
 export const logout = () => {
+    close();
     localStorage.removeItem('token');
     localStorage.removeItem('expirationDate');
     localStorage.removeItem('userId');
@@ -130,7 +134,6 @@ export const authCheckState = () => {
                 dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime())/1000));
             }
         }
-
     };
 };
 

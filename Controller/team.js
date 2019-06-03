@@ -2,6 +2,7 @@ const User = require('../models/user');
 const Team = require('../models/team');
 const RoleUserTeam = require('../models/role-user-team');
 const Role = require('../models/role');
+const Focus=require('../models/focus');
 const UserTeam = require('../models/user-team');
 const {validationResult} = require('express-validator/check');
 const sequelize=require('../util/database');
@@ -25,7 +26,7 @@ exports.getTeam=async (req,res)=>{
         }
         //req.userId
         const idTeamReq = req.body.idteam;
-        let teamUsers=await UserTeam.findAll({where:{teamId:idTeamReq},include:[{model:User},{model:RoleUserTeam,where:{deletedAt:null},include:[{model:Role}]}]});
+        let teamUsers=await UserTeam.findAll({where:{teamId:idTeamReq},include:[{model:User,include:[{model:Focus}]},{model:RoleUserTeam,where:{deletedAt:null},include:[{model:Role}]}]});
         let team=await Team.findOne({where:{id:idTeamReq},include:[{model:User}]});
         let role=await UserTeam.findOne({where:{userId:req.userId,deletedAt:null},include:[{model:RoleUserTeam,where:{deletedAt:null},include:[{model:Role}]}]});
         res.status(200).json({msg:'Success',team:team,teamUsers:teamUsers,myRole:role});

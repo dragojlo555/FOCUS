@@ -69,7 +69,6 @@ export const createTeam = (name, img, token) => {
             //console.log(err);
              dispatch(createTeamFailed(err.data));
         });
-
     }
 };
 

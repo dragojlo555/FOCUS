@@ -1,8 +1,10 @@
 const User = require('../models/user');
 const Reminder = require('../models/reminder');
+const Focus=require('../models/focus');
 const {validationResult} = require('express-validator/check');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const socketIO=require('../util/socket');
 
 exports.getDefault = (req, res) => {
     res.json({msg: 'Users Works'});
@@ -17,7 +19,7 @@ exports.allUser=(req,res)=>{
     })
 };
 
-exports.createUser = (req, res) => {
+exports.createUser =(req, res) => {
     const pass = req.body.password;
     const emailReq = req.body.email;
     const firstNameReq = req.body.firstname;
@@ -38,6 +40,10 @@ exports.createUser = (req, res) => {
                 firstName: firstNameReq,
                 Avatar:avatarReq
             }).then(result => {
+                let user=Focus.create({
+                    state: req.body.state,
+                    userId: req.userId
+                });
                 return res.status(201).json({message: 'User created !!!', userId: result});
             }).catch(err => {
                     return res.status(500).json({msg: 'Internal server error !!!'});
@@ -47,57 +53,42 @@ exports.createUser = (req, res) => {
     );
 };
 
-exports.loginUser = (req, res) => {
+exports.loginUser = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({err:errors.array(),mail:req.body});
     }
-    const email = req.body.email;
-    const pass = req.body.password;
-    let errorMsg = null;
-    let loadedUser = null;
-    User.findOne({where: {mail: email}}).then(data => {
-            if (!data) {
-                return Promise.resolve(null);
-            }
-            return Promise.resolve(data);
-        }
-    ).then(result => {
-            if (!result) {
-                errorMsg = 'A user with this email could not be found.';
-                return Promise.resolve(null);
-            } else {
-                console.log(req.body.email,req.body.password);
-                loadedUser = result.dataValues;
-                return bcrypt.compare(pass, loadedUser.password);
-            }
-        }
-    ).then(result => {
-            if (result) {
-                const token = jwt.sign(
-                    {
-                        email: loadedUser.mail,
-                        userId: loadedUser.id.toString()
-                    },
-                    'secret',
-                    {expiresIn: '1h'}
-                );
-                return res.status(200).json({token: token, userId: loadedUser.id.toString(),expireIn: '1'});
-            }else{
-            if (!errorMsg) errorMsg = 'Wrong password !!!';
-            return res.status(401).json({msg: errorMsg});}
-        }
-    )
+    let user=await User.findOne({where: {mail: req.body.email}});
+    if(user){
+        const success=await bcrypt.compare(req.body.password,user.password);
+        if(success){
+            const token = jwt.sign(
+                {
+                    email: user.mail,
+                    userId: user.id.toString()
+                },
+                'secret',
+                {expiresIn: '1h'}
+            );
+            return res.status(200).json({token: token, userId: user.id.toString(),expireIn: '1'});
+        }else {
+
+            return res.status(401).json({msg:'Wrong password !!!',inputField:'password'});}
+    }else{
+        return res.status(401).json({msg:'A user with this email could not be found.',inputField:'email'});
+    }
 };
 
-exports.info = (req, res) => {
-    const idUserReq=req.body.id;
-    User.findOne({where:{id:idUserReq}}).then(data=>{
-      res.status(200).json({msg:'Success',user:data})
-    }).catch(err=>{
-        res.status(400).json({msg:'Failed',error:data})
-    })
+
+exports.info =async (req, res) =>{
+    try {
+        const user = await User.findOne({where: {id: req.userId},include:[{model:Focus}]});
+        res.status(200).json({msg: 'Success', user: user})
+    }catch(error) {
+        res.status(500).json({msg: 'Failed', error: error})
+    }
 };
+
 
 exports.changeProfile = async(req, res) => {
     const firstNameReq = req.body.firstname;
@@ -127,5 +118,20 @@ exports.changeProfile = async(req, res) => {
         if(!err.statusCode)err.statusCode=500;
             return res.status(err.statusCode).json({msg: 'Failed', error: err});
         }
+};
+
+exports.changeMyState=async(req,res)=>{
+    try {
+        let result = await Focus.update({
+            state: req.body.state,
+            userId: req.userId
+        }, {where: {userId: req.userId}});
+        let update=await User.findOne({where:{id:req.userId},include:{model:Focus}});
+        socketIO.getIO().sockets.emit('change-state',update);
+        res.status(200).json({msg: 'Success', user: update,updated:result[0]});
+    }catch (err) {
+        if(!err.statusCode)err.statusCode=500;
+        return res.status(err.statusCode).json({msg: 'Failed', error: err});
+    }
 };
 

@@ -97,7 +97,6 @@ class InfoTeam extends Component {
                             </Form.Item>
                         </Form>
                     </div>
-
                 </div>
 
                 <div className={classes.ListUser}>
@@ -106,7 +105,7 @@ class InfoTeam extends Component {
                 <div className={classes.NewUser}>
                     <Input onChange={(event) => {
                         this.onChangeHandler(event)
-                    }} addonBefore='User Email' value={this.state.addUser.value}/>
+                    }} addonBefore='User Email' placeholder='email@address.com' value={this.state.addUser.value}/>
                     <Button disabled={!this.state.addUser.valid} onClick={this.onAddMember}  className={classes.ConfirmButton} type='primary'>Add
                         User</Button>
                 </div>
@@ -121,6 +120,7 @@ const mapStateToProps = (state) => {
         loading: state.auth.loading,
         token: state.auth.token,
         error: state.team.error,
+        myTeams: state.team.myTeams
     }
 };
 

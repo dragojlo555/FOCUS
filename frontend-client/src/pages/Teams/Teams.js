@@ -1,14 +1,12 @@
 import React, {Component, Fragment} from 'react';
 import * as actions from '../../store/actions/index';
 import {connect} from "react-redux";
-import TeamCard from './Team/TeamMenuCard';
 import classes from './Teams.module.scss';
 import Modal from '../../components/UI/Modal/Modal';
 import NewTeam from './NewTeam/NewTeam';
 import InfoTeam from './InfoTeam/InfoTeam';
-import {Alert, Button, Icon} from 'antd';
-import {DEFAULT_TEAM_AVATAR} from '../../axios-conf';
-
+import {Button} from 'antd';
+import HomeMenu from '../Home/Menu/HomeMenu';
 class Teams extends Component {
 
     state = {
@@ -29,20 +27,10 @@ class Teams extends Component {
         this.setState({creatingTeam: true})
     };
 
-    selectTeamCardHandler = (id) => {
-        console.log('Drago', id);
-        this.setState({selectedTeamId: id});
-        this.props.onSelectedTeam(id,this.props.token);
-        console.log(this.props.selectedTeam);
-    };
-
     render() {
-        let teams = this.props.myTeams != null ? this.props.myTeams.map((value, key) => {
-            return <TeamCard key={key} selectedId={this.state.selectedTeamId} team={value} onSelectedCard={() => {
-                this.selectTeamCardHandler(value.team.id)
-            }}/>
-        }) : null;
-       let info=this.props.selectedTeam?<InfoTeam team={this.props.selectedTeam.team} role={this.props.selectedTeam.myRole} users={this.props.selectedTeam.teamUsers}/>:null;
+        let info = this.props.selectedTeam ?
+            <InfoTeam team={this.props.selectedTeam.team} role={this.props.selectedTeam.myRole}
+                      users={this.props.selectedTeam.teamUsers}/> : null;
         return (
             <Fragment>
                 <Modal show={this.state.creatingTeam} cancel={this.closeCreateTeamHandler}>
@@ -50,24 +38,23 @@ class Teams extends Component {
                 </Modal>
                 <div className={classes.Teams}>
                     <div className={classes.MenuTeams}>
-                        <div className={classes.HeaderName}>Teams</div>
-                        {teams}
+                       <HomeMenu/>
                         <div>
                             <Button type="primary" size='large' onClick={this.createTeamHandler}>New Team</Button>
                         </div>
-                        </div>
-
-                        <div className={classes.ContentTeams}>
-                            {info}
-                        </div>
                     </div>
-            </Fragment>
-    );
-    }
-    }
 
-    const mapStateToProps = state => {
-        return {
+                    <div className={classes.ContentTeams}>
+                        {info}
+                    </div>
+                </div>
+            </Fragment>
+        );
+    }
+}
+
+const mapStateToProps = state => {
+    return {
         loading: state.auth.loading,
         isAuthenticated: state.auth.token != null,
         token: state.auth.token,
@@ -75,14 +62,14 @@ class Teams extends Component {
         myTeams: state.team.myTeams,
         selectedTeam: state.team.selectedTeam
     }
-    };
+};
 
 
-    const mapDispatchToProps = dispatch => {
-        return {
+const mapDispatchToProps = dispatch => {
+    return {
         onGetMyTeams: (token) => dispatch(actions.getMyTeams(token)),
-        onSelectedTeam:(id,token)=>dispatch(actions.selectedTeam(token,id))
+        onSelectedTeam: (id, token) => dispatch(actions.selectedTeam(token, id))
     }
-    };
+};
 
-    export default connect(mapStateToProps, mapDispatchToProps)(Teams);
+export default connect(mapStateToProps, mapDispatchToProps)(Teams);
