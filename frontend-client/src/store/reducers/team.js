@@ -7,7 +7,21 @@ const initialState = {
     selectedTeam: null,
     loading: false,
     createTeamData: null,
+    chatType: null,
+    openedChat: null,
+    messages: null,
+    myState: 'offline',
+    unread:[]
 };
+
+const getUpdateUnreadMessage=(state,action)=>{
+  //  console.log(action.data);
+    let updateUnread=state.unread.slice();
+    updateUnread[action.data.senderId]=action.data.number;
+    console.log(state.unread[5]);
+    return updateObject(state,{unread:updateUnread});
+};
+
 
 const getMyTeamsSuccess = (state, action) => {
     return updateObject(state, {
@@ -40,6 +54,20 @@ const getMyTeamsFailed = (state, action) => {
     })
 };
 
+const onLogout = (state, action) => {
+    return updateObject(state, {
+        myTeams: null,
+        error: null,
+        selectedTeam: null,
+        loading: false,
+        createTeamData: null,
+        chatType: null,
+        openedChat: null,
+        messages: null,
+        myState: 'offline'
+    });
+};
+
 const createTeamSuccess = (state, action) => {
     return updateObject(state, {
         loading: false,
@@ -69,6 +97,46 @@ const endCreateTeam = (state, action) => {
     });
 };
 
+//Za chat
+const sendMessage = (state, action) => {
+    const messages = [
+        ...state.messages,
+        action.message
+    ];
+
+    console.log(messages);
+    return updateObject(state, {
+        messages: messages
+    })
+};
+
+const openedChat = (state, action) => {
+    return updateObject(state, {
+        chatType: action.typeChat,
+        openedChat: action.select,
+        messages: action.messages
+    })
+};
+
+const receiveMessage = (state, action) => {
+    const messages = [
+        ...state.messages,
+        action.message
+    ];
+
+    console.log(messages);
+    return updateObject(state, {
+        messages: messages
+    })
+};
+
+const changeMyState = (state, action) => {
+    updateObject(state, {
+        myState: action.state
+    })
+};
+
+
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.GET_MY_TEAMS_SUCCESS:
@@ -84,11 +152,22 @@ const reducer = (state = initialState, action) => {
         case actionTypes.END_CREATE_TEAM:
             return endCreateTeam(state, action);
         case actionTypes.TEAM_SELECTED_START:
-            return startSelectedTeam(state,action);
+            return startSelectedTeam(state, action);
         case actionTypes.TEAM_SELECTED_SUCCESS:
-            return selectedTeamSuccess(state,action);
+            return selectedTeamSuccess(state, action);
         case actionTypes.TEAM_SELECTED_FAILED:
-            return selectedTeamFailed(state,action);
+            return selectedTeamFailed(state, action);
+        case actionTypes.OPENED_CHAT:
+            return openedChat(state, action);
+        case actionTypes.CHANGE_MY_STATE:
+            return changeMyState(state, action);
+        case actionTypes.SEND_MESSAGE:
+            return sendMessage(state, action);
+        case actionTypes.RECEIVE_MESSAGE:
+            return receiveMessage(state, action);
+        case actionTypes.TEAM_AFTER_LOGOUT:
+            return onLogout(state, action);
+        case actionTypes.CHECK_UNREAD_MESSAGE:return getUpdateUnreadMessage(state,action);
         default:
             return state;
     }

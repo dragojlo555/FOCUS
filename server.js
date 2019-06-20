@@ -3,6 +3,7 @@ const sequelize = require('./util/database');
 const bodyParser=require('body-parser');
 const teams_route=require('./routes/api/teams');
 const users_route=require('./routes/api/users');
+const chat_route=require('./routes/api/chat');
 const socketIO=require('./util/socket');
 const socketAuth=require('./middleware/is-auth-socket');
 const ChatController=require('./Controller/chat-socket');
@@ -30,6 +31,7 @@ app.get('/', (req, res) => res.send('Hello World'));
 //use Routes
 app.use('/api/users',users_route);
 app.use('/api/team',teams_route);
+app.use('/api/chat',chat_route);
 //app.use('/api/profile',profile);
 
 const port=process.env.PORT || 5000;
@@ -57,7 +59,8 @@ sequelize
 
             socket.on('user-message',payload=>{
              ChatController.receiveUserMessage(payload).then(data=>{
-                 io.sockets.emit('user-message-cl',data);
+                 io.sockets.emit('user-message-cl-'+data.receivedUserId,data);
+                 io.sockets.emit('user-message-cl-'+data.senderUserId,data);
                  }
              ).catch(err=>{
                  io.sockets.emit('user-message-cl','null');}
@@ -66,7 +69,8 @@ sequelize
 
             socket.on('team-message',payload=>{
              ChatController.receiveTeamMessage(payload).then(data=>{
-                 io.sockets.emit('team-message-cl',data);
+                 console.log(data.teamid);
+                 io.sockets.emit('team-message-cl-'+data.teamid,data);
              }).catch(err=>{
                  io.sockets.emit('team-message-cl','null');
              })

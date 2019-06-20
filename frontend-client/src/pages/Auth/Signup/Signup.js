@@ -6,12 +6,13 @@ import Auth from "../Auth";
 import {Redirect} from 'react-router-dom';
 import {connect} from "react-redux";
 import * as actions from '../../../store/actions/index';
-
+import {DEFAULT_USER_AVATAR} from '../../../axios-conf';
+import {message} from "antd";
 import classes from './Signup.module.scss';
 
 class Signup extends Component {
     state = {
-        file:'http://localhost:5000/public/images/no-profile.jpg',
+        file:DEFAULT_USER_AVATAR,
         avatar:null,
         signupForm: {
             email: {
@@ -107,6 +108,12 @@ class Signup extends Component {
         ,this.state.signupForm.lastname.value,this.state.avatar)
     };
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(this.props.error) {
+            message.error(this.props.error.data[0].msg);
+        }
+    }
+
     render() {
 
         const formElementArray = [];
@@ -158,7 +165,8 @@ class Signup extends Component {
 const mapStateToProps=state=>{
 return{
     loading:state.auth.loading,
-    afterSignUp:state.auth.afterSignUp
+    afterSignUp:state.auth.afterSignUp,
+    error:state.auth.error
 }
 };
 

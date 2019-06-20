@@ -1,7 +1,7 @@
 import React from 'react';
 import CustomCircular from '../CustomCircularProgressBar/CustomCircularProgessBar';
 import classes from './CircularProgressBar.module.scss'
-
+import {Icon} from 'antd';
 const CircularProgressBar = (props) => {
     const duration=props.duration[props.session.current];
     const percentage = props.session.time/(duration*60)*100;
@@ -55,6 +55,9 @@ const CircularProgressBar = (props) => {
                 <div className={classes.InnerText}>
                     <strong>{props.session.current}  #{props.session.number}</strong>
                     <p className={classes.TimeText}>{minute}:{sec}</p>
+                    <Icon onClick={props.start} title='start' type="right-square" theme="twoTone" style={{fontSize:'28px'}} />
+                    <Icon onClick={props.pause} type="pause-circle" theme="twoTone"  style={{fontSize:'28px'}}/>
+                    <Icon onClick={props.control} title='control' type="control" theme="twoTone"  style={{fontSize:'28px'}} />
                 </div>
             </CustomCircular>
         </div>

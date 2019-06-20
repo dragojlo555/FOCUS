@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const URL="http://192.168.1.2:5000/";
+export const URL="http://localhost:5000/";
 
 const baseURLApi=URL+'api/';
 export const DEFAULT_USER_AVATAR=URL+'public/images/no-profile.jpg';

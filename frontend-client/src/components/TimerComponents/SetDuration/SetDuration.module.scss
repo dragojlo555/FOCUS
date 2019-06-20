@@ -1,14 +1,12 @@
-$buttonMinusColor: #ff452a;
-$buttonPlusColor: #05ff53;
 $buttonFontColor: white;
-$ultimateButtonColor: #2eddff;
-$ultimateButtonHoverColor: #35a7c7;
+$ultimateButtonColor: #1890ff;
+$ultimateButtonHoverColor: #40a9ff;
 .SetDuration {
   width: 200px;
   font-weight: bold;
-
+  margin: auto;
+  text-align: center;
   .Setter {
-    border: #211562 1px solid;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -54,8 +52,6 @@ $ultimateButtonHoverColor: #35a7c7;
 
 
   }
-
-
 }
 
 

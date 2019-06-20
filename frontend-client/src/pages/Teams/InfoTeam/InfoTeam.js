@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import classes from './InfoTeam.module.scss';
-import {List, Avatar, Button, Input, Icon, Form,message} from 'antd';
+import {List,Modal, Avatar, Button, Input, Icon, Form,message} from 'antd';
 import {email, required} from "../../../util/validators/validators";
 import {connect} from "react-redux";
 import axios from "../../../axios-conf";
@@ -54,6 +54,44 @@ class InfoTeam extends Component {
             message.success('New User',3);
         }).catch(err=>{
             message.error(err.response.data.error);
+
+        });
+    };
+
+    handleSuccessDelete=()=>{
+        this.props.onSelectedTeam(this.props.token,this.props.team.id,false);
+    };
+    handleDeleteUser=(idUser,idTeam,token,func)=>{
+        Modal.confirm({
+            title: 'Do you Want to delete user?',
+            content: 'Delete user',
+            onOk() {
+                console.log(idUser,idTeam);
+                const data={
+                    iduser:idUser,
+                    idteam:idTeam
+                };
+                let url='/team/user';
+                let options={
+                    method:'DELETE',
+                    url:url,
+                    data:data,
+                    headers:{
+                        'Authorization': `bearer ${token}`,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json;charset=UTF-8'
+                    }
+                };
+                axios(options).then(response =>{
+                    console.log(response.data);
+                    func();
+                }).catch(err=>{
+                   message.error(err.response.data.msg,3);
+                });
+            },
+            onCancel() {
+               // console.log('Cancel');
+            },
         });
     };
 
@@ -65,8 +103,10 @@ class InfoTeam extends Component {
                          itemLayout="horizontal"
                          dataSource={this.props.users}
                          renderItem={item => (
-                             <List.Item actions={[<Icon className={classes.ListIcon} type="edit" theme="twoTone"/>,
-                                 <Icon className={classes.ListIcon} type="delete" theme="twoTone"/>]}>
+                             <List.Item actions={
+                                 [  this.props.role.roleUserTeams[0].role.code==='Creator'?<Icon className={classes.ListIcon} type="edit" theme="twoTone"/>:null,
+                                     this.props.role.roleUserTeams[0].role.code==='Creator'?<Icon className={classes.ListIcon}  onClick={()=>{this.handleDeleteUser(item.user.id,this.props.team.id,this.props.token,()=>{this.handleSuccessDelete()})}}    type="delete" theme="twoTone"/>:null]
+                             }>
                                  <List.Item.Meta
                                      avatar={item.user.Avatar?<Avatar src={URL+ item.user.Avatar}/>:<Avatar src={DEFAULT_USER_AVATAR}/>}
                                      title={item.user.firstName + ' ' + item.user.lastName}
@@ -106,7 +146,7 @@ class InfoTeam extends Component {
                     <Input onChange={(event) => {
                         this.onChangeHandler(event)
                     }} addonBefore='User Email' placeholder='email@address.com' value={this.state.addUser.value}/>
-                    <Button disabled={!this.state.addUser.valid} onClick={this.onAddMember}  className={classes.ConfirmButton} type='primary'>Add
+                    <Button disabled={!this.state.addUser.valid &&  (this.props.role.roleUserTeams[0].role.code==='Creator' ||  this.props.role.roleUserTeams[0].role.code==='Admin')} onClick={this.onAddMember}  className={classes.ConfirmButton} type='primary'>Add
                         User</Button>
                 </div>
 
@@ -126,7 +166,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps=(dispatch)=>{
   return{
-    onSelectedTeam:(token,id)=>dispatch(actions.selectedTeam(token,id))
+    onSelectedTeam:(token,id,openChat)=>dispatch(actions.selectedTeam(token,id,openChat))
   }
 };
 

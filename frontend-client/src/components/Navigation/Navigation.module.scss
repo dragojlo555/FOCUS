@@ -6,10 +6,17 @@
   flex-flow: column;
   align-items: center;
   height: 100%;
-}
 
-@media (min-width: 500px) {
-  .Navigation {
-    flex-flow: row;
+  .Me {
+    font-size: 1.2em;
+    color: white;
+    margin-right: 10px;
   }
 }
+@media (min-width: 500px) {
+.Navigation {
+flex-flow: row;
+}
+}
+
+

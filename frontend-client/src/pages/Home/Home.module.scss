@@ -12,8 +12,7 @@ $primary-bg-color:#001529;
   .MenuPage{
     padding: 15px 0;
     height: 100%;
-    width: 170px;
-   // background-color: white;
+    width: 180px;
     background-image: linear-gradient(#011525, darkblue);
     color:white;
 
@@ -22,11 +21,18 @@ $primary-bg-color:#001529;
     justify-content: flex-start;
     align-items: center;
     overflow: auto;
-  //  border-right: #E8E8E8 1px solid;
+    &::-webkit-scrollbar{
+    height: 4px;
+      width: 5px;
+      transition: .3s background;
+    }
+    &::-webkit-scrollbar-thumb{
+      background-color: #cccccc;
+      border-radius: 5px;
+    }
   }
 
   .ListUsersBlock {
-    //background-color: #e6f7ff;
     border-bottom: 1px solid #cccccc;
     background-color: white;
     width: 15%;
@@ -37,7 +43,7 @@ $primary-bg-color:#001529;
   }
 
   .ChatBox{
-    width: 40%;
+    width: calc(100% - 15% - 180px);
     height:100%;
 
     .ChatField{
@@ -46,15 +52,6 @@ $primary-bg-color:#001529;
     }
   }
 
-  .TimerPage{
-    overflow: auto;
-    padding: 15px;
-    width: calc(100% - 170px - 40% - 15%);
-    background-color: white;
-    display: flex;
-    flex-shrink: 1;
-
-    }
 /*
   //Preko 700px
   @media (min-width: 13000px) {
@@ -84,28 +81,18 @@ $primary-bg-color:#001529;
     .ChatBox{
       min-width:100%;
     }
-    .TimerPage {
-      justify-content: center;
-      text-align: center;
-      min-width: 100%;
-    }
   }
 
 
   @media (max-width: 1000px) and (min-width: 770px) {
     .MenuPage{
-      width: 170px;
+      width: 180px;
     }
     .ListUsersBlock {
       width: 25%;
     }
     .ChatBox{
-      width:calc(100% - 170px - 25%);
-    }
-    .TimerPage {
-      justify-content: center;
-      text-align: center;
-      width: 100%;
+      width:calc(100% - 180px - 25%);
     }
   }
 

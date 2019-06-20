@@ -73,7 +73,6 @@ class Login extends Component {
             this.props.onAfterSignUp();
         }
         if(this.props.error){
-            console.log(this.props.error.data);
             if(this.props.error.data.inputField==='email'){
                 errorMail= <Alert
                     message={this.props.error.data.msg}
@@ -83,7 +82,6 @@ class Login extends Component {
                 />
             }
          if(this.props.error.data.inputField==='password'){
-                console.log(this.props.error.data.msg);
                 errorPass= <Alert
                     message={this.props.error.data.msg}
                     type="error"

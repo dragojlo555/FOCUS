@@ -61,7 +61,6 @@ export const createTeam = (name, img, token) => {
                 'Content-Type': 'application/json;charset=UTF-8'
             }
         };
-        console.log(token, name);
         axios(options).then(response => {
            // console.log(response.data);
              dispatch(createTeamSuccess(response.data));
@@ -75,7 +74,7 @@ export const createTeam = (name, img, token) => {
 
 
 
-export const selectedTeam=(token,id)=>{
+export const selectedTeam=(token,id,open)=>{
     return dispatch=>{
         dispatch(selectedTeamStart());
         const data={
@@ -94,6 +93,8 @@ export const selectedTeam=(token,id)=>{
         };
         axios(options).then(response =>{
             dispatch(selectedTeamSuccess(response.data));
+            if(open===true){
+                dispatch(openChat('team',response.data.team,-1,token));}
         }).catch(err=>{
             dispatch(selectedTeamFailed(err.data));
         });
@@ -106,6 +107,13 @@ export const selectedTeamSuccess=(data)=>{
         data:data
   }
 };
+
+export const teamAfterLogout=()=>{
+    return{
+        type:actionTypes.TEAM_AFTER_LOGOUT
+    }
+}
+;
 
 export const selectedTeamStart=()=>{
     return{
@@ -141,3 +149,126 @@ export const getMyTeams = (token) => {
         });
     }
 };
+
+
+export const openedChat=(typeChat,select,messages)=>{
+ const   sortMessages=messages.slice().sort((a,b)=>a.id-b.id);
+    return{
+        type:actionTypes.OPENED_CHAT,
+        typeChat:typeChat,
+        select:select,
+        messages:sortMessages
+    }
+};
+
+//chat action
+export const openChat=(type,select,homeId,token)=>{
+    return dispatch=>{
+        const data={
+            receivedid:homeId,
+            senderid:select.id
+        };
+        let url=type==='user'?'chat/all':'chat/allteam';
+        let options={
+            method:'POST',
+            url:url,
+            data:data,
+            headers:{
+                'Authorization': `bearer ${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            }
+        };
+        axios(options).then(response =>{
+                dispatch(openedChat(type,select,response.data));
+        }).catch(err=>{
+            console.log(err);
+        });
+    }
+};
+
+
+
+
+export const changeMyStateFinsished=(state)=>{
+    return{
+        type:actionTypes.CHANGE_MY_STATE,
+        state:state
+    }
+};
+
+export const sendMessage=(message)=>{
+    return{
+        type:actionTypes.SEND_MESSAGE,
+        message:message
+    }
+};
+
+export const receiveMessage=(message)=>{
+    return{
+        type:actionTypes.RECEIVE_MESSAGE,
+        message:message
+    }
+};
+
+export const getUnreadMessageUserSucces=(data)=>{
+  return{
+      type:actionTypes.CHECK_UNREAD_MESSAGE,
+      data:data
+  }
+};
+
+
+export const getUnreadMessage=(token,senderid)=>{
+    return dispatch=>{
+        const data={
+            senderid:senderid
+        };
+        const url='chat/user/unread';
+        let options={
+            method:'POST',
+            url:url,
+            data:data,
+            headers:{
+                'Authorization': `bearer ${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            }
+        };
+        axios(options).then(response =>{
+            dispatch(getUnreadMessageUserSucces(response.data));
+        }).catch(err=>{
+            // dispatch(selectedTeamFailed(err.data));
+             console.log(err);
+        });
+    }
+
+};
+
+
+
+export const changeMyState=(token,state)=>{
+    return dispatch=>{
+        const data={
+            state:state
+        };
+        const url='users/focus';
+        let options={
+            method:'POST',
+            url:url,
+            data:data,
+            headers:{
+                'Authorization': `bearer ${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            }
+        };
+        axios(options).then(response =>{
+            dispatch(changeMyStateFinsished(state));
+        }).catch(err=>{
+            // dispatch(selectedTeamFailed(err.data));
+            // console.log(err);
+        });
+    }
+};
+

@@ -7,18 +7,14 @@ import classes from './ListUsers.module.scss';
 
 class ListUsers extends Component {
 
-    state={
-      selectedUser:null
-    };
-
     changeState=(data)=>{
-
         if(this.props.selectedTeam!==null)
-        this.props.onSelectedTeam(this.props.token,this.props.selectedTeam.team.id);
+        this.props.onSelectedTeam(this.props.token,this.props.selectedTeam.team.id,false);
     };
 
     componentDidMount() {
-        this.props.socket.on('change-state',this.changeState)
+        this.props.socket.on('change-state',this.changeState);
+        this.props.selectedTeam?console.log(this.props.selectedTeam.teamUsers[0]):console.log('null');
     }
 
     componentWillUnmount() {
@@ -27,22 +23,35 @@ class ListUsers extends Component {
 
     onSelectUser=(user)=>{
         this.setState({selectedUser:user});
-        this.props.onOpenChat('user',user);
+        this.props.onOpen('user',user,this.props.userId,this.props.token);
     };
 
     onSelectTeamChat=(team)=>{
-        this.props.onOpenChat('team',team);
+        this.props.onOpen('team',team,this.props.userId,this.props.token);
     };
 
-    render() {
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevProps.selectedTeam==null && this.props.selectedTeam!=null) {
+            this.props.selectedTeam.teamUsers.map((value, key) => {
+                return this.props.onCheckUnread(this.props.token, value.user.id);
+            });
+        }
+          if(prevProps.selectedTeam!=null && this.props.selectedTeam.team.id!==prevProps.selectedTeam.team.id) {
+              this.props.selectedTeam.teamUsers.map((value, key) => {
+                  return this.props.onCheckUnread(this.props.token, value.user.id);
+              });
+          }
 
+    }
+
+    render() {
         const users = this.props.selectedTeam != null ? this.props.selectedTeam.teamUsers.map((value, key) => {
             let userClass=classes.UserCard;
             let status=value.user.focu.state==='work'?'error':value.user.focu.state!=='pause'?'success':'warning';
-            if(this.state.selectedUser && this.state.selectedUser.id===value.user.id) {
-                userClass = [classes.UserCard, classes.SelectedUserCard].join(' ');
-            }
-            return <div onClick={()=>{this.onSelectUser(value.user)}} key={value.user.id} className={userClass}><Badge status={status} >
+                if(this.props.chatType==='user' && this.props.openedChat.id===value.user.id){
+                    userClass = [classes.UserCard, classes.SelectedUserCard].join(' ');
+                }
+            return <div onClick={()=>{this.onSelectUser(value.user)}} key={value.user.id} className={userClass}><Badge count={this.props.unread[value.user.id]} >
                 <Avatar shape="square" src={value.user.Avatar?URL + value.user.Avatar:DEFAULT_USER_AVATAR}/>
             </Badge><span style={{marginLeft:'10px'}}>{value.user.firstName + ' ' + value.user.lastName}</span>
             </div>
@@ -55,25 +64,25 @@ class ListUsers extends Component {
         )
     }
 }
-
-
 const mapStateToProps = state => {
     return {
         loading: state.team.loading,
+        userId:state.auth.userId,
         isAuthenticated: state.auth.token != null,
         token: state.auth.token,
-        myTeams: state.team.myTeams,
+        openedChat: state.team.openedChat,
+        chatType: state.team.chatType,
         selectedTeam: state.team.selectedTeam,
-        socket: state.auth.socket
+        socket: state.auth.socket,
+        unread:state.team.unread
     }
 };
-
 const mapDispatchToProps = dispatch => {
     return {
         onGetMyTeams: (token) => dispatch(actions.getMyTeams(token)),
-        onOpenChat:(type,selectChat)=>dispatch(actions.openChat(type,selectChat)),
-        onSelectedTeam:(token,id)=>dispatch(actions.selectedTeam(token,id))
+        onOpen:(type,select,homeId,token)=>dispatch(actions.openChat(type,select,homeId,token)),
+        onSelectedTeam:(token,id,openChat)=>dispatch(actions.selectedTeam(token,id,openChat)),
+        onCheckUnread:(token,senderid)=>dispatch(actions.getUnreadMessage(token,senderid))
     }
 };
-
 export default connect(mapStateToProps, mapDispatchToProps)(ListUsers);

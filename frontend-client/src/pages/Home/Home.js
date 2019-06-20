@@ -2,15 +2,9 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import './Home.module.scss';
 import classes from './Home.module.scss';
-import PomodoroTimer from "./PomodoroTimer/PomodoroTimer"
 import HomeMenu from './Menu/HomeMenu';
 import ListUsers from './ListUsers/ListUsers';
 import Chat from './Chat/Chat';
-//import * as actions from "../../store/actions";
-
-//import {DEFAULT_TEAM_AVATAR} from '../../axios-conf';
-
-
 class Home extends Component {
 
     render() {
@@ -24,9 +18,10 @@ class Home extends Component {
             <div className={classes.ChatBox}>
                 <Chat/>
             </div>
+            {/*
             <div className={classes.TimerPage}>
                         <PomodoroTimer/>
-            </div>
+            </div>*/}
         </div>);
     }
 }

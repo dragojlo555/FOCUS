@@ -24,11 +24,12 @@ class Layout extends Component {
         return (
             <Fragment>
                 <Toolbar
+                    user={this.props.user}
                     isAuth={this.props.isAuthenticated}
-                    drawerToogleClicked={this.sideDrawerToggleHandler}></Toolbar>
+                    drawerToogleClicked={this.sideDrawerToggleHandler}/>
                 <SideDrawer
                     isAuth={this.props.isAuthenticated}
-                    closed={this.sideDrawerClosedHandler} open={this.state.showSideDrawer}></SideDrawer>
+                    closed={this.sideDrawerClosedHandler} open={this.state.showSideDrawer}/>
                 <main className={classesLayout.Content}>
                     {this.props.children}
                 </main>
@@ -40,7 +41,8 @@ class Layout extends Component {
 
 const mapStateToProps =state =>{
     return {
-        isAuthenticated:state.auth.token !== null
+        isAuthenticated:state.auth.token !== null,
+        user:state.auth.user
     };
 };
 export default connect(mapStateToProps)(Layout);

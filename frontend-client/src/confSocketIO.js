@@ -1,6 +1,6 @@
 import socketIOClient from 'socket.io-client';
 let socket=null;
-const url='http://192.168.1.2:5000?token=';
+const url='http://localhost:5000?token=';
 
 export const init=(token)=>{
     socket=socketIOClient(url+token);

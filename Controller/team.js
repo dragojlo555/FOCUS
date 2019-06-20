@@ -18,15 +18,16 @@ exports.allUsers=(req,res)=>{
 };
 
 exports.getTeam=async (req,res)=>{
-    try {
-        const errors = validationResult(req);
-        // check middleware validation
+    const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            throw new Error(errors.array());
+            return res.status(4002).json(errors.array());
         }
+
+    try {
+        // check middleware validation
         //req.userId
         const idTeamReq = req.body.idteam;
-        let teamUsers=await UserTeam.findAll({where:{teamId:idTeamReq},include:[{model:User,include:[{model:Focus}]},{model:RoleUserTeam,where:{deletedAt:null},include:[{model:Role}]}]});
+        let teamUsers=await UserTeam.findAll({where:{teamId:idTeamReq,deletedAt:null},include:[{model:User,include:[{model:Focus}]},{model:RoleUserTeam,where:{deletedAt:null},include:[{model:Role}]}]});
         let team=await Team.findOne({where:{id:idTeamReq},include:[{model:User}]});
         let role=await UserTeam.findOne({where:{userId:req.userId,deletedAt:null},include:[{model:RoleUserTeam,where:{deletedAt:null},include:[{model:Role}]}]});
         res.status(200).json({msg:'Success',team:team,teamUsers:teamUsers,myRole:role});
@@ -63,7 +64,7 @@ exports.create = (req, res) => {
             roleId: 1
         });
     }).then(roleUserTeam => {
-        return res.status(201).json({msg: 'Success', data: {id: idTeam, name: teamNameReq}});
+        return res.status(201).json({msg: 'Success', data: {id: idTeam, name: teamNameReq},team:roleUserTeam});
     }).catch(err => {
         return res.status(500).json({msg: 'Failed', error: err});
     });
@@ -129,38 +130,40 @@ exports.getAllTeamByUser=async (req,res)=>{
 
 
 
-exports.removeMember = (req, res) => {
+exports.removeMember = async(req, res) => {
     const idUserReq = req.body.iduser;
     const idTeamReq = req.body.idteam;
-    console.log(req.userId, idTeamReq);
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json(errors.array());
     }
-    UserTeam.findOne({where: {userId: req.userId, teamId: idTeamReq}}).then(result => {
-        if (!result) {
-            const error = new Error('A user with this id could not be found.');
-            error.statusCode = 401;
-            throw error;
+
+    try {
+        let userReq = await UserTeam.findOne({where: {userId: req.userId, teamId: idTeamReq}});
+        if (!userReq) {
+            return res.status(403).json({msg: 'A user with this id could not be found.'})
         }
-        return RoleUserTeam.findOne({where: {userTeamid: result.id, roleId: 1}});
-    }).then(result => {
-            if (!result) {
-                const error = new Error('A user without roles.');
-                error.statusCode = 401;
-                throw error
+
+        let roleUserReq = await RoleUserTeam.findOne({where: {userTeamId: userReq.id, roleId: 1}});
+        if (!roleUserReq) {
+            return res.status(403).json({msg: 'A user without roles.'})
+        }
+
+        if (parseInt(idUserReq) !== parseInt(req.userId)) {
+            let update = await UserTeam.update({deletedAt: Date.now()}, {where: {userId: idUserReq, teamId: idTeamReq}});
+            if (update[0] > 0) {
+                return res.status(200).json({msg: 'Success'})
             } else {
-                return UserTeam.update({deletedAt: Date.now()}, {where: {userId: idUserReq, teamId: idTeamReq}}); //
+                return res.status(403).json({msg: 'Failed'})
             }
+        } else {
+            return res.status(403).json({msg: 'Error'})
         }
-    ).then(result => {
-        return res.status(200).json({msg: 'Success', data: result});
-    }).catch(err => {
-            if(!err.statusCode){err.statusCode=500}
-            return res.status(err.statusCode).json({msg: 'Failed', error: err.message});
-        }
-    );
+
+    }catch(err){
+        return res.status(500).json({msg:'Internal server error !!!'})
+    }
 };
 
 exports.addRole=async (req,res)=>{
@@ -192,6 +195,10 @@ exports.removeRole=async (req,res)=>{
         if(!err.statusCode)err.statusCode=500;
         return res.status(err.statusCode).json({msg:'Failed',error:err});
     }
+};
+
+exports.removeTeam=async (req,res)=>{
+
 };
 
 exports.leaveTeam=(req,res)=>{

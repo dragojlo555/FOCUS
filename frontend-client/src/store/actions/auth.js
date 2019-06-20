@@ -8,12 +8,13 @@ export const authStart = () => {
     };
 };
 
-export const authSuccess = (token, userId) => {
+export const authSuccess = (token, userId,user) => {
     const socket=init(token);
     return {
         type: actionTypes.AUTH_SUCCESS,
         token: token,
         userId: userId,
+        user:user,
         socket:socket
     }
 };
@@ -37,12 +38,20 @@ export const signUpSuccess=()=>{
     }
 };
 
+export const signUpFailed=(error)=>{
+  return{
+   type:actionTypes.SIGN_UP_FAILED,
+      error:error
+  }
+};
+
 export const logout = () => {
     close();
     localStorage.removeItem('token');
     localStorage.removeItem('expirationDate');
     localStorage.removeItem('userId');
     localStorage.removeItem('timer');
+    localStorage.removeItem('user');
     return {
         type: actionTypes.AUTH_LOGOUT
     }
@@ -80,7 +89,8 @@ export const auth = (email, password) => {
                     localStorage.setItem('expirationDate',expirationTime);
                     localStorage.setItem('token',response.data.token);
                     localStorage.setItem('userId',response.data.userId);
-                    dispatch(authSuccess(response.data.token,response.data.userId));
+                    localStorage.setItem('user',JSON.stringify(response.data.user));
+                    dispatch(authSuccess(response.data.token,response.data.userId,response.data.user));
                     dispatch(checkAuthTimeout(response.data.expireIn*3600));
                 }
             }
@@ -109,10 +119,11 @@ export const signUp=(email,password,firstname,lastname,img)=>{
             }
         };
         axios(options).then(response=>{
-            console.log(response);
+         //   console.log(response);
             dispatch(signUpSuccess());
         }).catch(error=>{
-            console.log(error.response);
+            dispatch(signUpFailed(error.response));
+         //   console.log(error.response);
             }
         )
     }
@@ -130,7 +141,9 @@ export const authCheckState = () => {
                 dispatch(logout());
             } else {
                 const userId = localStorage.getItem('userId');
-                dispatch(authSuccess(token, userId));
+                const user=localStorage.getItem('user');
+                const user2=JSON.parse(user);
+                dispatch(authSuccess(token, userId,user2));
                 dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime())/1000));
             }
         }

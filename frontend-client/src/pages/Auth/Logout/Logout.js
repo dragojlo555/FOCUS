@@ -9,6 +9,7 @@ class Logout extends Component{
 
     componentDidMount() {
         this.props.onLogout();
+        this.props.onTeamLogout();
     }
 
     render(){
@@ -24,7 +25,8 @@ const mapStateToPros=state=>{
 
 const mapDispatchToProps= dispatch=>{
     return{
-        onLogout:()=>dispatch(actions.logout())
+        onLogout:()=>dispatch(actions.logout()),
+        onTeamLogout:()=>dispatch(actions.teamAfterLogout())
     }
 };
 

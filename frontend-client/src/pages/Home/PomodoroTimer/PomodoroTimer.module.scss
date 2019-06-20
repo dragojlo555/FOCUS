@@ -6,16 +6,16 @@
   flex-shrink: 1;
   flex-grow: 1;
   justify-content: center;
-  .Duration{
-  margin: 1rem;
-
-  }
 
   .Timer{
-
-
+      cursor: pointer;
   }
 
+}
 
-
+.Duration{
+  margin: 1em;
+  .SetDuration{
+    margin: auto;
+  }
 }

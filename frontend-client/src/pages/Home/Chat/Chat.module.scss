@@ -27,8 +27,10 @@ height: 100%;
     height: calc(100% - 50px);
     background-color: #efeff9;
 
+
     .MessageField{
       height: calc(100% - 50px);
+      overflow-y: auto;
     }
 
     .InputField {

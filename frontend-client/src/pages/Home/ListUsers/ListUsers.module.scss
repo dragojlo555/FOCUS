@@ -3,14 +3,12 @@
   flex-flow: column;
   overflow: auto;
 
-
   .HeaderList{
+    margin-bottom: 10px;
     display: flex;
     height: 42px;
     width: 100%;
     cursor: pointer;
-    //background-color: #cccccc;
-    //background-color: #e6f7ff;
     border-bottom: 1px solid #cccccc;
     justify-content: center;
     align-items: center;

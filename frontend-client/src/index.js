@@ -10,13 +10,13 @@ import thunk from 'redux-thunk';
 
 import authReducer from './store/reducers/auth';
 import teamReducer from './store/reducers/team';
-import chatReducer from './store/reducers/chat';
+import pomodoroReducer from './store/reducers/pomodoro';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const rootReducer = combineReducers({
         auth: authReducer,
         team: teamReducer,
-        chat: chatReducer
+        pomodoro:pomodoroReducer
     }
 );
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));//devTool fror basic Redux

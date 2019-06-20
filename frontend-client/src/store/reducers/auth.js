@@ -5,9 +5,14 @@ const initialState = {
     token:null,
     userId:null,
     error:null,
+    user:null,
     loading:false,
     afterSignUp:false,
     socket:null
+};
+
+const signUpFailed=(state,action)=>{
+    return updateObject(state,{error:action.error});
 };
 
 const authStart=(state,action)=>{
@@ -31,6 +36,7 @@ const authSuccess= (state,action) =>{
       userId:action.userId,
       error:null,
       loading: false,
+      user:action.user,
       socket:action.socket
   })
 };
@@ -51,6 +57,7 @@ const reducer = (state= initialState,action)=>{
       case actionTypes.AUTH_LOGOUT:return authLogout(state,action);
       case actionTypes.SIGN_UP:return signUp(state,action);
       case actionTypes.AFTER_SIGN_UP:return afterSignUp(state,action);
+      case actionTypes.SIGN_UP_FAILED:return signUpFailed(state,action);
       default: return state;
   }
 };

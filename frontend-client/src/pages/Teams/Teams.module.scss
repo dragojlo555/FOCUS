@@ -13,7 +13,7 @@ $newTeamBtHoverColor: #54007f;
   .MenuTeams {
     padding: 15px 0;
     height: 100%;
-    width: 170px;
+    width: 180px;
     //background-color: white;
     background-image: linear-gradient(#011525, darkblue);
     color: white;
@@ -23,6 +23,15 @@ $newTeamBtHoverColor: #54007f;
     justify-content: flex-start;
     align-items: center;
     overflow: auto;
+    &::-webkit-scrollbar{
+      height: 4px;
+      width: 5px;
+      transition: .3s background;
+    }
+    &::-webkit-scrollbar-thumb{
+      background-color: #cccccc;
+      border-radius: 5px;
+    }
    // border-right: #E8E8E8 1px solid;
 
     .HeaderName{
@@ -34,7 +43,7 @@ $newTeamBtHoverColor: #54007f;
     .NewTeamButton {
       justify-content: center;
       width: 75%;
-      margin-top: 20px;
+      margin-top: 40px;
       margin-bottom: 20px;
       cursor: pointer;
       background-color: $newTeamBtColor;
@@ -56,10 +65,10 @@ $newTeamBtHoverColor: #54007f;
 
   @media (min-width: 700px) {
     .ContentTeams {
-      width: calc(100% - 170px);
+      width: calc(100% - 180px);
     }
     .MenuTeams{
-      width: 170px;
+      width: 180px;
     }
   }
 

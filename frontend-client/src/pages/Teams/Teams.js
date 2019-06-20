@@ -10,7 +10,6 @@ import HomeMenu from '../Home/Menu/HomeMenu';
 class Teams extends Component {
 
     state = {
-        teams: [],
         creatingTeam: false,
         selectedTeamId: null
     };
@@ -43,7 +42,6 @@ class Teams extends Component {
                             <Button type="primary" size='large' onClick={this.createTeamHandler}>New Team</Button>
                         </div>
                     </div>
-
                     <div className={classes.ContentTeams}>
                         {info}
                     </div>

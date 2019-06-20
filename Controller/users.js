@@ -19,7 +19,7 @@ exports.allUser=(req,res)=>{
     })
 };
 
-exports.createUser =(req, res) => {
+exports.createUser = async (req, res) => {
     const pass = req.body.password;
     const emailReq = req.body.email;
     const firstNameReq = req.body.firstname;
@@ -31,26 +31,33 @@ exports.createUser =(req, res) => {
     if (!errors.isEmpty()) {
         return res.status(422).json(errors.array());
     }
+    try {
+        let hash = await bcrypt.hash(pass, 10);
+        let NewUser =await User.create({
+            lastName: lastNameReq,
+            password: hash,
+            mail: emailReq,
+            firstName: firstNameReq,
+            Avatar: avatarReq
+        });
 
-    bcrypt.hash(pass, 10).then(hashPas => {
-            return User.create({
-                lastName: lastNameReq,
-                password: hashPas,
-                mail: emailReq,
-                firstName: firstNameReq,
-                Avatar:avatarReq
-            }).then(result => {
-                let user=Focus.create({
-                    state: req.body.state,
-                    userId: req.userId
-                });
-                return res.status(201).json({message: 'User created !!!', userId: result});
-            }).catch(err => {
-                    return res.status(500).json({msg: 'Internal server error !!!'});
-                }
-            )
+
+        if (NewUser) {
+            let focus =await Focus.create({
+                state: 'work',
+                userId: NewUser.id
+            });
         }
-    );
+
+        if (NewUser) {
+            return res.status(201).json({message: 'User created !!!', user:NewUser});
+        } else {
+            return res.status(500).json({msg: 'Internal server error !!!'});
+        }
+    }catch(err){
+        console.log(err);
+        return res.status(503).json({msg:'Error !!!!!!!!!!'});
+    }
 };
 
 exports.loginUser = async (req, res) => {
@@ -58,6 +65,7 @@ exports.loginUser = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(422).json({err:errors.array(),mail:req.body});
     }
+
     let user=await User.findOne({where: {mail: req.body.email}});
     if(user){
         const success=await bcrypt.compare(req.body.password,user.password);
@@ -70,7 +78,7 @@ exports.loginUser = async (req, res) => {
                 'secret',
                 {expiresIn: '1h'}
             );
-            return res.status(200).json({token: token, userId: user.id.toString(),expireIn: '1'});
+            return res.status(200).json({user:user,token: token, userId: user.id.toString(),expireIn: '1'});
         }else {
 
             return res.status(401).json({msg:'Wrong password !!!',inputField:'password'});}
