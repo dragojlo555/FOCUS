@@ -18,7 +18,10 @@ const sideDrawer = (props) => {
                 </div>
                 <nav>
                     <NavigationItems
+                        drawer={true}
+                        logout={props.logout}
                         isAuthenticated={props.isAuth}
+                        user={props.user}
                     >
                     </NavigationItems>
                 </nav>

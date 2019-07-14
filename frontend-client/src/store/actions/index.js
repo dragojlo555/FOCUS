@@ -2,7 +2,9 @@ export {auth,
     logout,
     authCheckState,
     signUp,
-    afterSignUp
+    afterSignUp,
+    editProfile,
+    editProfileAvatar
 } from './auth';
 
 export{
@@ -10,13 +12,14 @@ export{
     createTeam,
     createTeamEnd,
     selectedTeam,
-    teamAfterLogout,
-
     changeMyState,
     openChat,
     sendMessage,
     receiveMessage,
-    getUnreadMessage
+    getUnreadMessage,
+    setSeenMessage,
+    getUnreadTeamMessage,
+    setSeenTeamMessage
 }from './team';
 
 export{

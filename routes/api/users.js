@@ -36,8 +36,10 @@ router.get('/info',isauth,userController.info);
 router.post('/focus',isauth,userController.changeMyState);
 
 
-router.post('/changeProfile', isauth,[upload.single('image'),body('firstname').trim().not().isEmpty(),body('lastname').trim().not().isEmpty(),
-    body('email').isEmail().withMessage('Please enter valid email!!!')],userController.changeProfile);
+router.post('/changeprofileavatar', isauth,[upload.single('image'),body('firstname').trim().not().isEmpty(),body('lastname').trim().not().isEmpty(),
+    ],userController.changeProfileFull);
 
+router.post('/changeprofile', isauth,[body('firstname').trim().not().isEmpty(),body('lastname').trim().not().isEmpty(),
+],userController.changeProfile);
 
 module.exports = router;

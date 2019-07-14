@@ -41,6 +41,14 @@ const authSuccess= (state,action) =>{
   })
 };
 
+const editProfileSuccess=(state,action)=>{
+return updateObject(state,{user:action.user});
+};
+/*
+const editProfileFailed=(state,action)=>{
+
+};*/
+
 const authLogout =(state,action)=>{
   return updateObject(state,{token:null,userId:null,socket:null});
 };
@@ -58,6 +66,7 @@ const reducer = (state= initialState,action)=>{
       case actionTypes.SIGN_UP:return signUp(state,action);
       case actionTypes.AFTER_SIGN_UP:return afterSignUp(state,action);
       case actionTypes.SIGN_UP_FAILED:return signUpFailed(state,action);
+      case actionTypes.EDIT_PROFILE_SUCCESS:return editProfileSuccess(state,action);
       default: return state;
   }
 };

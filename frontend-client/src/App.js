@@ -11,6 +11,9 @@ import Logout from './pages/Auth/Logout/Logout';
 import Teams from './pages/Teams/Teams';
 import 'antd/dist/antd.css';
 
+
+
+
 class App extends Component {
 
     componentDidMount() {
@@ -29,7 +32,8 @@ class App extends Component {
             routes = (
                     <Switch>
                         <Route path='/logout' component={Logout}/>
-                        <Route path='/teams' component={Teams}/>
+                        <Route path='/teams' component={Teams}>
+                        </Route>
                         <Route path='/' exact component={Home}/>
                         <Redirect to='/'/>
                     </Switch>

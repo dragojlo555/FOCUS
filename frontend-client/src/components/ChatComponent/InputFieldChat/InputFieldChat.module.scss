@@ -1,0 +1,36 @@
+.InputField {
+  display: flex;
+  height: 58px;
+  background-color: white;
+  border-bottom: 1px #cccccc solid;
+  .InputTextArea{
+    padding: 10px;
+    border: 0;
+    width: 80%;
+    outline:none;
+    resize:none;
+    overflow: paged-y;
+
+    &::-webkit-scrollbar{
+      height: 4px;
+      width: 0;
+    }
+
+  }
+  .SendIcon{
+    display: flex;
+    width: 20%;
+    text-align: center;
+    justify-content: center;
+    align-self: center;
+    cursor: pointer;
+    .IconSvg{
+      font-size: 28px;
+      &:hover{
+        font-size: 32px;
+        color: #8cfe56;
+      }
+    }
+  }
+
+}

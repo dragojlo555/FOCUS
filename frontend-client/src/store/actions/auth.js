@@ -2,6 +2,8 @@ import * as actionTypes from './actionTypes';
 import axios from '../../axios-conf';
 import {init,close} from '../../confSocketIO';
 
+
+
 export const authStart = () => {
     return {
         type: actionTypes.AUTH_START
@@ -9,7 +11,7 @@ export const authStart = () => {
 };
 
 export const authSuccess = (token, userId,user) => {
-    const socket=init(token);
+    const socket=init(token,userId);
     return {
         type: actionTypes.AUTH_SUCCESS,
         token: token,
@@ -50,11 +52,23 @@ export const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('expirationDate');
     localStorage.removeItem('userId');
-    localStorage.removeItem('timer');
-    localStorage.removeItem('user');
+
     return {
-        type: actionTypes.AUTH_LOGOUT
+        type:  actionTypes.AUTH_LOGOUT
     }
+};
+
+export const editProfileSuccess=(user)=>{
+  return {
+      type:actionTypes.EDIT_PROFILE_SUCCESS,
+      user:user
+  }
+};
+
+export const resetPomodoro=()=>{
+  return{
+      type:actionTypes.RESET_POMODORO
+  }
 };
 
 export const checkAuthTimeout = (expireTime) => {
@@ -89,7 +103,7 @@ export const auth = (email, password) => {
                     localStorage.setItem('expirationDate',expirationTime);
                     localStorage.setItem('token',response.data.token);
                     localStorage.setItem('userId',response.data.userId);
-                    localStorage.setItem('user',JSON.stringify(response.data.user));
+                    dispatch(resetPomodoro());
                     dispatch(authSuccess(response.data.token,response.data.userId,response.data.user));
                     dispatch(checkAuthTimeout(response.data.expireIn*3600));
                 }
@@ -123,12 +137,74 @@ export const signUp=(email,password,firstname,lastname,img)=>{
             dispatch(signUpSuccess());
         }).catch(error=>{
             dispatch(signUpFailed(error.response));
-         //   console.log(error.response);
+            console.log(error.response.data);
             }
-        )
+        );
     }
 };
 
+export const editProfileAvatar=(token,firstname,lastname,avatar)=>{
+    return dispatch=>{
+        const url='users/changeprofileavatar';
+        const formData=new FormData();
+        formData.append('firstname',firstname);
+        formData.append('lastname',lastname);
+        formData.append('image',avatar);
+
+        let options={
+            method:'POST',
+            url:url,
+            data:formData,
+            headers: {
+                'Authorization': `bearer ${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            }
+        };
+        axios(options).then(response=>{
+            //   console.log(response);
+        //    console.log(response.data);
+            dispatch(editProfileSuccess(response.data.user));
+
+        }).catch(error=>{
+                //  dispatch(signUpFailed(error.response));
+                console.log(error.response.data);
+            }
+        )
+
+    }
+};
+export const editProfile=(token,firstname,lastname)=>{
+    return dispatch=>{
+        const url='users/changeprofile';
+        const data={
+            firstname:firstname,
+            lastname:lastname,
+        };
+
+        let options={
+            method:'POST',
+            url:url,
+            data:data,
+            headers: {
+                'Authorization': `bearer ${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            }
+        };
+        axios(options).then(response=>{
+            //   console.log(response);
+           // console.log(response.data.user);
+            dispatch(editProfileSuccess(response.data.user));
+
+        }).catch(error=>{
+                //  dispatch(signUpFailed(error.response));
+                console.log(error.response.data);
+            }
+        )
+
+    }
+};
 
 export const authCheckState = () => {
     return dispatch => {
@@ -140,11 +216,24 @@ export const authCheckState = () => {
             if (expirationDate <= new Date()) {
                 dispatch(logout());
             } else {
-                const userId = localStorage.getItem('userId');
-                const user=localStorage.getItem('user');
-                const user2=JSON.parse(user);
-                dispatch(authSuccess(token, userId,user2));
-                dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime())/1000));
+                const url='users/info';
+                let options={
+                    method:'GET',
+                    url:url,
+                    headers: {
+                        'Authorization': `bearer ${token}`,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json;charset=UTF-8'
+                    }
+                };
+                axios(options).then(response=>{
+                    dispatch(authSuccess(token, response.data.user.id,response.data.user));
+                    dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime())/1000));
+
+                }).catch(error=>{
+                    dispatch(logout());
+
+                });
             }
         }
     };

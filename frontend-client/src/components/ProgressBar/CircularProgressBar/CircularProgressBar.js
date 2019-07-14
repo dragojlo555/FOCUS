@@ -55,9 +55,9 @@ const CircularProgressBar = (props) => {
                 <div className={classes.InnerText}>
                     <strong>{props.session.current}  #{props.session.number}</strong>
                     <p className={classes.TimeText}>{minute}:{sec}</p>
-                    <Icon onClick={props.start} title='start' type="right-square" theme="twoTone" style={{fontSize:'28px'}} />
-                    <Icon onClick={props.pause} type="pause-circle" theme="twoTone"  style={{fontSize:'28px'}}/>
-                    <Icon onClick={props.control} title='control' type="control" theme="twoTone"  style={{fontSize:'28px'}} />
+                    <Icon className={classes.TimerIcon} onClick={props.start} title='start' type="caret-right"  style={{fontSize:'28px'}} />
+                    <Icon className={classes.TimerIcon} onClick={props.pause} type="pause"   style={{fontSize:'28px'}}/>
+                    <Icon className={classes.TimerIcon} onClick={props.control} title='control' type="setting"  style={{fontSize:'28px'}} />
                 </div>
             </CustomCircular>
         </div>

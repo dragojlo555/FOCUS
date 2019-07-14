@@ -21,4 +21,5 @@ const Focus=sequelize.define('focus',{
 
 Focus.belongsTo(User,{foreignKey:'userId',targetKey:'id'});
 User.hasOne(Focus);
+
 module.exports=Focus;

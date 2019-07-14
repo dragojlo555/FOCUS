@@ -5,25 +5,26 @@ import SetDuration from '../../../components/TimerComponents/SetDuration/SetDura
 import CommandButton from "../../../components/TimerComponents/CommandButton/CommandButton";
 import {connect} from 'react-redux';
 import * as actions from "../../../store/actions";
-import {Modal,Button} from 'antd';
+import {Modal,Button,Slider} from 'antd';
 
 class PomodoroTimer extends Component {
     state = {
         visible:false,
-        duration: {
-            work: 10,
-            pause: 5,
-            break: 30
-        },
-        session: {
-            current: 'work',
-            number: 1,
-            startTime: null,
-            endTime: null,
-            time: 0,
-            timer: null
-        }
     };
+
+    componentDidMount() {
+        if(this.props.session.time>0)
+       this.startSession();
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.props.session.timer);
+        const updatedSession = {
+            ...this.props.session,
+            timer:null};
+        this.props.onSetSession(updatedSession);
+
+    }
 
     changeDurationHandler=(type,duration)=>{
         let updatedBreak = this.props.duration[type];
@@ -37,26 +38,20 @@ class PomodoroTimer extends Component {
     };
 
     pauseSession = () => {
-        let timer = this.props.session.timer;
-        console.log(timer);
-        clearInterval(timer);console.log(timer);
-        if (timer != null) {
-            clearInterval(timer);
-        }
+        clearInterval(this.props.session.timer);
+        this.props.onChangeMyState(this.props.token,this.props.session.current);
     };
 
     resetSession = () => {
-       let timer=this.props.session.timer;
-       clearInterval(timer);
+       clearInterval(this.props.session.timer);
         const updatedSession = {
             ...this.props.session,
             time: 0,
             startTime: null,
             endTime: null,
-            number: 1,
-            current: 'work'
         };
         this.props.onSetSession(updatedSession);
+        this.props.onChangeMyState(this.props.token,'work');
     };
 
      info=(state,msg,method)=>{
@@ -74,7 +69,12 @@ class PomodoroTimer extends Component {
     startSession = () => {
         let timerOld=this.props.session.timer;
         clearInterval(timerOld);
+        const updatedSession = {
+            ...this.props.session,
+        timer:null};
+        this.props.onSetSession(updatedSession);
         this.props.onChangeMyState(this.props.token,this.props.session.current);
+
         let curSession = this.props.session.current;
         let maxDur = this.props.duration[curSession] * 60;
         let updatedTime = this.props.session.time;
@@ -86,11 +86,12 @@ class PomodoroTimer extends Component {
              startTime=new Date();
             endTime=new Date(new Date().getTime() + (this.props.duration[curSession] * 60*1000));
         }
+
         const timer = setInterval(() => {
             maxDur = this.props.duration[curSession] * 60;
             updatedTime = updatedTime + 1;
-            if (updatedTime === maxDur) {
-                clearInterval(timer);
+            if (updatedTime >= maxDur) {
+                clearInterval(this.props.session.timer);
                 updatedTime = 0;
                 if (curSession === 'work') {
                     curSession = 'pause';
@@ -101,7 +102,6 @@ class PomodoroTimer extends Component {
                 } else {
                     curSession = 'work';
                     this.info('break','Go to work!!!',this.startSession);
-                    clearInterval(this.props.session.timer);
                     if (number === 3) {
                         number = 1;
                     } else {
@@ -109,20 +109,19 @@ class PomodoroTimer extends Component {
                     }
                 }
             }
-
-            if(timer!==null && timer!==this.props.session.timer){
+            if(this.props.session.timer!==null && timer!==this.props.session.timer){
                 clearInterval(this.props.session.timer);
             }
-            const updatedSession = {
-                ...this.props.session,
-                time: updatedTime,
-                timer: timer,
-                current: curSession,
-                number: number,
-                startTime:startTime,
-                endTime: endTime
-            };
-            this.props.onSetSession(updatedSession);
+                const updatedSession = {
+                    ...this.props.session,
+                    time: updatedTime,
+                    timer: timer,
+                    current: curSession,
+                    number: number,
+                    startTime:startTime,
+                    endTime: endTime
+                };
+                this.props.onSetSession(updatedSession);
         }, 1000);
     };
 
@@ -144,7 +143,46 @@ class PomodoroTimer extends Component {
         });
     };
 
+
+    handleChangeSlider=value=>{
+        console.log(value);
+        let state=value===0?'work':value===50?'pause':'break';
+        clearInterval(this.props.session.timer);
+        const updatedSession = {
+            ...this.props.session,
+            time: 0,
+            timer: null,
+            current: state,
+            number: 1,
+        };
+        this.props.onSetSession(updatedSession);
+        this.props.onChangeMyState(this.props.token,state);
+    };
+
     render() {
+
+        const marks = {
+            0:{
+                style: {
+                    color: '#f50',
+                },
+                label: <strong>work</strong>,
+            },
+            50:{
+                style: {
+                    color: '#ffd400',
+                },
+                label: <strong>pause</strong>,
+            },
+            100: {
+                style: {
+                    color: '#05ff53',
+                },
+                label: <strong>break</strong>,
+            },
+        };
+
+
         return (
             <div className={classes.PomodoroTimer} >
                 <div className={classes.Timer} >
@@ -163,12 +201,18 @@ class PomodoroTimer extends Component {
                 >
                     <div className={classes.Duration}>
                         <SetDuration clasName={classes.SetDuration} incDuration={()=>{this.changeDurationHandler('work',1)}} decDuration={()=>{this.changeDurationHandler('work',-1)}}
-                                     label={'Work duration'} time={this.props.duration.work}/>
+                                     label={'Work duration'} time={this.props.session.time} duration={this.props.duration.work}/>
                         <SetDuration clasName={classes.SetDuration} incDuration={()=>{this.changeDurationHandler('pause',1)}} decDuration={()=>{this.changeDurationHandler('pause',-1)}}
-                                     label={'Pause duration'} time={this.props.duration.pause}/>
+                                     label={'Pause duration'} time={this.props.session.time} duration={this.props.duration.pause}/>
                         <SetDuration clasName={classes.SetDuration} incDuration={()=>{this.changeDurationHandler('break',1)}} decDuration={()=>{this.changeDurationHandler('break',-1)}}
-                                     label={'Break duration'} time={this.props.duration.break}/>
-                        <CommandButton start={this.startSession} reset={this.resetSession} pause={this.pauseSession}/>
+                                     label={'Break duration'} time={this.props.session.time} duration={this.props.duration.break}/>
+                        <div className={classes.Slider}>
+                            <Slider tipFormatter={null} className={classes.SliderComponent} onChange={this.handleChangeSlider} included={false} step={null} marks={marks}
+                                    defaultValue={this.props.session.current==='work'?0:this.props.session.current==='break'?100:50} />
+                        </div>
+                        <div className={classes.Command}>
+                        <CommandButton  start={this.startSession} reset={this.resetSession} pause={this.pauseSession}/>
+                        </div>
                     </div>
                 </Modal> :null}
             </div>

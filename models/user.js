@@ -24,9 +24,14 @@ const User = sequelize.define('user', {
         allowNull: false,
         unique: true
     },
-    Avatar: {
+    avatar: {
         type: Sequelize.STRING,
         allowNull: true
+    },
+    phone:{
+      type:Sequelize.STRING,
+      allowNull:true
     }
+
 });
 module.exports = User;

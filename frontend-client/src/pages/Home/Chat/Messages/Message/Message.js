@@ -9,19 +9,21 @@ class Message extends Component {
     render() {
         return (
             <div className={classes.Message}>
-                {this.props.home ? <div title={this.props.user.firstName+' '+this.props.user.lastName} className={classes.MessageAvatar}><Avatar  size='large' src={this.props.user.Avatar ? URL + this.props.user.Avatar : DEFAULT_USER_AVATAR}/>
+                {this.props.home ? <div title={this.props.user.firstName+' '+this.props.user.lastName} className={classes.MessageAvatar}><Avatar  size='large' src={this.props.user.avatar ? URL + this.props.user.avatar : DEFAULT_USER_AVATAR}/>
                 </div> : null}
                 <div
                     className={this.props.home ? classes.MessageContent : [classes.MessageContent, classes.MessageAway].join(' ')}>
-                    <div
-                        className={this.props.home ? classes.MessageText : [classes.MessageText, classes.TextAway].join(' ')}>{this.props.content}</div>
+                    <span
+                        className={this.props.home ? classes.MessageText : [classes.MessageText, classes.TextAway].join(' ')}>{this.props.content}</span>
                     <div
                         className={this.props.home ? classes.MessageTime : [classes.MessageTime, classes.TimeAway].join(' ')}>
                         <Moment style={{fontSize:'80%'}} fromNow>{this.props.time}</Moment>
-                        {!this.props.home ? null: <><Icon type='check' style={{color: 'blue'}}/><Icon type='check' style={{color: 'blue'}}/></>}</div>
+                        {this.props.home?this.props.seen?<><Icon type='check' style={{color: 'blue'}}/><Icon type='check' style={{color: 'blue'}}/></>:
+                            <><Icon type='check' style={{color: 'gray'}}/><Icon type='check' style={{color: 'gray'}}/></>:null}
+                    </div>
                 </div>
                 {!this.props.home ? <div className={classes.MessageAvatar} title={this.props.user.firstName+' '+this.props.user.lastName}>
-                    <Avatar size='large' src={this.props.user.Avatar ? URL + this.props.user.Avatar : DEFAULT_USER_AVATAR}/>
+                    <Avatar  size='large' src={this.props.user.avatar ? URL + this.props.user.avatar : DEFAULT_USER_AVATAR}/>
                 </div> : null}
             </div>
         )

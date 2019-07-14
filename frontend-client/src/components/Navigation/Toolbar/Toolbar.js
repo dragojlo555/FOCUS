@@ -14,6 +14,7 @@ const toolbar=(props)=>(
         <span style={{color:'white',fontSize:'2em',fontWeight:'bold'}}>Focus</span>
         <nav className={classes.DesktopOnly}>
             <Navigation
+                logout={props.logout}
                 user={props.user}
                 isAuthenticated={props.isAuth}
             />

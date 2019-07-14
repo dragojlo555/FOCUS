@@ -12,7 +12,8 @@ router.post('/adduser',[body('email').isEmail().withMessage('Please enter valid 
 router.delete('/user',[body('iduser').isNumeric(),body('idteam').isNumeric()],isauth,teamController.removeMember);
 router.get('/users',[body('idteam').isNumeric()],isauth,teamController.allUsers);
 router.post('/',[body('idteam').isNumeric()],isauth,teamController.getTeam);
-router.post('/role',isauth,[body('idteamuser').isNumeric(),body('idrole').isNumeric()],teamController.addRole);
-router.delete('/role',isauth,[body('idteamuser').isNumeric(),body('idrole').isNumeric()],teamController.removeRole);
+//router.post('/role',isauth,[body('idteamuser').isNumeric(),body('idrole').isNumeric()],teamController.addRole);
+router.put('/role',isauth,[body('idteamuser').isNumeric(),body('idrole').isNumeric(),body('oldidrole').isNumeric()],teamController.changeRole);
+//router.delete('/role',isauth,[body('idteamuser').isNumeric(),body('idrole').isNumeric()],teamController.removeRole);
 router.post('/myteams',isauth,teamController.getAllTeamByUser);
 module.exports= router;

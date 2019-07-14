@@ -6,10 +6,12 @@ const chatController = require('../../Controller/chat');
 const isauth=require('../../middleware/is-auth');
 
 
-router.post('/all',isauth,chatController.getMessagesByUser);
-router.post('/allteam',isauth,chatController.getMessageByTeam);
+router.get('/user',isauth,[query('senderid').isNumeric(),query('receivedid').isNumeric()],chatController.getMessagesByUser);
+router.get('/team',isauth,[query('senderid').isNumeric()],chatController.getMessageByTeam);
 router.post('/user/unread',isauth,chatController.getUnreadMessageByUser);
-router.post('/user/seen',isauth,chatController.setSeenOnMessagessUser);
+router.post('/user/seen',isauth,chatController.setSeenOnMessagesUser);
+router.post('/team/seen',isauth,chatController.setTimeLastSeenMessage);
+router.get('/team/seen',isauth,chatController.getTeamUnreadCount);
 
 
 module.exports=router;

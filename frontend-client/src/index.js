@@ -12,14 +12,28 @@ import authReducer from './store/reducers/auth';
 import teamReducer from './store/reducers/team';
 import pomodoroReducer from './store/reducers/pomodoro';
 
+
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const rootReducer = combineReducers({
+
+const appReducer = combineReducers({
         auth: authReducer,
         team: teamReducer,
         pomodoro:pomodoroReducer
     }
 );
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));//devTool fror basic Redux
+/*
+const rootReducer = (state, action) => {
+    console.log(action.type);
+    if (action.type === actionTypes.AUTH_LOGOUT) {
+        console.log("Drago");
+       pomodoroReducer(undefined,action);
+       //Moze se izkombinovati da sa root reducerom tako da mi pravimo switch i odlucimo na koji ide
+       //ali u tom slucaju imamo dva switch-a :(
+    }
+    return appReducer(state, action)
+};*/
+
+const store = createStore(appReducer, composeEnhancers(applyMiddleware(thunk)));//devTool fror basic Redux
 
 const app = (
     <Provider store={store}>

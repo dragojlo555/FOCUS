@@ -38,7 +38,7 @@ exports.createUser = async (req, res) => {
             password: hash,
             mail: emailReq,
             firstName: firstNameReq,
-            Avatar: avatarReq
+            avatar: avatarReq
         });
 
 
@@ -98,7 +98,7 @@ exports.info =async (req, res) =>{
 };
 
 
-exports.changeProfile = async(req, res) => {
+exports.changeProfileFull = async(req, res) => {
     const firstNameReq = req.body.firstname;
     const lastNameReq = req.body.lastname;
     const avatarReq= req.file.path;
@@ -112,11 +112,11 @@ exports.changeProfile = async(req, res) => {
         let result = await User.update({
             firstName: firstNameReq,
             lastName: lastNameReq,
-            Avatar: avatarReq
+            avatar: avatarReq
         }, {where: {id: req.userId}});
         if (result[0] !== 0) {
             updatedUser = await User.findOne({where: {id: req.userId}});
-            res.status(200).json({msg: 'Success', updated: updatedUser})
+            res.status(200).json({msg: 'Success', user: updatedUser})
         }else{
             const error = new Error('Error update!!!');
             error.statusCode = 401;
@@ -128,11 +128,68 @@ exports.changeProfile = async(req, res) => {
         }
 };
 
+exports.changeProfile = async(req, res) => {
+    const firstNameReq = req.body.firstname;
+    const lastNameReq = req.body.lastname;
+    let updatedUser;
+    const errors = validationResult(req);
+
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json(errors.array());
+    }
+    try {
+        let result = await User.update({
+            firstName: firstNameReq,
+            lastName: lastNameReq,
+        }, {where: {id: req.userId}});
+        if (result[0] !== 0) {
+            updatedUser = await User.findOne({where: {id: req.userId}});
+            res.status(200).json({msg: 'Success', user: updatedUser})
+        }else{
+            const error = new Error('Error update!!!');
+            error.statusCode = 401;
+            throw error;
+        }
+    }catch(err){
+        if(!err.statusCode)err.statusCode=500;
+        return res.status(err.statusCode).json({msg: 'Failed', error: err});
+    }
+};
+
+exports.SocketDisconnect=async(userId)=>{
+    try {
+        await Focus.update({
+            state: 'offline',
+            userId: userId,
+            updatedAt:Date.now()
+        }, {where: {userId:userId}});
+        let update=await User.findOne({where:{id:userId},include:{model:Focus}});
+        socketIO.getIO().sockets.emit('change-state',update);
+    }catch (err) {
+    console.log(err);
+    }
+};
+exports.SocketConnected=async(userId)=>{
+    try {
+        await Focus.update({
+            state: 'online',
+            userId: userId,
+            updatedAt:Date.now()
+        }, {where: {userId:userId}});
+        let update=await User.findOne({where:{id:userId},include:{model:Focus}});
+        socketIO.getIO().sockets.emit('change-state',update);
+    }catch (err) {
+        console.log(err);
+    }
+};
+
 exports.changeMyState=async(req,res)=>{
     try {
         let result = await Focus.update({
             state: req.body.state,
-            userId: req.userId
+            userId: req.userId,
+            updatedAt:Date.now()
         }, {where: {userId: req.userId}});
         let update=await User.findOne({where:{id:req.userId},include:{model:Focus}});
         socketIO.getIO().sockets.emit('change-state',update);

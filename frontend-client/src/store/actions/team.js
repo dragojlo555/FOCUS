@@ -108,12 +108,13 @@ export const selectedTeamSuccess=(data)=>{
   }
 };
 
+/*
 export const teamAfterLogout=()=>{
     return{
         type:actionTypes.TEAM_AFTER_LOGOUT
     }
 }
-;
+;*/
 
 export const selectedTeamStart=()=>{
     return{
@@ -150,7 +151,6 @@ export const getMyTeams = (token) => {
     }
 };
 
-
 export const openedChat=(typeChat,select,messages)=>{
  const   sortMessages=messages.slice().sort((a,b)=>a.id-b.id);
     return{
@@ -168,11 +168,11 @@ export const openChat=(type,select,homeId,token)=>{
             receivedid:homeId,
             senderid:select.id
         };
-        let url=type==='user'?'chat/all':'chat/allteam';
+        let url=type==='user'?'chat/user':'chat/team';
         let options={
-            method:'POST',
+            method:'GET',
             url:url,
-            data:data,
+            params:data,
             headers:{
                 'Authorization': `bearer ${token}`,
                 'Accept': 'application/json',
@@ -211,11 +211,18 @@ export const receiveMessage=(message)=>{
     }
 };
 
-export const getUnreadMessageUserSucces=(data)=>{
+export const getUnreadMessageUserSuccess=(data)=>{
   return{
       type:actionTypes.CHECK_UNREAD_MESSAGE,
       data:data
   }
+};
+
+export const setSeenMessageUserSuccess=(senderId)=>{
+    return{
+     type:actionTypes.SET_SEEN_USER_MESSAGE,
+        senderid:senderId
+    }
 };
 
 
@@ -236,14 +243,102 @@ export const getUnreadMessage=(token,senderid)=>{
             }
         };
         axios(options).then(response =>{
-            dispatch(getUnreadMessageUserSucces(response.data));
+            dispatch(getUnreadMessageUserSuccess(response.data));
         }).catch(err=>{
             // dispatch(selectedTeamFailed(err.data));
              console.log(err);
         });
     }
+};
+
+export const getUnreadTeamMessageSuccess=(data)=>{
+  return{
+        type:actionTypes.CHECK_UNREAD_TEAM_MESSAGE,
+        data:data
+  }
+};
+
+
+export const getUnreadTeamMessage=(token,teamid)=>{
+        return dispatch => {
+            const data = {
+                teamid: teamid
+            };
+            const url = 'chat/team/seen';
+            let options = {
+                params: data,
+                method: 'GET',
+                url: url,
+                headers: {
+                    'Authorization': `bearer ${token}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json;charset=UTF-8'
+                }
+            };
+            axios(options).then(response => {
+               dispatch(getUnreadTeamMessageSuccess(response.data));
+            }).catch(err => {
+                // dispatch(selectedTeamFailed(err.data));
+                console.log('Unread error',err.response);
+            });
+        }
+};
+
+export const setSeenTeamMessage=(token,teamid)=>{
+    return dispatch=> {
+        const data = {
+            teamid: teamid
+        };
+        const url = 'chat/team/seen';
+        let options = {
+            method: 'POST',
+            url: url,
+            data: data,
+            headers: {
+                'Authorization': `bearer ${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            }
+        };
+        axios(options).then(response => {
+            //  dispatch(getUnreadMessageUserSuccess(response.data));
+            //  console.log(response.data);
+        }).catch(err => {
+            // dispatch(selectedTeamFailed(err.data));
+            console.log(err);
+        });
+    }
+
 
 };
+
+
+
+export const setSeenMessage=(token,senderid)=>{
+    return dispatch=>{
+        const data={
+            senderid:senderid
+        };
+        const url='chat/user/seen';
+        let options={
+            method:'POST',
+            url:url,
+            data:data,
+            headers:{
+                'Authorization': `bearer ${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            }
+        };
+        axios(options).then(response =>{
+            dispatch(setSeenMessageUserSuccess(response.data.senderid));
+        }).catch(err=>{
+            // dispatch(selectedTeamFailed(err.data));
+             console.log(err);
+        });
+    }
+};
+
 
 
 

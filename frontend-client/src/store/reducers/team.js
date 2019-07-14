@@ -11,15 +11,20 @@ const initialState = {
     openedChat: null,
     messages: null,
     myState: 'offline',
-    unread:[]
+    unread: [],
+    teamUnread:[]
 };
 
-const getUpdateUnreadMessage=(state,action)=>{
-  //  console.log(action.data);
-    let updateUnread=state.unread.slice();
-    updateUnread[action.data.senderId]=action.data.number;
-    console.log(state.unread[5]);
-    return updateObject(state,{unread:updateUnread});
+const getUpdateUnreadMessage = (state, action) => {
+    let updateUnread = state.unread.slice();
+    updateUnread[action.data.senderId] = action.data.number;
+    return updateObject(state, {unread: updateUnread});
+};
+
+const getUpdateTeamUnreadMessage = (state, action) => {
+    let updateUnread = state.teamUnread.slice();
+    updateUnread[action.data.teamid] = action.data.number;
+    return updateObject(state, {teamUnread: updateUnread});
 };
 
 
@@ -136,6 +141,12 @@ const changeMyState = (state, action) => {
     })
 };
 
+const setSeenOnMessage = (state, action) => {
+    let updateUnread = state.unread.slice();
+    updateUnread[action.senderid] =0;
+    return updateObject(state, {unread:updateUnread});
+};
+
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
@@ -165,9 +176,14 @@ const reducer = (state = initialState, action) => {
             return sendMessage(state, action);
         case actionTypes.RECEIVE_MESSAGE:
             return receiveMessage(state, action);
-        case actionTypes.TEAM_AFTER_LOGOUT:
+        case actionTypes.AUTH_LOGOUT:
             return onLogout(state, action);
-        case actionTypes.CHECK_UNREAD_MESSAGE:return getUpdateUnreadMessage(state,action);
+        case actionTypes.CHECK_UNREAD_MESSAGE:
+            return getUpdateUnreadMessage(state, action);
+        case actionTypes.SET_SEEN_USER_MESSAGE:
+            return setSeenOnMessage(state, action);
+        case actionTypes.CHECK_UNREAD_TEAM_MESSAGE:
+            return getUpdateTeamUnreadMessage(state,action);
         default:
             return state;
     }

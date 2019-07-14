@@ -8,8 +8,8 @@ const CommandButton=(props)=>{
    return(
        <div className={classes.CommandButton}>
            <Button type="primary" onClick={props.start}>Start</Button>
-           <Button type="primary" onClick={props.start}>Pause</Button>
-           <Button type="primary" onClick={props.start}>Reset</Button>
+           <Button type="primary" onClick={props.pause}>Pause</Button>
+           <Button type="primary" onClick={props.reset}>Reset</Button>
        </div>
 
    ) ;

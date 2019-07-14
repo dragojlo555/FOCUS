@@ -14,8 +14,21 @@
 }
 
 .Duration{
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  .Slider{
+    width: 60%;
+    text-align: center;
+    .SliderComponent{
+    }
+  }
+
   margin: 1em;
   .SetDuration{
     margin: auto;
+  }
+  .Command{
+  width: 80%;
   }
 }

@@ -25,7 +25,7 @@ class Messages extends Component{
                    home=false;
                    user=value.user;
                }}
-              return <Message key={value.id} content={value.content} user={user} home={home} time={value.createdAt} contentType={value.typecontent}/>
+              return <Message key={value.id+Date.now()} seen={value.seenTime} content={value.content} user={user} home={home} time={value.createdAt} contentType={value.typecontent}/>
            })
         }
         return(

@@ -26,7 +26,6 @@ const mapStateToPros=state=>{
 const mapDispatchToProps= dispatch=>{
     return{
         onLogout:()=>dispatch(actions.logout()),
-        onTeamLogout:()=>dispatch(actions.teamAfterLogout())
     }
 };
 

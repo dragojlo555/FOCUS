@@ -28,10 +28,13 @@ const setPomodoroTimerSession=(state,action)=>{
 };
 
 
+
 const reducer=(state=initialState,action)=>{
     switch (action.type) {
         case actionTypes.SET_POMODORO_DURATION:return setPomodoroTimerDuration(state,action);
         case actionTypes.SET_POMODORO_SESSION:return setPomodoroTimerSession(state,action);
+        case actionTypes.AUTH_LOGOUT:return initialState;
+        case actionTypes.RESET_POMODORO:return initialState;
         default: return state;
     }
 };

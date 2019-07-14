@@ -6,6 +6,8 @@ import {connect} from "react-redux";
 import axios from "../../../axios-conf";
 import * as actions from '../../../store/actions/index';
 import {URL,DEFAULT_USER_AVATAR,DEFAULT_TEAM_AVATAR} from '../../../axios-conf';
+import {Route} from 'react-router-dom';
+import SetRole from '../SetRole/SetRole';
 
 class InfoTeam extends Component {
 
@@ -52,6 +54,14 @@ class InfoTeam extends Component {
         axios(options).then(response =>{
             this.props.onSelectedTeam(this.props.token,this.props.team.id);
             message.success('New User',3);
+            let newAddMail = {
+                ...this.state.addUser,
+                value: '',
+                touched: true,
+                valid: false
+            };
+            this.setState({addUser: newAddMail});
+
         }).catch(err=>{
             message.error(err.response.data.error);
 
@@ -95,6 +105,10 @@ class InfoTeam extends Component {
         });
     };
 
+    handleChangeRole=(id)=>{
+        this.props.history.push('/teams/role/'+id);
+    };
+
     render() {
         let img = this.props.team.avatar !== null ?
             <img alt='NI' src={URL + this.props.team.avatar} className={classes.TeamImage}/> :
@@ -104,11 +118,16 @@ class InfoTeam extends Component {
                          dataSource={this.props.users}
                          renderItem={item => (
                              <List.Item actions={
-                                 [  this.props.role.roleUserTeams[0].role.code==='Creator'?<Icon className={classes.ListIcon} type="edit" theme="twoTone"/>:null,
-                                     this.props.role.roleUserTeams[0].role.code==='Creator'?<Icon className={classes.ListIcon}  onClick={()=>{this.handleDeleteUser(item.user.id,this.props.team.id,this.props.token,()=>{this.handleSuccessDelete()})}}    type="delete" theme="twoTone"/>:null]
+                             this.props.role.roleUserTeams.map((value,key)=>{
+                                 if(value.role.code==='Admin' || value.role.code==='Creator'){
+                                 return    [<Icon key={item.user.id+'change'} className={classes.ListIcon} onClick={()=>{this.handleChangeRole(item.user.id)}} type="edit" theme="twoTone"/>,
+                                         <Icon  key={item.user.id+'delete'} className={classes.ListIcon}  onClick={()=>{this.handleDeleteUser(item.user.id,this.props.team.id,this.props.token,()=>{this.handleSuccessDelete()})}}    type="delete" theme="twoTone"/>]
+                                 }
+                                 return null;
+                             })
                              }>
                                  <List.Item.Meta
-                                     avatar={item.user.Avatar?<Avatar src={URL+ item.user.Avatar}/>:<Avatar src={DEFAULT_USER_AVATAR}/>}
+                                     avatar={item.user.avatar?<Avatar src={URL+ item.user.avatar}/>:<Avatar src={DEFAULT_USER_AVATAR}/>}
                                      title={item.user.firstName + ' ' + item.user.lastName}
                                      description={item.roleUserTeams.map((value, key) => {
                                          return value.role.code;
@@ -130,7 +149,7 @@ class InfoTeam extends Component {
                                 <Input readOnly={true} value={this.props.team.user.firstName+' '+this.props.team.user.lastName} />
                             </Form.Item>
                             <Form.Item style={{marginBottom:'10px'}} label="Created at" >
-                                <Input readOnly={true} value={new Date(this.props.team.createdAt)}/>
+                                <Input readOnly={true} value={new Date(this.props.team.createdAt).toLocaleString()}/>
                             </Form.Item>
                             <Form.Item style={{marginBottom:'10px'}} label="My Role" >
                                 <Input readOnly={true} value={this.props.role.roleUserTeams[0].role.code}/>
@@ -146,10 +165,10 @@ class InfoTeam extends Component {
                     <Input onChange={(event) => {
                         this.onChangeHandler(event)
                     }} addonBefore='User Email' placeholder='email@address.com' value={this.state.addUser.value}/>
-                    <Button disabled={!this.state.addUser.valid &&  (this.props.role.roleUserTeams[0].role.code==='Creator' ||  this.props.role.roleUserTeams[0].role.code==='Admin')} onClick={this.onAddMember}  className={classes.ConfirmButton} type='primary'>Add
+                    <Button disabled={!this.state.addUser.valid ||  !(this.props.role.roleUserTeams[0].role.code==='Creator' ||  this.props.role.roleUserTeams[0].role.code==='Admin')} onClick={this.onAddMember}  className={classes.ConfirmButton} type='primary'>Add
                         User</Button>
                 </div>
-
+                <Route path={this.props.match.path+'/role/:id'} render={(props)=><SetRole match={this.props.match} users={this.props.users} roles={this.props.role.roleUserTeams}{...props}/>}/>
             </div>
         )
     }

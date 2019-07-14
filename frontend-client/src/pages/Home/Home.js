@@ -18,10 +18,6 @@ class Home extends Component {
             <div className={classes.ChatBox}>
                 <Chat/>
             </div>
-            {/*
-            <div className={classes.TimerPage}>
-                        <PomodoroTimer/>
-            </div>*/}
         </div>);
     }
 }

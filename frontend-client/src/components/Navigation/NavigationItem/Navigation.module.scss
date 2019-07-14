@@ -9,7 +9,7 @@ $active-border-color:#2eddff;
   width: 100%;
 
   a{
-    color: $primary-bg-color;
+    color: rgba(0, 0, 0, 0.65);
     text-decoration: none;
     width: 100%;
     box-sizing: border-box;
@@ -20,7 +20,7 @@ $active-border-color:#2eddff;
 .NavigationItem a:hover,
 .NavigationItem a:active,
 .NavigationItem a.active {
-  color: #40A4C8;
+  color:#1890ff;
 }
 
 @media (min-width: 500px) {

@@ -1,30 +1,16 @@
-import React, {Component, Fragment} from 'react';
-import Input from '../../../components/UI/Input/Input';
-import Button from '../../../components/UI/Button/Button';
-import {length, required} from "../../../util/validators/validators";
+import React, {Component} from 'react';
 import classes from './NewTeam.module.scss';
 import {connect} from 'react-redux';
+import {DEFAULT_TEAM_AVATAR}from '../../../axios-conf';
 import * as actions from '../../../store/actions/index';
 import Spinner from '../../../components/UI/Spinner/Spinner';
-import {Alert} from 'antd';
+import {Form, Input, Modal, Alert, Button, message} from 'antd';
 
 
 class NewTeam extends Component {
     state = {
-        file: 'http://localhost:5000/public/images/no-profile.jpg',
+        file: DEFAULT_TEAM_AVATAR,
         avatar: null,
-        newTeamForm: {
-            name: {
-                type: 'text',
-                id: 'name',
-                control: 'input',
-                label: 'Name',
-                value: '',
-                valid: false,
-                touched: false,
-                validators: [required, length({min: 3})]
-            }
-        },
         formIsValid: false
     };
 
@@ -32,45 +18,22 @@ class NewTeam extends Component {
         this.props.onCreateEnd();
     }
 
-    inputChangedHandler = (event, input) => {
-        let isValid = true;
-        for (const validator of this.state.newTeamForm[input].validators) {
-            isValid = isValid && validator(event.target.value);
-        }
-        const updateForm = {
-            ...this.state.newTeamForm,
-            [input]: {
-                ...this.state.newTeamForm[input],
-                valid: isValid,
-                touched: true,
-                value: event.target.value
-            }
-        };
-        let formIsValid = true;
-        for (const inputName in updateForm) {
-            formIsValid = formIsValid && updateForm[inputName].valid;
-        }
-        this.setState({newTeamForm: updateForm, formIsValid: formIsValid});
-    };
 
-    inputBlurHandler = input => {
-        const updateForm = {
-            ...this.state.newTeamForm,
-            [input]: {
-                ...this.state.newTeamForm[input],
-                touched: true
-            }
-        };
-        this.setState({newTeamForm: updateForm})
-    };
 
-    submitHandler = (event) => {
-        event.preventDefault();
-        this.props.onCreateTeam(this.state.newTeamForm.name.value, this.state.avatar, this.props.token);
+    handleModalOk=()=>{
+        this.props.form.validateFieldsAndScroll((err, values) => {
+            if (!err) {
+                if(this.state.avatar){
+                    this.props.onCreateTeam(values.teamname, this.state.avatar, this.props.token);
+                }else{
+                    message.error('Please choose an avatar!!!');
+                }
+                this.props.handleClose();
+            }
+        });
     };
 
     changeImage = (event) => {
-        console.log(event.target.files[0]);
         const file = event.target.files[0];
         if (file != null && (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/svg')) {
             let img = URL.createObjectURL(event.target.files[0]);
@@ -87,50 +50,51 @@ class NewTeam extends Component {
     };
 
     render() {
-        const formElementArray = [];
-        for (let key in this.state.newTeamForm) {
-            formElementArray.push({
-                config: this.state.newTeamForm[key],
-            });
-        }
 
-        let dialog = <Fragment>
-            <div className={classes.HeaderNewTeam}>New Team</div>
-            <form onSubmit={this.submitHandler}>
-                <div className={classes.ImgUploadNewTeam}>
+        const { getFieldDecorator } = this.props.form;
+        const formItemLayout = {
+            labelCol: {
+                xs: { span: 24 },
+                sm: { span: 6 },
+            },
+            wrapperCol: {
+                xs: { span: 24 },
+                sm: { span: 16 },
+            },
+        };
+        let dialog= <Modal
+            title="New Team"
+            visible={this.props.visible}
+            onOk={this.handleModalOk}
+            onCancel={this.props.handleClose}
+            okText='Confirm'
+        >
+            <div>
+                <div className={classes.ImgUploadNewTeam} title='Choose avatar'>
                     <label htmlFor='file-input'>
-                        <img title='Choose image' src={this.state.file} alt="Choose"/>
+                        <img src={this.state.file} alt="Choose"/>
                     </label>
-                    <input id="file-input" type="file" onChange={this.changeImage}/>
+                    <input id ="file-input" type="file" onChange={this.changeImage}/>
                 </div>
-                {
-                    formElementArray.map(formElement => (
-                            <Input
-                                id={formElement.config.id}
-                                key={formElement.config.id}
-                                label={formElement.config.label}
-                                type={formElement.config.type}
-                                control={formElement.config.control}
-                                valid={formElement.config.valid}
-                                touched={formElement.config.touched}
-                                onBlur={() => this.inputBlurHandler(formElement.config.id)}
-                                onChange={(event) => this.inputChangedHandler(event, formElement.config.id)}
-                            />
-                        )
-                    )
-                }
-                <div className={classes.ButtonsNewTeam}>
-                    <Button type='submit'
-                            disabled={!this.state.formIsValid || this.state.avatar == null}>CONFIRM</Button>
-                    <Button type='button' onClick={this.props.cancel}>CANCEL</Button>
-                </div>
-            </form>
-        </Fragment>;
+                <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+                    <Form.Item label='Team name'>
+                        {getFieldDecorator('teamname',{
+                            rules: [{ required: true, message: 'Please input team name!', whitespace: true },
+                                {
+                                    min:6,message:'Password to short!'
+                                }
+                            ],
+                        })(<Input/>)}
+                    </Form.Item>
+                </Form>
+            </div>
+        </Modal>;
+
         if (this.props.loading) {
             dialog = <Spinner/>;
         }
+
         if ( this.props.createTeamData !=null) {
-            console.log(this.props.createTeamData.msg);
             if(this.props.createTeamData.msg==='Success'){
                 dialog=<div>
                     <Alert
@@ -144,14 +108,15 @@ class NewTeam extends Component {
                 </div>
             }else{
                 dialog=<div>Failed
-                    <Button type='button' onClick={this.props.cancel}>CANCEL</Button>
+                    <Button  onClick={this.props.cancel}>Cancel</Button>
                 </div>
             }
         }
+
         return (
-            <Fragment>
-                {dialog}
-            </Fragment>
+            <>
+            {dialog}
+            </>
         )
     }
 }
@@ -173,5 +138,5 @@ const mapDispatchToPros = dispatch => {
     }
 };
 
-
-export default connect(mapStateToProps, mapDispatchToPros)(NewTeam);
+const WrappedNewTeam = Form.create({ name: 'newTeam' })(NewTeam);
+export default connect(mapStateToProps, mapDispatchToPros)(WrappedNewTeam);

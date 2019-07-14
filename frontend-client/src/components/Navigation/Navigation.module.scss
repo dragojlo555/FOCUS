@@ -1,10 +1,13 @@
+$primary-bg-color:#001529;
+
+
 .Navigation {
   margin: 0;
   padding: 0;
   list-style: none;
   display: flex;
   flex-flow: column;
-  align-items: center;
+  align-items: flex-start;
   height: 100%;
 
   .Me {
@@ -19,4 +22,37 @@ flex-flow: row;
 }
 }
 
+.Menu{
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+  color: white !important;
+  background-color: $primary-bg-color !important;
+  box-shadow: none !important;
+  opacity: 0.85 !important;
+
+  &>li{
+    color: white !important;
+    background-color: $primary-bg-color !important;
+    box-shadow: none !important;
+    &>ul{
+      margin-top: 15px !important;
+      box-shadow: none !important;
+      color: white !important;
+      background-color: $primary-bg-color !important;
+    }
+  }
+}
+
+.MenuDrawer{
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+  box-shadow: none !important;
+  border:none !important;
+}
 

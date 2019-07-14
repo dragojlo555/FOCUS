@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import * as actions from '../../store/actions/index';
 import {connect} from "react-redux";
 import classes from './Teams.module.scss';
-import Modal from '../../components/UI/Modal/Modal';
+//import Modal from '../../components/UI/Modal/Modal';
 import NewTeam from './NewTeam/NewTeam';
 import InfoTeam from './InfoTeam/InfoTeam';
 import {Button} from 'antd';
@@ -10,42 +10,40 @@ import HomeMenu from '../Home/Menu/HomeMenu';
 class Teams extends Component {
 
     state = {
-        creatingTeam: false,
-        selectedTeamId: null
+        selectedTeamId: null,
+        visible:false
     };
 
     componentDidMount() {
         this.props.onGetMyTeams(this.props.token);
     }
 
-    closeCreateTeamHandler = () => {
-        this.setState({creatingTeam: false})
+    handleCreateTeamClose = () => {
+        this.setState({visible: false})
     };
 
-    createTeamHandler = () => {
-        this.setState({creatingTeam: true})
+    handleCreateTeam = () => {
+        this.setState({visible: true})
     };
 
     render() {
         let info = this.props.selectedTeam ?
-            <InfoTeam team={this.props.selectedTeam.team} role={this.props.selectedTeam.myRole}
+            <InfoTeam match={this.props.match} history={this.props.history} team={this.props.selectedTeam.team} role={this.props.selectedTeam.myRole}
                       users={this.props.selectedTeam.teamUsers}/> : null;
         return (
             <Fragment>
-                <Modal show={this.state.creatingTeam} cancel={this.closeCreateTeamHandler}>
-                    <NewTeam cancel={this.closeCreateTeamHandler}/>
-                </Modal>
                 <div className={classes.Teams}>
                     <div className={classes.MenuTeams}>
                        <HomeMenu/>
-                        <div>
-                            <Button type="primary" size='large' onClick={this.createTeamHandler}>New Team</Button>
+                        <div className={classes.NewTeamButton}>
+                            <Button type="primary" size='large' onClick={this.handleCreateTeam}>New Team</Button>
                         </div>
                     </div>
                     <div className={classes.ContentTeams}>
                         {info}
                     </div>
                 </div>
+                <NewTeam visible={this.state.visible}  handleClose={this.handleCreateTeamClose}/>
             </Fragment>
         );
     }
@@ -66,7 +64,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onGetMyTeams: (token) => dispatch(actions.getMyTeams(token)),
-        onSelectedTeam: (id, token) => dispatch(actions.selectedTeam(token, id))
     }
 };
 
