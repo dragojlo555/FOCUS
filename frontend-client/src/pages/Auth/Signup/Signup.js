@@ -51,16 +51,6 @@ class Signup extends Component {
         callback();
     };
 
-    /*
-    validatePasswordMin = (rule, value, callback) => {
-        if (value &&  value.length<6) {
-            callback('Enter more characters for the password');
-            return;
-        }
-        callback();
-    };*/
-
-
     handleSubmit = e => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
@@ -68,7 +58,7 @@ class Signup extends Component {
                 message.error('Please choose an avatar!!!');
             }
             if (!err && !(this.state.avatar===null)) {
-                this.props.onSignUp(values.email,values.password,values.firstname,values.lastname,this.state.avatar);
+                this.props.onSignUp(values.email,values.password,values.firstname,values.lastname,this.state.avatar,values.prefix+';'+values.phone);
             }
         });
     };
@@ -215,8 +205,8 @@ return{
 
 const mapDispatchToProps=dispatch=>{
     return {
-        onSignUp: (email, password, firstName, lastName, img) => {
-            dispatch(actions.signUp(email, password, firstName, lastName, img))
+        onSignUp: (email, password, firstName, lastName, img,phone) => {
+            dispatch(actions.signUp(email, password, firstName, lastName, img,phone))
         }
     }
 };

@@ -128,8 +128,6 @@ const receiveMessage = (state, action) => {
         ...state.messages,
         action.message
     ];
-
-    console.log(messages);
     return updateObject(state, {
         messages: messages
     })
@@ -188,6 +186,4 @@ const reducer = (state = initialState, action) => {
             return state;
     }
 };
-
-
 export default reducer;

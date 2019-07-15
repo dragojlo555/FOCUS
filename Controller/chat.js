@@ -9,7 +9,7 @@ const op = Sequelize.Op;
 exports.getMessagesByUser = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(402).json(errors.array());
+        return res.status(400).json(errors.array());
     }
     try {
         const recId = req.query.receivedid;
@@ -34,7 +34,7 @@ exports.getMessagesByUser = async (req, res) => {
 exports.getMessageByTeam = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(402).json(errors.array());
+        return res.status(400).json(errors.array());
     }
     try {
         const sendId = req.query.senderid;
@@ -52,6 +52,10 @@ exports.getMessageByTeam = async (req, res) => {
 };
 
 exports.setSeenOnMessagesUser = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json(errors.array());
+    }
     try {
         const chatUser = req.body.senderid;
         UserReminder.update({seenTime: Date.now()}, {where: {receivedUserId: req.userId, senderUserId: chatUser}});
@@ -63,8 +67,12 @@ exports.setSeenOnMessagesUser = async (req, res) => {
 };
 
 exports.getUnreadMessageByUser = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json(errors.array());
+    }
     try {
-        const chatUser = req.body.senderid;
+        const chatUser = req.query.senderid;
         let message = await UserReminder.findAll(
             {where: {receivedUserId: req.userId, senderUserId: chatUser, seenTime: null}}
         );
@@ -76,6 +84,10 @@ exports.getUnreadMessageByUser = async (req, res) => {
 };
 
 exports.setTimeLastSeenMessage = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json(errors.array());
+    }
     try {
         const userId = req.userId;
         const teamId = req.body.teamid;
@@ -107,9 +119,14 @@ exports.setTimeLastSeenMessage = async (req, res) => {
 
 
 exports.getTeamUnreadCount=async (req,res)=>{
-    const userId = req.userId;
-    const teamId = req.query.teamid;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json(errors.array());
+    }
+
     try {
+        const userId = req.userId;
+        const teamId = req.query.teamid;
         let lastSeen=await TeamReminderSeen.findOne({
             where:{
                     teamid:teamId,

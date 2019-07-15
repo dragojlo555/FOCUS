@@ -1,7 +1,7 @@
 .Chat{
 height: 100%;
   .ChatHeader{
-    height: 42px;
+    height: 50px;
     border-bottom: #cccccc 1px solid;
     border-right: #cccccc 1px solid;
     background-color: #efeff9;
@@ -14,12 +14,9 @@ height: 100%;
         font-weight: bold;
       }
     }
-
     .TeamHeader{
 
     }
-
-
   }
 
   .ChatField {
@@ -32,38 +29,6 @@ height: 100%;
       height: calc(100% - 50px);
       overflow-y: auto;
     }
-
-    .InputField {
-      display: flex;
-      height: 58px;
-      background-color: white;
-      border-bottom: 1px #cccccc solid;
-      .InputTextArea{
-        padding: 10px;
-        border: 0;
-        width: 80%;
-        outline:none;
-        resize:none;
-        overflow: paged-y;
-      }
-      .SendIcon{
-        display: flex;
-        width: 20%;
-        text-align: center;
-        justify-content: center;
-        align-self: center;
-        cursor: pointer;
-        .IconSvg{
-          font-size: 28px;
-          &:hover{
-            font-size: 32px;
-            color: #8cfe56;
-          }
-        }
-      }
-
-    }
-
 
   }
 

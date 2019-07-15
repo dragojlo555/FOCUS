@@ -1,17 +1,16 @@
 const express = require('express');
-const {body} = require('express-validator/check');
+const {body,query} = require('express-validator/check');
 const router = express.Router();
-const User = require('../../models/user');
 const chatController = require('../../Controller/chat');
 const isauth=require('../../middleware/is-auth');
 
 
 router.get('/user',isauth,[query('senderid').isNumeric(),query('receivedid').isNumeric()],chatController.getMessagesByUser);
 router.get('/team',isauth,[query('senderid').isNumeric()],chatController.getMessageByTeam);
-router.post('/user/unread',isauth,chatController.getUnreadMessageByUser);
-router.post('/user/seen',isauth,chatController.setSeenOnMessagesUser);
-router.post('/team/seen',isauth,chatController.setTimeLastSeenMessage);
-router.get('/team/seen',isauth,chatController.getTeamUnreadCount);
+router.get('/user/seen',query('senderid').isNumeric(),isauth,chatController.getUnreadMessageByUser);
+router.post('/user/seen',isauth,body('senderid').isNumeric(),chatController.setSeenOnMessagesUser);
+router.post('/team/seen',isauth,body('teamid').isNumeric(),chatController.setTimeLastSeenMessage);
+router.get('/team/seen',isauth,query('teamid').isNumeric(),chatController.getTeamUnreadCount);
 
 
 module.exports=router;

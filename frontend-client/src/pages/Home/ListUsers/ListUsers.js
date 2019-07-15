@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import * as actions from "../../../store/actions/index";
 import {connect} from "react-redux";
 import {Badge, Avatar,} from "antd";
-import {URL, DEFAULT_USER_AVATAR, DEFAULT_TEAM_AVATAR} from '../../../axios-conf';
+import {URL, DEFAULT_USER_AVATAR} from '../../../axios-conf';
+import ListUsersHeader from '../../../components/ChatComponent/ListUsersHeader/ListUsersHeader';
 import classes from './ListUsers.module.scss';
 
 class ListUsers extends Component {
@@ -26,10 +27,6 @@ class ListUsers extends Component {
         this.props.onSetSeenMessageUser(this.props.token, user.id);
     };
 
-    onSelectTeamChat = (team) => {
-        this.props.onOpen('team', team, this.props.userId, this.props.token);
-    };
-
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.selectedTeam == null && this.props.selectedTeam != null) {
             this.props.selectedTeam.teamUsers.map((value, key) => {
@@ -44,20 +41,6 @@ class ListUsers extends Component {
     }
 
     render() {
-        let headerClass = classes.HeaderList;
-        if (this.props.chatType === 'team') {
-            headerClass = [classes.HeaderList, classes.SelectedHeaderCard].join(' ');
-        }
-        let team = null;
-        if (this.props.selectedTeam)
-            team = <div onClick={() => {
-                if (this.props.selectedTeam != null) this.onSelectTeamChat(this.props.selectedTeam.team)
-            }} className={headerClass}>
-              <Avatar
-                src={!this.props.selectedTeam.team.avatar ? DEFAULT_TEAM_AVATAR : URL + this.props.selectedTeam.team.avatar}/>
-                {this.props.selectedTeam ? this.props.selectedTeam.team.name : 'Name'}
-            </div>;
-
         const users = this.props.selectedTeam != null ? this.props.selectedTeam.teamUsers.map((value, key) => {
             let userClass = classes.UserCard;
             let status;
@@ -74,7 +57,7 @@ class ListUsers extends Component {
             }
             return <div onClick={() => {
                 this.onSelectUser(value.user)
-            }} key={value.user.id} className={userClass}><Badge count={this.props.unread[value.user.id]}>
+            }} key={value.user.id} className={userClass}><Badge count={value.user.id === parseInt(this.props.userId)?0:this.props.unread[value.user.id]}>
                 <Avatar shape="square" src={value.user.avatar ? URL + value.user.avatar : DEFAULT_USER_AVATAR}/>
             </Badge>
                 <div className={classes.NameUser}>
@@ -90,7 +73,7 @@ class ListUsers extends Component {
 
         return (
             <div className={classes.ListUsers}>
-                {team}
+               <ListUsersHeader userId={this.props.userId} token={this.props.token}/>
                 {users}
             </div>
         )

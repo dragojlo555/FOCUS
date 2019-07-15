@@ -18,7 +18,8 @@ class EditProfile extends Component{
             this.props.form.setFieldsValue({
                 'firstname': this.props.user.firstName,
                 'lastname':this.props.user.lastName,
-                'phone':'65930835'
+                'phone':this.props.user.phone.split(';')[1],
+                'prefix':this.props.user.phone.split(';')[0],
             });
             this.setState({file:URLT+this.props.user.avatar});
         }
@@ -36,9 +37,9 @@ class EditProfile extends Component{
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 if(this.state.avatar){
-                    this.props.onEditProfileAvatar(this.props.token,values.firstname,values.lastname,this.state.avatar);
+                    this.props.onEditProfileAvatar(this.props.token,values.firstname,values.lastname,values.prefix+';'+values.phone,this.state.avatar);
                 }else{
-                    this.props.onEditProfile(this.props.token,values.firstname,values.lastname);
+                    this.props.onEditProfile(this.props.token,values.firstname,values.lastname,values.prefix+';'+values.phone);
                 }
                 this.props.handleOk();
             }
@@ -121,8 +122,8 @@ const mapStateToProps=(state)=>{
 
 const mapDispatchToProps=(dispatch)=>{
     return{
-    onEditProfileAvatar:(token,firstname,lastname,avatar)=>dispatch(actions.editProfileAvatar(token,firstname,lastname,avatar)),
-        onEditProfile:(token,firstname,lastname)=>dispatch(actions.editProfile(token,firstname,lastname))
+    onEditProfileAvatar:(token,firstname,lastname,phone,avatar)=>dispatch(actions.editProfileAvatar(token,firstname,lastname,phone,avatar)),
+        onEditProfile:(token,firstname,lastname,phone)=>dispatch(actions.editProfile(token,firstname,lastname,phone))
     }
 };
 

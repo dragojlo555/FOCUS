@@ -19,7 +19,7 @@ class Message extends Component {
                         className={this.props.home ? classes.MessageTime : [classes.MessageTime, classes.TimeAway].join(' ')}>
                         <Moment style={{fontSize:'80%'}} fromNow>{this.props.time}</Moment>
                         {this.props.home?this.props.seen?<><Icon type='check' style={{color: 'blue'}}/><Icon type='check' style={{color: 'blue'}}/></>:
-                            <><Icon type='check' style={{color: 'gray'}}/><Icon type='check' style={{color: 'gray'}}/></>:null}
+                            <><Icon type='check' style={{color: 'gray'}}/></>:null}
                     </div>
                 </div>
                 {!this.props.home ? <div className={classes.MessageAvatar} title={this.props.user.firstName+' '+this.props.user.lastName}>
@@ -28,7 +28,6 @@ class Message extends Component {
             </div>
         )
     }
-
 }
 
 export default Message;

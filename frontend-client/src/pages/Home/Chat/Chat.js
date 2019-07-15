@@ -17,6 +17,7 @@ class Chat extends Component {
         this.props.onCheckUnread(this.props.token, data.senderUserId);
         if (data.senderUserId === this.props.openedChat.id && data.receivedUserId === parseInt(this.props.userId)) {
             this.props.onReceiveMessage(data);
+            this.props.onSetSeenMessageUser(this.props.token, data.senderUserId);
             this.scrollToBottom();
         } else if (data.senderUserId === parseInt(this.props.userId) && data.receivedUserId === this.props.openedChat.id) {
             this.props.onReceiveMessage(data);
@@ -26,8 +27,9 @@ class Chat extends Component {
 
     teamMessageHandler = data => {
         this.props.onGetTeamUnread(this.props.token, data.teamid);
-        if (this.props.openedChat.id === data.teamid) {
+        if (this.props.openedChat.id === data.teamid && this.props.chatType==='team') {
             this.props.onReceiveMessage(data);
+            this.props.onSeenTeamMessage(this.props.token,data.teamid);
             this.scrollToBottom();
         }
     };
@@ -40,10 +42,16 @@ class Chat extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.openedChat !== prevProps.openedChat) {
             if (prevProps.openedChat && prevProps.chatType === 'team') {
-                this.props.socket.off('team-message-cl-' + prevProps.openedChat.id);
+                this.props.myTeams.forEach((value,key)=>{
+                    this.props.socket.off('team-message-cl-' + value.team.id);
+                    this.props.socket.on('team-message-cl-' + value.team.id,this.teamMessageHandler);
+                });
             }
             if (this.props.chatType === 'team') {
-                this.props.socket.on('team-message-cl-' + this.props.openedChat.id, this.teamMessageHandler);
+                this.props.myTeams.forEach((value,key)=>{
+                    this.props.socket.off('team-message-cl-' + value.team.id);
+                    this.props.socket.on('team-message-cl-' + value.team.id,this.teamMessageHandler);
+                });
             }
             if (this.props.chatType === 'user') {
                 this.props.onSetSeenMessageUser(this.props.token, this.props.openedChat.id);
@@ -54,7 +62,11 @@ class Chat extends Component {
 
     componentWillUnmount() {
         this.props.socket.off('user-message-cl-' + this.props.userId);
-        this.props.socket.off('team-message-cl');
+        this.props.socket.off('team-message-cl-'+this.props.openedChat.id);
+        this.props.myTeams.forEach((value,key)=>{
+            this.props.socket.off('team-message-cl-' + value.team.id);
+            this.props.socket.on('team-message-cl-' + value.team.id);
+        });
     }
 
 
@@ -117,6 +129,7 @@ const mapStateToProps = (state) => {
         openedChat: state.team.openedChat,
         chatType: state.team.chatType,
         token: state.auth.token,
+        myTeams:state.team.myTeams,
         socket: state.auth.socket,
         userId: state.auth.userId,
         user: state.auth.user,
@@ -130,7 +143,8 @@ const mapDispatchToProps = dispatch => {
         onReceiveMessage: (message) => dispatch(actions.receiveMessage(message)),
         onCheckUnread: (token, senderid) => dispatch(actions.getUnreadMessage(token, senderid)),
         onSetSeenMessageUser: (token, senderid) => dispatch(actions.setSeenMessage(token, senderid)),
-        onGetTeamUnread: (token, teamid) => dispatch(actions.getUnreadTeamMessage(token, teamid))
+        onGetTeamUnread: (token, teamid) => dispatch(actions.getUnreadTeamMessage(token, teamid)),
+        onSeenTeamMessage:(token,teamid)=>dispatch(actions.setSeenTeamMessage(token,teamid)),
 
     }
 };

@@ -22,9 +22,8 @@ exports.allUsers = (req, res) => {
 exports.getTeam = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(402).json(errors.array());
+        return res.status(400).json(errors.array());
     }
-
     try {
         const idTeamReq = req.body.idteam;
         let teamUsers = await UserTeam.findAll({
@@ -51,7 +50,7 @@ exports.create = (req, res) => {
     let idTeam = null;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).json(errors.array());
+        return res.status(400).json(errors.array());
     }
     const teamNameReq = req.body.name;
     const avatarReq = req.file.path;
@@ -86,7 +85,7 @@ exports.addMember = async (req, res) => {
     const idTeamReq = req.body.idteam;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).json(errors.array());
+        return res.status(400).json(errors.array());
     }
     try {
         const user = await User.findOne({where: {mail: mailNewUser}});

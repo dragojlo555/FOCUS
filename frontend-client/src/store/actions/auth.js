@@ -115,7 +115,7 @@ export const auth = (email, password) => {
     }
 };
 
-export const signUp=(email,password,firstname,lastname,img)=>{
+export const signUp=(email,password,firstname,lastname,img,phone)=>{
     return dispatch=>{
         const url='users/create';
         const formData=new FormData();
@@ -124,6 +124,7 @@ export const signUp=(email,password,firstname,lastname,img)=>{
         formData.append('firstname',firstname);
         formData.append('lastname',lastname);
         formData.append('image',img);
+        formData.append('phone',phone);
         let options={
             method:'POST',
             url:url,
@@ -143,14 +144,14 @@ export const signUp=(email,password,firstname,lastname,img)=>{
     }
 };
 
-export const editProfileAvatar=(token,firstname,lastname,avatar)=>{
+export const editProfileAvatar=(token,firstname,lastname,phone,avatar)=>{
     return dispatch=>{
         const url='users/changeprofileavatar';
         const formData=new FormData();
         formData.append('firstname',firstname);
         formData.append('lastname',lastname);
         formData.append('image',avatar);
-
+        formData.append('phone',phone);
         let options={
             method:'POST',
             url:url,
@@ -174,12 +175,13 @@ export const editProfileAvatar=(token,firstname,lastname,avatar)=>{
 
     }
 };
-export const editProfile=(token,firstname,lastname)=>{
+export const editProfile=(token,firstname,lastname,phone)=>{
     return dispatch=>{
         const url='users/changeprofile';
         const data={
             firstname:firstname,
             lastname:lastname,
+            phone:phone
         };
 
         let options={

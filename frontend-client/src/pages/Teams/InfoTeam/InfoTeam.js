@@ -40,7 +40,7 @@ class InfoTeam extends Component {
             idteam:this.props.team.id,
             email:this.state.addUser.value
         };
-        const url='team/adduser';
+        const url='team/user';
         let options={
             method:'POST',
             url:url,

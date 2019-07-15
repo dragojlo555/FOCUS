@@ -19,7 +19,6 @@ class TeamItem extends Component{
         )
     }
 }
-
 const mapStateToProps = state => {
     return {
         unread:state.team.teamUnread

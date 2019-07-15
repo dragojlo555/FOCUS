@@ -34,7 +34,7 @@ app.use('/api/chat',chat_route);
 
 const port=process.env.PORT || 5000;
 
-//alter:true
+
 sequelize
     .sync({})
     .then(result => {
@@ -55,8 +55,11 @@ sequelize
             UserController.SocketConnected(userId);
             socket.on('user-message',payload=>{
              ChatController.receiveUserMessage(payload).then(data=>{
+                 if(data.receivedUserId!==data.senderUserId){
                  io.sockets.emit('user-message-cl-'+data.receivedUserId,data);
-                 io.sockets.emit('user-message-cl-'+data.senderUserId,data);
+                 io.sockets.emit('user-message-cl-'+data.senderUserId,data);}else{
+                     io.sockets.emit('user-message-cl-'+data.receivedUserId,data);
+                 }
                  }
              ).catch(err=>{
                  io.sockets.emit('user-message-cl','null');}

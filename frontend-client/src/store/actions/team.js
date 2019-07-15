@@ -134,7 +134,7 @@ export const getMyTeams = (token) => {
         const data = {};
         let url = 'team/myteams';
         let options = {
-            method: 'POST',
+            method: 'GET',
             url: url,
             data: data,
             headers: {
@@ -231,11 +231,11 @@ export const getUnreadMessage=(token,senderid)=>{
         const data={
             senderid:senderid
         };
-        const url='chat/user/unread';
+        const url='chat/user/seen';
         let options={
-            method:'POST',
+            method:'GET',
             url:url,
-            data:data,
+            params:data,
             headers:{
                 'Authorization': `bearer ${token}`,
                 'Accept': 'application/json',
@@ -251,11 +251,21 @@ export const getUnreadMessage=(token,senderid)=>{
     }
 };
 
-export const getUnreadTeamMessageSuccess=(data)=>{
+export const getUnreadTeamMessageSuccess=(data,teamid)=>{
+    if(teamid===null){
   return{
         type:actionTypes.CHECK_UNREAD_TEAM_MESSAGE,
         data:data
-  }
+  }}else{
+        const myData={
+            teamid:teamid,
+            number:0
+        };
+        return{
+            type:actionTypes.CHECK_UNREAD_TEAM_MESSAGE,
+            data:myData
+        }
+    }
 };
 
 
@@ -276,7 +286,7 @@ export const getUnreadTeamMessage=(token,teamid)=>{
                 }
             };
             axios(options).then(response => {
-               dispatch(getUnreadTeamMessageSuccess(response.data));
+               dispatch(getUnreadTeamMessageSuccess(response.data,null));
             }).catch(err => {
                 // dispatch(selectedTeamFailed(err.data));
                 console.log('Unread error',err.response);
@@ -301,10 +311,8 @@ export const setSeenTeamMessage=(token,teamid)=>{
             }
         };
         axios(options).then(response => {
-            //  dispatch(getUnreadMessageUserSuccess(response.data));
-            //  console.log(response.data);
+              dispatch(getUnreadTeamMessageSuccess({},teamid));
         }).catch(err => {
-            // dispatch(selectedTeamFailed(err.data));
             console.log(err);
         });
     }
