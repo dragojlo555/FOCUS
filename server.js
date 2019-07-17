@@ -53,6 +53,7 @@ sequelize
             console.log('Client connected');
             const userId=socket.handshake.query.id;
             UserController.SocketConnected(userId);
+
             socket.on('user-message',payload=>{
              ChatController.receiveUserMessage(payload).then(data=>{
                  if(data.receivedUserId!==data.senderUserId){
@@ -73,7 +74,6 @@ sequelize
                  io.sockets.emit('team-message-cl','null');
              })
             });
-
             socket.on("disconnect", () => {
                 console.log("user disconnected");
                UserController.SocketDisconnect(userId);

@@ -41,6 +41,11 @@ class Signup extends Component {
         }
     };
 
+    handleConfirmBlur = e => {
+        const { value } = e.target;
+        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+    };
+
 
     validateToNextPassword = (rule, value, callback) => {
         const { form } = this.props;

@@ -21,7 +21,7 @@ class SetRole extends Component{
     componentDidMount() {
        let userId=parseInt(this.props.match.params.id);
        let user;
-        this.props.users.forEach((value,key)=>{
+       this.props.users.forEach((value,key)=>{
           if(value.user.id===userId){
               user=value;
           }
@@ -43,14 +43,12 @@ class SetRole extends Component{
     };
 
     handleChangeRadio=(e)=>{
-
         const url='team/role';
         const data={
             idrole:e.target.value,
             oldidrole:this.state.value,
             idteamuser:this.state.user.id
         };
-
         let options={
             method:'PUT',
             url:url,
@@ -118,7 +116,8 @@ class SetRole extends Component{
 const mapStateToProps = (state) => {
     return {
         token: state.auth.token,
-        selectedTeam: state.team.selectedTeam
+        selectedTeam: state.team.selectedTeam,
+        userId: state.auth.userId,
     }
 };
 

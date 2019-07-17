@@ -81,7 +81,7 @@ class NewTeam extends Component {
                         {getFieldDecorator('teamname',{
                             rules: [{ required: true, message: 'Please input team name!', whitespace: true },
                                 {
-                                    min:6,message:'Password to short!'
+                                    min:3,message:'Name to short!'
                                 }
                             ],
                         })(<Input/>)}

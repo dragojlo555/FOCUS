@@ -82,7 +82,6 @@ exports.getUnreadMessageByUser = async (req, res) => {
         return res.status(500).json(err);
     }
 };
-
 exports.setTimeLastSeenMessage = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -117,13 +116,11 @@ exports.setTimeLastSeenMessage = async (req, res) => {
     }
 };
 
-
 exports.getTeamUnreadCount=async (req,res)=>{
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json(errors.array());
     }
-
     try {
         const userId = req.userId;
         const teamId = req.query.teamid;
@@ -134,7 +131,7 @@ exports.getTeamUnreadCount=async (req,res)=>{
             }
         });
         let message=null;
-            if(lastSeen.lastseen){
+            if(lastSeen){
                 message = await TeamReminder.findAll({
                     where: {
                         createdAt:{[op.gt]:lastSeen.lastseen},
@@ -153,6 +150,3 @@ exports.getTeamUnreadCount=async (req,res)=>{
         return res.status(500).json(err);
     }
 };
-
-
-

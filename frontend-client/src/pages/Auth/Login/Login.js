@@ -71,7 +71,7 @@ class Login extends Component {
             <div className={classes.Login}>
                 {errorMail}
                 {errorPass}
-                <Form style={{width:'300px'}} onSubmit={this.handleSubmit} className="login-form">
+                <Form style={{width:'300px',margin:'auto'}} onSubmit={this.handleSubmit} className="login-form">
                     <Form.Item>
                         {getFieldDecorator('username', {
                             rules: [{ required: true, message: 'Please input your email!' },],

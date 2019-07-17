@@ -12,7 +12,6 @@ class Chat extends Component {
         this.messagesEnd.scrollIntoView({behavior: "smooth"});
     };
 
-
     userMessageHandler = data => {
         this.props.onCheckUnread(this.props.token, data.senderUserId);
         if (data.senderUserId === this.props.openedChat.id && data.receivedUserId === parseInt(this.props.userId)) {
@@ -27,43 +26,41 @@ class Chat extends Component {
 
     teamMessageHandler = data => {
         this.props.onGetTeamUnread(this.props.token, data.teamid);
-        if (this.props.openedChat.id === data.teamid && this.props.chatType==='team') {
+        if (this.props.openedChat.id === data.teamid && this.props.chatType === 'team') {
             this.props.onReceiveMessage(data);
-            this.props.onSeenTeamMessage(this.props.token,data.teamid);
+            this.props.onSeenTeamMessage(this.props.token, data.teamid);
             this.scrollToBottom();
         }
     };
-
     componentDidMount() {
         this.props.socket.on('user-message-cl-' + this.props.userId, this.userMessageHandler);
-        this.scrollToBottom();
     }
-
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.openedChat !== prevProps.openedChat) {
             if (prevProps.openedChat && prevProps.chatType === 'team') {
-                this.props.myTeams.forEach((value,key)=>{
+                this.props.myTeams.forEach((value, key) => {
                     this.props.socket.off('team-message-cl-' + value.team.id);
-                    this.props.socket.on('team-message-cl-' + value.team.id,this.teamMessageHandler);
+                    this.props.socket.on('team-message-cl-' + value.team.id, this.teamMessageHandler);
                 });
             }
             if (this.props.chatType === 'team') {
-                this.props.myTeams.forEach((value,key)=>{
+                this.props.myTeams.forEach((value, key) => {
                     this.props.socket.off('team-message-cl-' + value.team.id);
-                    this.props.socket.on('team-message-cl-' + value.team.id,this.teamMessageHandler);
+                    this.props.socket.on('team-message-cl-' + value.team.id, this.teamMessageHandler);
                 });
             }
             if (this.props.chatType === 'user') {
                 this.props.onSetSeenMessageUser(this.props.token, this.props.openedChat.id);
             }
+            this.scrollToBottom();
         }
-        this.scrollToBottom();
     }
 
     componentWillUnmount() {
         this.props.socket.off('user-message-cl-' + this.props.userId);
-        this.props.socket.off('team-message-cl-'+this.props.openedChat.id);
-        this.props.myTeams.forEach((value,key)=>{
+        if(this.props.openedChat)
+        this.props.socket.off('team-message-cl-' + this.props.openedChat.id);
+        this.props.myTeams.forEach((value, key) => {
             this.props.socket.off('team-message-cl-' + value.team.id);
             this.props.socket.on('team-message-cl-' + value.team.id);
         });
@@ -91,22 +88,32 @@ class Chat extends Component {
     };
 
     render() {
+        let chatUser = null;
+        if (this.props.selectedTeam && this.props.openedChat && this.props.chatType === 'user') {
+          let  temp = this.props.selectedTeam.teamUsers.find((item) => {
+                return item.userId === this.props.openedChat.id
+            });
+            if(temp)chatUser=temp.user;
+        }
         let header = this.props.openedChat !== null ? this.props.chatType === 'user' ?
             <div className={classes.UserHeader}><span
-                className={classes.UserHeaderName}>{this.props.openedChat.firstName + ' ' + this.props.openedChat.lastName}</span>
-                <Badge
-                    status={this.props.openedChat.focu.state === 'work' ? 'error' : this.props.openedChat.focu.state === 'pause' ? 'warning' :
-                        this.props.openedChat.focu.state==='break'?'success': this.props.openedChat.focu.state==='online'?'processing':'default'}
-                    text={this.props.openedChat.focu.state}/></div> :
-            <div className={classes.UserHeader}><span
-                className={classes.UserHeaderName}>{this.props.openedChat.name}</span><span>#teamchat</span>
-            </div> : null;
+            className={classes.UserHeaderName}>{this.props.openedChat.firstName + ' ' + this.props.openedChat.lastName}</span>
+            <Badge
+                status={chatUser?chatUser.focu.state === 'work' ? 'error' : chatUser.focu.state === 'pause' ? 'warning' :
+                    chatUser.focu.state === 'break' ? 'success' : chatUser.focu.state === 'online' ? 'processing' : 'default':'offline'}
+                text={this.props.openedChat.focu.state}/></div> :
+
+        <div className={classes.UserHeader}><span
+            className={classes.UserHeaderName}>{this.props.openedChat.name}</span><span>#teamchat</span>
+        </div> : null;
+
         return (
             <div className={classes.Chat}>
                 <div className={classes.ChatHeader}>
                     {header}
                 </div>
                 <div className={classes.ChatField}>
+
                     <div className={classes.MessageField}>
                         <Messages user={this.props.user} messages={this.props.messages}
                                   openedChat={this.props.openedChat} chatType={this.props.chatType}/>
@@ -116,6 +123,7 @@ class Chat extends Component {
                              }}>
                         </div>
                     </div>
+
                     <InputFieldChat send={this.sendMessageHandler}/>
                 </div>
             </div>
@@ -129,7 +137,7 @@ const mapStateToProps = (state) => {
         openedChat: state.team.openedChat,
         chatType: state.team.chatType,
         token: state.auth.token,
-        myTeams:state.team.myTeams,
+        myTeams: state.team.myTeams,
         socket: state.auth.socket,
         userId: state.auth.userId,
         user: state.auth.user,
@@ -144,8 +152,7 @@ const mapDispatchToProps = dispatch => {
         onCheckUnread: (token, senderid) => dispatch(actions.getUnreadMessage(token, senderid)),
         onSetSeenMessageUser: (token, senderid) => dispatch(actions.setSeenMessage(token, senderid)),
         onGetTeamUnread: (token, teamid) => dispatch(actions.getUnreadTeamMessage(token, teamid)),
-        onSeenTeamMessage:(token,teamid)=>dispatch(actions.setSeenTeamMessage(token,teamid)),
-
+        onSeenTeamMessage: (token, teamid) => dispatch(actions.setSeenTeamMessage(token, teamid)),
     }
 };
 

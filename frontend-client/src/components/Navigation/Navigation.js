@@ -78,7 +78,6 @@ render() {
         component = <>
             <NavigationItem link="/" exact>Home</NavigationItem>
             <NavigationItem link='/teams'>Teams</NavigationItem>
-            { /* <NavigationItem link='/logout'>Logout</NavigationItem>*/}
             <Menu
                 className={menuClass}
                 theme={this.props.drawer===true?'light':'dark'}

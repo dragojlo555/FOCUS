@@ -3,6 +3,9 @@
   display: flex;
   flex-flow: row;
   width: 100%;
+
+
+
   .MessageAvatar{
   }
 
@@ -26,8 +29,8 @@
       border-radius:15px;
       padding: 20px;
       width: 100%;
-   //   background-color: #2eddff;
-background-image: linear-gradient(to right,#2eddff,#55f409 );
+
+        background-image: linear-gradient(to right,#2eddff,#55f409 );
 
       &.TextAway{
      //   background-color: #55f409;
@@ -35,6 +38,9 @@ background-image: linear-gradient(to right,#2eddff,#55f409 );
       }
     }
   }
+
+
+
   .MessageContent.MessageAway{
     margin-left: 0;
     margin-right: 5px;

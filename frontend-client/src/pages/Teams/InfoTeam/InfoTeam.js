@@ -119,7 +119,7 @@ class InfoTeam extends Component {
                          renderItem={item => (
                              <List.Item actions={
                              this.props.role.roleUserTeams.map((value,key)=>{
-                                 if(value.role.code==='Admin' || value.role.code==='Creator'){
+                                 if((value.role.code==='Admin' || value.role.code==='Creator')&& this.props.user.id!==item.user.id){
                                  return    [<Icon key={item.user.id+'change'} className={classes.ListIcon} onClick={()=>{this.handleChangeRole(item.user.id)}} type="edit" theme="twoTone"/>,
                                          <Icon  key={item.user.id+'delete'} className={classes.ListIcon}  onClick={()=>{this.handleDeleteUser(item.user.id,this.props.team.id,this.props.token,()=>{this.handleSuccessDelete()})}}    type="delete" theme="twoTone"/>]
                                  }
@@ -179,7 +179,8 @@ const mapStateToProps = (state) => {
         loading: state.auth.loading,
         token: state.auth.token,
         error: state.team.error,
-        myTeams: state.team.myTeams
+        myTeams: state.team.myTeams,
+        user: state.auth.user,
     }
 };
 

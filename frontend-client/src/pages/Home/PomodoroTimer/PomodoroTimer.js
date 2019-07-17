@@ -23,7 +23,6 @@ class PomodoroTimer extends Component {
             ...this.props.session,
             timer:null};
         this.props.onSetSession(updatedSession);
-
     }
 
     changeDurationHandler=(type,duration)=>{
@@ -31,7 +30,6 @@ class PomodoroTimer extends Component {
         updatedBreak = updatedBreak + duration;
         const updatedDuration = {
             ...this.props.duration,
-
         };
         updatedDuration[type]=updatedBreak;
         this.props.onSetDuration(updatedDuration);
@@ -143,9 +141,7 @@ class PomodoroTimer extends Component {
         });
     };
 
-
     handleChangeSlider=value=>{
-        console.log(value);
         let state=value===0?'work':value===50?'pause':'break';
         clearInterval(this.props.session.timer);
         const updatedSession = {
