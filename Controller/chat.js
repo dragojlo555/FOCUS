@@ -25,7 +25,7 @@ exports.getMessagesByUser = async (req, res) => {
                 }]
             }
         });
-        return res.status(200).json(message);
+        return res.status(200).json({msg:'Success',message:message});
     } catch (err) {
         return res.status(500).json(err);
     }
@@ -44,7 +44,7 @@ exports.getMessageByTeam = async (req, res) => {
                 teamid: sendId
             }, include: [{model: User}]
         });
-        return res.status(200).json(message);
+        return res.status(200).json({msg:'Success',message:message});
     } catch (err) {
         console.log(err);
         return res.status(500).json(err);
@@ -82,6 +82,7 @@ exports.getUnreadMessageByUser = async (req, res) => {
         return res.status(500).json(err);
     }
 };
+
 exports.setTimeLastSeenMessage = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -149,4 +150,54 @@ exports.getTeamUnreadCount=async (req,res)=>{
     }catch(err){
         return res.status(500).json(err);
     }
+};
+
+exports.loadMoreMessagesUser=async(req,res)=>{
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json(errors.array());
+    }
+    try{
+        const userIdReq=req.query.senderid;
+        const lastIdReq=req.query.lastid;
+
+        let message = await UserReminder.findAll({
+            limit: 12,
+            order: [['id', 'desc']],
+            where: {
+                [op.or]: [{senderUserId: userIdReq, receivedUserId: req.userId}, {
+                    receivedUserId: userIdReq,
+                    senderUserId: req.userId
+                }],
+                id:{[op.lt]:lastIdReq}
+            }
+        });
+        return res.status(200).json({msg:'message',messages:message});
+    }catch(err){
+        if (!err.statusCode) err.statusCode = 500;
+        return res.status(err.statusCode).json({msg: 'Failed', error: err.message});
+    }
+};
+
+exports.loadMoreMessagesTeam=async (req,res)=>{
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json(errors.array());
+    }
+    try{
+        const sendId = req.query.senderid;
+        const lastIdReq=req.query.lastid;
+        let message = await TeamReminder.findAll({
+            limit: 12, order: [['id', 'desc']],
+            where: {
+                teamid: sendId,
+                id:{[op.lt]:lastIdReq}
+            }, include: [{model: User}]
+        });
+        return res.status(200).json({msg:'Success',messages:message});
+    }catch(err){
+        if (!err.statusCode) err.statusCode = 500;
+        return res.status(err.statusCode).json({msg: 'Failed', error: err.message});
+    }
+
 };

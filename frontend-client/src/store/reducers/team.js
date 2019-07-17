@@ -9,10 +9,10 @@ const initialState = {
     createTeamData: null,
     chatType: null,
     openedChat: null,
-    messages: null,
+    messages: [],
     myState: 'offline',
     unread: [],
-    teamUnread:[]
+    teamUnread: []
 };
 
 const getUpdateUnreadMessage = (state, action) => {
@@ -108,12 +108,36 @@ const sendMessage = (state, action) => {
         ...state.messages,
         action.message
     ];
-
-    console.log(messages);
     return updateObject(state, {
         messages: messages
     })
 };
+
+const loadMoreMessageUserStart=(state,action)=>{
+  return updateObject(state,{
+      loading:true
+  })
+};
+
+
+const loadMoreMessageUserSuccess = (state, action) => {
+    const messages = [
+        ...action.messages,
+        ...state.messages
+    ];
+    return updateObject(state, {
+        loading: false,
+        messages: messages
+    })
+};
+
+
+const loadMoreMessageUserFailed = (state, action) => {
+    return updateObject(state, {
+        loading: false
+    })
+};
+
 
 const openedChat = (state, action) => {
     return updateObject(state, {
@@ -141,8 +165,8 @@ const changeMyState = (state, action) => {
 
 const setSeenOnMessage = (state, action) => {
     let updateUnread = state.unread.slice();
-    updateUnread[action.senderid] =0;
-    return updateObject(state, {unread:updateUnread});
+    updateUnread[action.senderid] = 0;
+    return updateObject(state, {unread: updateUnread});
 };
 
 
@@ -181,7 +205,13 @@ const reducer = (state = initialState, action) => {
         case actionTypes.SET_SEEN_USER_MESSAGE:
             return setSeenOnMessage(state, action);
         case actionTypes.CHECK_UNREAD_TEAM_MESSAGE:
-            return getUpdateTeamUnreadMessage(state,action);
+            return getUpdateTeamUnreadMessage(state, action);
+        case actionTypes.LOAD_MORE_MESS_USER_SUCCESS:
+            return loadMoreMessageUserSuccess(state, action);
+        case actionTypes.LOAD_MORE_MESS_USER_FAILED:
+            return loadMoreMessageUserFailed(state, action);
+        case actionTypes.LOAD_MORE_MESS_USER_START:
+            return loadMoreMessageUserStart(state,action);
         default:
             return state;
     }

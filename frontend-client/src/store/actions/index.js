@@ -19,7 +19,8 @@ export{
     getUnreadMessage,
     setSeenMessage,
     getUnreadTeamMessage,
-    setSeenTeamMessage
+    setSeenTeamMessage,
+    loadMoreMessageUser
 }from './team';
 
 export{

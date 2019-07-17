@@ -230,7 +230,7 @@ exports.changeRole = async (req, res) => {
                throw error;
            }
     } catch (err) {
-       let k= await tran.rollback();
+        await tran.rollback();
         if (!err.statusCode) err.statusCode = 500;
         return res.status(err.statusCode).json({msg: 'Failed', error: err.message});
     }

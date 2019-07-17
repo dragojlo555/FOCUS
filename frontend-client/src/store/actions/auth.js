@@ -138,7 +138,7 @@ export const signUp=(email,password,firstname,lastname,img,phone)=>{
             dispatch(signUpSuccess());
         }).catch(error=>{
             dispatch(signUpFailed(error.response));
-            console.log(error.response.data);
+            //console.log(error.response.data);
             }
         );
     }

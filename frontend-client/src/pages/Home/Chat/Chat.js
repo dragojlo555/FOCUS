@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import classes from './Chat.module.scss'
 import {connect} from 'react-redux';
-import {Badge} from "antd";
+import {Badge, Spin,Button} from "antd";
 import * as actions from "../../../store/actions";
 import Messages from './Messages/Messages';
 import InputFieldChat from '../../../components/ChatComponent/InputFieldChat/InputFieldChat';
@@ -32,9 +32,30 @@ class Chat extends Component {
             this.scrollToBottom();
         }
     };
+
+    loadMoreMessages = () => {
+        if (this.props.openedChat &&  this.props.messages[0] && this.props.loading===false)
+            this.props.onLoadMoreMessageUser(this.props.token, this.props.openedChat.id, this.props.messages[0].id, this.props.chatType);
+
+    };
+
     componentDidMount() {
+        this.refs.myscroll.addEventListener("scroll", () => {
+            //console.log(this.refs.myscroll.scrollTop,this.refs.myscroll.clientHeight);
+            //    console.log(  this.refs.myscroll.scrollHeight)
+            if (this.refs.myscroll.scrollTop === 0) {
+                this.loadMoreMessages();
+            }
+        });
+
         this.props.socket.on('user-message-cl-' + this.props.userId, this.userMessageHandler);
+        if (this.props.myTeams)
+            this.props.myTeams.forEach((value, key) => {
+                this.props.socket.off('team-message-cl-' + value.team.id);
+                this.props.socket.on('team-message-cl-' + value.team.id, this.teamMessageHandler);
+            });
     }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.openedChat !== prevProps.openedChat) {
             if (prevProps.openedChat && prevProps.chatType === 'team') {
@@ -58,14 +79,13 @@ class Chat extends Component {
 
     componentWillUnmount() {
         this.props.socket.off('user-message-cl-' + this.props.userId);
-        if(this.props.openedChat)
-        this.props.socket.off('team-message-cl-' + this.props.openedChat.id);
+        if (this.props.openedChat)
+            this.props.socket.off('team-message-cl-' + this.props.openedChat.id);
         this.props.myTeams.forEach((value, key) => {
             this.props.socket.off('team-message-cl-' + value.team.id);
             this.props.socket.on('team-message-cl-' + value.team.id);
         });
     }
-
 
     sendMessageHandler = (message) => {
         if (message.trim() === '') {
@@ -90,31 +110,31 @@ class Chat extends Component {
     render() {
         let chatUser = null;
         if (this.props.selectedTeam && this.props.openedChat && this.props.chatType === 'user') {
-          let  temp = this.props.selectedTeam.teamUsers.find((item) => {
+            let temp = this.props.selectedTeam.teamUsers.find((item) => {
                 return item.userId === this.props.openedChat.id
             });
-            if(temp)chatUser=temp.user;
+            if (temp) chatUser = temp.user;
         }
         let header = this.props.openedChat !== null ? this.props.chatType === 'user' ?
+            <div className={classes.UserHeader}>
+                <span
+                className={classes.UserHeaderName}>{this.props.openedChat.firstName + ' ' + this.props.openedChat.lastName}</span>
+                <Badge
+                    status={chatUser ? chatUser.focu.state === 'work' ? 'error' : chatUser.focu.state === 'pause' ? 'warning' :
+                        chatUser.focu.state === 'break' ? 'success' : chatUser.focu.state === 'online' ? 'processing' : 'default' : 'offline'}
+                    text={this.props.openedChat.focu.state}/></div> :
+
             <div className={classes.UserHeader}><span
-            className={classes.UserHeaderName}>{this.props.openedChat.firstName + ' ' + this.props.openedChat.lastName}</span>
-            <Badge
-                status={chatUser?chatUser.focu.state === 'work' ? 'error' : chatUser.focu.state === 'pause' ? 'warning' :
-                    chatUser.focu.state === 'break' ? 'success' : chatUser.focu.state === 'online' ? 'processing' : 'default':'offline'}
-                text={this.props.openedChat.focu.state}/></div> :
-
-        <div className={classes.UserHeader}><span
-            className={classes.UserHeaderName}>{this.props.openedChat.name}</span><span>#teamchat</span>
-        </div> : null;
-
+                className={classes.UserHeaderName}>{this.props.openedChat.name}</span><span>#teamchat</span>
+            </div> : null;
         return (
             <div className={classes.Chat}>
                 <div className={classes.ChatHeader}>
                     {header}
                 </div>
                 <div className={classes.ChatField}>
-
-                    <div className={classes.MessageField}>
+                    <div className={classes.MessageField} ref="myscroll">
+                        {this.props.loading ? <Spin size='large' style={{textAlign: 'center', margin: '10px'}}/> : null}
                         <Messages user={this.props.user} messages={this.props.messages}
                                   openedChat={this.props.openedChat} chatType={this.props.chatType}/>
                         <div style={{float: "left", clear: "both"}}
@@ -123,7 +143,6 @@ class Chat extends Component {
                              }}>
                         </div>
                     </div>
-
                     <InputFieldChat send={this.sendMessageHandler}/>
                 </div>
             </div>
@@ -136,6 +155,7 @@ const mapStateToProps = (state) => {
         selectedTeam: state.team.selectedTeam,
         openedChat: state.team.openedChat,
         chatType: state.team.chatType,
+        loading: state.team.loading,
         token: state.auth.token,
         myTeams: state.team.myTeams,
         socket: state.auth.socket,
@@ -153,6 +173,7 @@ const mapDispatchToProps = dispatch => {
         onSetSeenMessageUser: (token, senderid) => dispatch(actions.setSeenMessage(token, senderid)),
         onGetTeamUnread: (token, teamid) => dispatch(actions.getUnreadTeamMessage(token, teamid)),
         onSeenTeamMessage: (token, teamid) => dispatch(actions.setSeenTeamMessage(token, teamid)),
+        onLoadMoreMessageUser: (token, senderid, lastid, chatType) => dispatch(actions.loadMoreMessageUser(token, senderid, lastid, chatType))
     }
 };
 
