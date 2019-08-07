@@ -5,11 +5,18 @@ import SetDuration from '../../../components/TimerComponents/SetDuration/SetDura
 import CommandButton from "../../../components/TimerComponents/CommandButton/CommandButton";
 import {connect} from 'react-redux';
 import * as actions from "../../../store/actions";
+import pointSound from './point.mp3';
 import {Modal,Button,Slider} from 'antd';
 
 class PomodoroTimer extends Component {
     state = {
         visible:false,
+    };
+
+    audio=new Audio(pointSound);
+
+    togglePlay=()=>{
+        this.audio.play();//return promise
     };
 
     componentDidMount() {
@@ -93,12 +100,15 @@ class PomodoroTimer extends Component {
                 updatedTime = 0;
                 if (curSession === 'work') {
                     curSession = 'pause';
+                    this.togglePlay();
                     this.info('work','Take a pause!!!',this.startSession);
                 } else if (curSession === 'pause') {
                     curSession = 'break';
+                    this.togglePlay();
                     this.info('pause','Take a break!!!',this.startSession);
                 } else {
                     curSession = 'work';
+                    this.togglePlay();
                     this.info('break','Go to work!!!',this.startSession);
                     if (number === 3) {
                         number = 1;
@@ -177,7 +187,6 @@ class PomodoroTimer extends Component {
                 label: <strong>break</strong>,
             },
         };
-
 
         return (
             <div className={classes.PomodoroTimer} >

@@ -1,12 +1,25 @@
 import React, {Component} from 'react';
 import classes from './Chat.module.scss'
 import {connect} from 'react-redux';
-import {Badge, Spin,Button} from "antd";
+import {Badge, Spin} from "antd";
+import recSound from './recsound.mp3';
+import countSound from './messcounter.mp3';
 import * as actions from "../../../store/actions";
 import Messages from './Messages/Messages';
 import InputFieldChat from '../../../components/ChatComponent/InputFieldChat/InputFieldChat';
 
 class Chat extends Component {
+    audio = new Audio(recSound);
+    countAudio=new Audio(countSound);
+
+    togglePlayAudio = () => {
+            this.audio.play();
+    };
+
+    togglePlayCount=()=>{
+            this.countAudio.play();
+    };
+
 
     scrollToBottom = () => {
         this.messagesEnd.scrollIntoView({behavior: "smooth"});
@@ -14,15 +27,19 @@ class Chat extends Component {
 
     userMessageHandler = data => {
         this.props.onCheckUnread(this.props.token, data.senderUserId);
-        if (data.senderUserId === this.props.openedChat.id && data.receivedUserId === parseInt(this.props.userId)) {
+        if (data.senderUserId === this.props.openedChat.id && data.receivedUserId === this.props.user.id && this.props.chatType === 'user') {
+            this.togglePlayAudio();
             this.props.onReceiveMessage(data);
             this.props.onSetSeenMessageUser(this.props.token, data.senderUserId);
             this.scrollToBottom();
-        } else if (data.senderUserId === parseInt(this.props.userId) && data.receivedUserId === this.props.openedChat.id) {
+        } else if (data.senderUserId === this.props.user.id && data.receivedUserId === this.props.openedChat.id && this.props.chatType === 'user') {
             this.props.onReceiveMessage(data);
             this.scrollToBottom();
+        }else{
+            this.togglePlayCount();
         }
-    };
+    }
+    ;
 
     teamMessageHandler = data => {
         this.props.onGetTeamUnread(this.props.token, data.teamid);
@@ -30,6 +47,9 @@ class Chat extends Component {
             this.props.onReceiveMessage(data);
             this.props.onSeenTeamMessage(this.props.token, data.teamid);
             this.scrollToBottom();
+           if(this.props.user.id!==data.userid){
+               this.togglePlayAudio();
+           }
         }
     };
 
@@ -48,7 +68,7 @@ class Chat extends Component {
             }
         });
 
-        this.props.socket.on('user-message-cl-' + this.props.userId, this.userMessageHandler);
+        this.props.socket.on('user-message-cl-' + this.props.user.id, this.userMessageHandler);
         if (this.props.myTeams)
             this.props.myTeams.forEach((value, key) => {
                 this.props.socket.off('team-message-cl-' + value.team.id);
@@ -78,7 +98,7 @@ class Chat extends Component {
     }
 
     componentWillUnmount() {
-        this.props.socket.off('user-message-cl-' + this.props.userId);
+        this.props.socket.off('user-message-cl-' + this.props.user.id);
         if (this.props.openedChat)
             this.props.socket.off('team-message-cl-' + this.props.openedChat.id);
         this.props.myTeams.forEach((value, key) => {
@@ -87,15 +107,16 @@ class Chat extends Component {
         });
     }
 
-    sendMessageHandler = (message) => {
+    sendMessageHandler = (message,type) => {
+        console.log(message,type);
         if (message.trim() === '') {
             return;
         }
         let payload = {};
-        payload.senderUserId = parseInt(this.props.userId);
+        payload.senderUserId = parseInt(this.props.user.id);
         payload.data = {
             content: message,
-            type: 'text'
+            type: type
         };
         if (this.props.openedChat !== null) {
             payload.receiverId = this.props.openedChat.id;
@@ -123,7 +144,6 @@ class Chat extends Component {
                     status={chatUser ? chatUser.focu.state === 'work' ? 'error' : chatUser.focu.state === 'pause' ? 'warning' :
                         chatUser.focu.state === 'break' ? 'success' : chatUser.focu.state === 'online' ? 'processing' : 'default' : 'offline'}
                     text={this.props.openedChat.focu.state}/></div> :
-
             <div className={classes.UserHeader}><span
                 className={classes.UserHeaderName}>{this.props.openedChat.name}</span><span>#teamchat</span>
             </div> : null;
@@ -159,7 +179,6 @@ const mapStateToProps = (state) => {
         token: state.auth.token,
         myTeams: state.team.myTeams,
         socket: state.auth.socket,
-        userId: state.auth.userId,
         user: state.auth.user,
         messages: state.team.messages
     }

@@ -26,7 +26,6 @@ class EditProfile extends Component{
     }
 
     changeImage=(event)=>{
-
         let img=URL.createObjectURL(event.target.files[0]);
         this.setState(
             {file:img,avatar:event.target.files[0]}

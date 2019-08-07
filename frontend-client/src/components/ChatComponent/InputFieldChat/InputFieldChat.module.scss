@@ -3,6 +3,36 @@
   height: 50px;
   background-color: white;
   border-bottom: 1px #cccccc solid;
+
+  .SendImageIcon{
+    margin-top: 6px;
+    margin-left: 2px;
+    cursor: pointer;
+  }
+
+  .SendImage{
+    &>input{
+      display: none;
+    }
+  }
+
+  .SendImageWithExit{
+    overflow: visible;
+    position: relative;
+    &>span{
+      position: absolute;
+      background: transparent;
+      color: black;
+      top: -5px;
+      right: -5px;
+      &:hover{
+        color: red;
+        cursor: pointer;
+      }
+    }
+  }
+
+
   .InputTextArea{
     padding: 10px;
     border: 0;

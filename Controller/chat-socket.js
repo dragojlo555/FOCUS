@@ -18,6 +18,7 @@ exports.receiveUserMessage= async (payload)=>{
 
 
 exports.receiveTeamMessage=async (payload)=>{
+    console.log(payload);
     const receiver=payload.receiverId;
     const sender=payload.senderUserId;
     const data=payload.data;
@@ -28,7 +29,6 @@ exports.receiveTeamMessage=async (payload)=>{
         content:data.content,
         teamid:receiver
     });
-
     let newMess=await TeamReminder.findOne({where:{id:teamRem.id},include:[{model:User}]});
 
     return newMess;

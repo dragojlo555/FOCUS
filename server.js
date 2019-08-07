@@ -71,6 +71,7 @@ sequelize
                  console.log(data.teamid);
                  io.sockets.emit('team-message-cl-'+data.teamid,data);
              }).catch(err=>{
+                 console.log(err);
                  io.sockets.emit('team-message-cl','null');
              })
             });
