@@ -2,19 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="01a3d9b4-5f98-4f7f-bc7e-a8ca504a4680" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend-client/src/assets/image-icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/messcounter.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/recsound.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/PomodoroTimer/point.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/config.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sequelizerc.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controller/chat-socket.js" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/chat-socket.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend-client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend-client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/InputFieldChat/InputFieldChat.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/InputFieldChat/InputFieldChat.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/InputFieldChat/InputFieldChat.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/InputFieldChat/InputFieldChat.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend-client/src/components/Profile/EditProfile/EditProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/components/Profile/EditProfile/EditProfile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Chat.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/PomodoroTimer/PomodoroTimer.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/PomodoroTimer/PomodoroTimer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Controller/chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/chat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Controller/team.js" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/team.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Controller/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/users.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Auth/Signup/Signup.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Auth/Signup/Signup.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/focus.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/reminder.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/role-user-team.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/role.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/team.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/teamReminder.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/teamReminderSeen.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/user-team.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/user.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api/users.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -30,51 +38,8 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>sequelize</find>
-      <find>setState</find>
-      <find>ROle</find>
-      <find>conso</find>
-      <find>upda</find>
-      <find>unread</find>
-      <find>avatar</find>
-      <find>consol</find>
-      <find>Failed</find>
-      <find>con</find>
-      <find>onSet</find>
-      <find>this.props.session.timer</find>
-      <find>startSession</find>
-      <find>Head</find>
-      <find>focu</find>
-      <find>onS</find>
-      <find>Avata</find>
-      <find>recei</find>
-      <find>onChe</find>
-      <find>get</find>
-      <find>all</find>
-      <find>users</find>
-      <find>myteams</find>
-      <find>this.scr</find>
-      <find>slice</find>
-      <find>console</find>
-      <find>loadMo</find>
-      <find>props.userId</find>
-      <find>props.send</find>
-      <find>send</find>
-    </findStrings>
-    <dirStrings>
-      <dir>C:\Users\Drago\WebstormProjects\focus</dir>
-    </dirStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="135" />
-    <option name="y" value="45" />
-    <option name="width" value="1405" />
-    <option name="height" value="1095" />
   </component>
   <component name="ProjectId" id="1P66cE4TIMW0C7AWd7eFgWkp60T" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -97,6 +62,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Drago\WebstormProjects\focus" />
       <recent name="C:\Users\Drago\WebstormProjects\focus\frontend-client" />
       <recent name="C:\Users\Drago\WebstormProjects\focus\frontend-client\src\assets" />
       <recent name="C:\Users\Drago\WebstormProjects\focus\public\images" />
@@ -217,7 +183,12 @@
       <workItem from="1564729317591" duration="17693000" />
       <workItem from="1564820337867" duration="1841000" />
       <workItem from="1565084485752" duration="14432000" />
-      <workItem from="1565182277734" duration="264000" />
+      <workItem from="1565182277734" duration="2193000" />
+      <workItem from="1565333067978" duration="904000" />
+      <workItem from="1565334827423" duration="14473000" />
+      <workItem from="1565522112514" duration="226000" />
+      <workItem from="1565522373343" duration="23000" />
+      <workItem from="1565678415706" duration="22715000" />
     </task>
     <task id="LOCAL-00001" summary="login,registration,creating teams">
       <created>1553797379645</created>
@@ -303,7 +274,14 @@
       <option name="project" value="LOCAL" />
       <updated>1563371678100</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="update">
+      <created>1565182666602</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1565182666602</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -314,7 +292,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -329,8 +309,8 @@
     <MESSAGE value="I added new classes to the data-model,socket communication and chat reducer." />
     <MESSAGE value="updated chat" />
     <MESSAGE value="Add online and offline state,seen on user message,&#10;Changing the status to close and open the connection,code upgrade" />
-    <MESSAGE value="update" />
     <MESSAGE value="load old messages" />
-    <option name="LAST_COMMIT_MESSAGE" value="load old messages" />
+    <MESSAGE value="update" />
+    <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
 </project>

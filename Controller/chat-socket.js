@@ -1,6 +1,6 @@
-const UserReminder=require('../models/reminder');
-const TeamReminder=require('../models/teamReminder');
-const User=require('../models/user');
+const User=require('../models').User;
+const TeamReminder=require('../models').TeamReminder;
+const UserReminder=require('../models').Reminder;
 
 exports.receiveUserMessage= async (payload)=>{
   const receiver=payload.receiverId;
@@ -29,7 +29,7 @@ exports.receiveTeamMessage=async (payload)=>{
         content:data.content,
         teamid:receiver
     });
-    let newMess=await TeamReminder.findOne({where:{id:teamRem.id},include:[{model:User}]});
+    let newMess=await TeamReminder.findOne({where:{id:teamRem.id},include:[{model:User,as:'user'}]});
 
     return newMess;
 };

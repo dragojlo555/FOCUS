@@ -1,30 +1,12 @@
-const Sequelize=require('sequelize');
-const sequelize=require('../util/database');
-const User=require('./user');
-
-const Team=sequelize.define('team',{
-   id:{
-       type:Sequelize.INTEGER,
-       primaryKey:true,
-       autoIncrement: true
-   },
-    name:{
-       type:Sequelize.STRING,
-        allowNull: false
-    },
-    endedAt:{
-       type:Sequelize.DATE,
-        allowNull: true
-    },
-    avatar:{
-       type:Sequelize.STRING,
-        allowNull: true
-    },
-    creatorUserId:{
-       type:Sequelize.INTEGER,
-        allowNull:false
-    }
-});
-
-Team.belongsTo(User,{foreignKey:'creatorUserId',targetKey:'id'});
-module.exports = Team;
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+  const Team = sequelize.define('Team', {
+    name: DataTypes.STRING,
+    endedAt: DataTypes.DATE,
+    avatar: DataTypes.STRING
+  }, {});
+  Team.associate = function(models) {
+    Team.belongsTo(models.User,{foreignKey:'creatorUserId',targetKey:'id',as:'user'});
+  };
+  return Team;
+};

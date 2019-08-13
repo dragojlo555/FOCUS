@@ -1,9 +1,10 @@
-const User = require('../models/user');
-const Team = require('../models/team');
-const RoleUserTeam = require('../models/role-user-team');
-const Role = require('../models/role');
-const Focus = require('../models/focus');
-const UserTeam = require('../models/user-team');
+const User=require('../models').User;
+const Focus=require('../models').Focus;
+const Team=require('../models').Team;
+const Role=require('../models').Role;
+const RoleUserTeam=require('../models').RoleUserTeam;
+const UserTeam=require('../models').UserTeam;
+
 const {validationResult} = require('express-validator/check');
 const sequelize = require('../util/database');
 const Sequelize = require('sequelize');
@@ -12,7 +13,7 @@ const op = Sequelize.Op;
 
 exports.allUsers = (req, res) => {
     const idTeamReq = req.body.idteam;
-    UserTeam.findAll({where: {teamId: idTeamReq, deletedAt: null}, include: [{model: User}]}).then(data =>
+    UserTeam.findAll({where: {teamId: idTeamReq, deletedAt: null}, include: [{model: User,as:'user'}]}).then(data =>
         res.status(200).json({msg: 'Success', users: data})
     ).catch(err => {
         res.status(400).json({msg: 'Failed', error: err});
@@ -28,16 +29,17 @@ exports.getTeam = async (req, res) => {
         const idTeamReq = req.body.idteam;
         let teamUsers = await UserTeam.findAll({
             where: {teamId: idTeamReq, deletedAt: null},
-            include: [{model: User, include: [{model: Focus}]}, {
+            include: [{model: User,as:'user', include: [{model: Focus,as:'focu'}]}, {
                 model: RoleUserTeam,
+                as:'roleUserTeams',
                 where: {deletedAt: null},
-                include: [{model: Role}]
+                include: [{model: Role,as:'role'}]
             }]
         });
-        let team = await Team.findOne({where: {id: idTeamReq}, include: [{model: User}]});
+        let team = await Team.findOne({where: {id: idTeamReq}, include: [{model: User,as:'user'}]});
         let role = await UserTeam.findOne({
             where: {userId: req.userId, deletedAt: null},
-            include: [{model: RoleUserTeam, where: {deletedAt: null}, include: [{model: Role}]}]
+            include: [{model: RoleUserTeam,as:'roleUserTeams',where: {deletedAt: null}, include: [{model: Role,as:'role'}]}]
         });
         res.status(200).json({msg: 'Success', team: team, teamUsers: teamUsers, myRole: role});
     } catch (err) {
@@ -92,7 +94,7 @@ exports.addMember = async (req, res) => {
         if (user) {
             const role = await UserTeam.findOne({
                 where: {userId: req.userId, deletedAt: null, teamId: idTeamReq}, include: [{
-                    model: RoleUserTeam, where: {deletedAt: null}, include: [{model: Role}]
+                    model: RoleUserTeam,as:'roleUserTeams' ,where: {deletedAt: null}, include: [{model: Role,as:'role'}]
                 }]
             });
             if (role.roleUserTeams[0].role.code === 'Creator' || role.roleUserTeams[0].role.code === 'Admin') {
@@ -130,7 +132,7 @@ exports.getAllTeamByUser = async (req, res) => {
     try {
         const teams = await UserTeam.findAll({
             where: {userId: userReq, deletedAt: null},
-            include: [{model: Team, required: true, where: {}}]
+            include: [{model: Team,as:'team', required: true, where: {}}]
         });
         res.status(200).json({msg: 'Success', data: teams});
     } catch (err) {
@@ -198,8 +200,8 @@ exports.changeRole = async (req, res) => {
         let requestUser = await UserTeam.findOne({
             where: {userId: req.userId, deletedAt: null},
             include: [{
-                model: RoleUserTeam, include: [{
-                    model: Role,
+                model: RoleUserTeam,as:'roleUserTeams', include: [{
+                    model: Role,as:'role',
                     where: {
                         [op.or]: [
                             {code:'Creator'},
@@ -212,7 +214,7 @@ exports.changeRole = async (req, res) => {
                  await RoleUserTeam.update({deletedAt:Date.now()},{where:{userTeamId:idTeamUserReq,roleId:idOldRoleReq},tran},tran);
                  let temp = await RoleUserTeam.findOne({
                        where: {userTeamId: idTeamUserReq, deletedAt: null},
-                       include: [{model: Role, where: {[op.or]:[{id: idRoleReq},{code:'Creator'}]}
+                       include: [{model: Role,as:'role', where: {[op.or]:[{id: idRoleReq},{code:'Creator'}]}
                        }]
                    },{tran});
                    if (temp) {
@@ -238,7 +240,6 @@ exports.changeRole = async (req, res) => {
 
 
 exports.addRole = async (req, res) => {
-
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json(errors.array());
@@ -249,7 +250,7 @@ exports.addRole = async (req, res) => {
         const idRoleReq = req.body.idrole;
         let temp = await RoleUserTeam.findOne({
             where: {userTeamId: idTeamUserReq, deletedAt: null},
-            include: [{model: Role, where: {id: idRoleReq}}]
+            include: [{model: Role,as:'role', where: {id: idRoleReq}}]
         });
         if (temp) {
             const error = new Error('The user already has that role!!!');

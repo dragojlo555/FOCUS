@@ -1,5 +1,5 @@
-const User = require('../models/user');
-const Focus = require('../models/focus');
+const User=require('../models').User;
+const Focus=require('../models').Focus;
 const {validationResult} = require('express-validator/check');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -95,7 +95,7 @@ exports.loginUser = async (req, res) => {
 
 exports.info = async (req, res) => {
     try {
-        const user = await User.findOne({where: {id: req.userId}, include: [{model: Focus}]});
+        const user = await User.findOne({where: {id: req.userId}, include: [{model: Focus,as:'focu'}]});
         res.status(200).json({msg: 'Success', user: user})
     } catch (error) {
         res.status(500).json({msg: 'Failed', error: error})
@@ -172,7 +172,7 @@ exports.SocketDisconnect = async (userId) => {
             userId: userId,
             updatedAt: Date.now()
         }, {where: {userId: userId}});
-        let update = await User.findOne({where: {id: userId}, include: {model: Focus}});
+        let update = await User.findOne({where: {id: userId}, include: {model: Focus,as:'focu'}});
         socketIO.getIO().sockets.emit('change-state', update);
     } catch (err) {
         console.log(err);
@@ -185,7 +185,7 @@ exports.SocketConnected = async (userId) => {
             userId: userId,
             updatedAt: Date.now()
         }, {where: {userId: userId}});
-        let update = await User.findOne({where: {id: userId}, include: {model: Focus}});
+        let update = await User.findOne({where: {id: userId}, include: {model: Focus,as:'focu'}});
         socketIO.getIO().sockets.emit('change-state', update);
     } catch (err) {
         console.log(err);
@@ -199,7 +199,7 @@ exports.changeMyState = async (req, res) => {
             userId: req.userId,
             updatedAt: Date.now()
         }, {where: {userId: req.userId}});
-        let update = await User.findOne({where: {id: req.userId}, include: {model: Focus}});
+        let update = await User.findOne({where: {id: req.userId}, include: {model: Focus,as:'focu'}});
         socketIO.getIO().sockets.emit('change-state', update);
         res.status(200).json({msg: 'Success', user: update, updated: result[0]});
     } catch (err) {

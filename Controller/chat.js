@@ -1,8 +1,11 @@
-const UserReminder = require('../models/reminder');
-const TeamReminder = require('../models/teamReminder');
 const Sequelize = require('sequelize');
-const User = require('../models/user');
-const TeamReminderSeen = require('../models/teamReminderSeen');
+const User=require('../models').User;
+const TeamReminder=require('../models').TeamReminder;
+const UserReminder=require('../models').Reminder;
+const TeamReminderSeen=require('../models').TeamReminderSeen;
+
+
+
 const {validationResult} = require('express-validator/check');
 const op = Sequelize.Op;
 
@@ -14,7 +17,6 @@ exports.getMessagesByUser = async (req, res) => {
     try {
         const recId = req.query.receivedid;
         const sendId = req.query.senderid;
-
         let message = await UserReminder.findAll({
             limit: 12,
             order: [['id', 'desc']],
@@ -42,7 +44,7 @@ exports.getMessageByTeam = async (req, res) => {
             limit: 12, order: [['id', 'desc']],
             where: {
                 teamid: sendId
-            }, include: [{model: User}]
+            }, include: [{model: User,as:'user'}]
         });
         return res.status(200).json({msg:'Success',message:message});
     } catch (err) {
@@ -137,13 +139,13 @@ exports.getTeamUnreadCount=async (req,res)=>{
                     where: {
                         createdAt:{[op.gt]:lastSeen.lastseen},
                         teamid: teamId
-                    }, include: [{model: User}]
+                    }, include: [{model: User,as:'user'}]
                 });
             }else{
                 message = await TeamReminder.findAll({
                     where: {
                         teamid: teamId
-                    }, include: [{model: User}]
+                    }, include: [{model: User,as:'user'}]
                 });
             }
         return res.status(200).json({msg:'Success',number:message.length,teamid:teamId});
@@ -192,7 +194,7 @@ exports.loadMoreMessagesTeam=async (req,res)=>{
             where: {
                 teamid: sendId,
                 id:{[op.lt]:lastIdReq}
-            }, include: [{model: User}]
+            }, include: [{model: User,as:'user'}]
         });
         return res.status(200).json({msg:'Success',messages:message});
     }catch(err){

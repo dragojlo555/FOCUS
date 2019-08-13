@@ -13,7 +13,8 @@ class Signup extends Component {
     state = {
         file:DEFAULT_USER_AVATAR,
         avatar:null,
-        formIsValid: false
+        formIsValid: false,
+        confirmDirty: false,
     };
 
 
@@ -51,17 +52,17 @@ class Signup extends Component {
         const { form } = this.props;
         if (value && this.state.confirmDirty) {
             form.validateFields(['confirm'], { force: true });
-            return;
         }
         callback();
     };
 
     handleSubmit = e => {
         e.preventDefault();
+        console.log('Dobraaa');
         this.props.form.validateFieldsAndScroll((err, values) => {
             if(this.state.avatar==null){
                 message.error('Please choose an avatar!!!');
-            }
+            }console.log('Blizuu');
             if (!err && !(this.state.avatar===null)) {
                 this.props.onSignUp(values.email,values.password,values.firstname,values.lastname,this.state.avatar,values.prefix+';'+values.phone);
             }
