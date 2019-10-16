@@ -16,13 +16,16 @@ class TeamListMenu extends Component {
         this.props.onGetTeamUnread(this.props.token, selectedKey);
     };
 
-
-    render() {
+    componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.myTeams) {
             if (this.props.selectedTeam === null && this.props.myTeams.length > 0) {
                 this.props.onSelectedTeam(this.props.token, this.props.myTeams[0].team.id, true)
             }
         }
+    }
+
+
+    render() {
         let teams = this.props.myTeams && this.props.selectedTeam !== null ? this.props.myTeams.map((value, key) => {
             this.props.onGetTeamUnread(this.props.token, value.team.id);
             return <TeamItem key={key} selectedId={this.props.selectedTeam.team.id} team={value} onSelectedCard={() => {

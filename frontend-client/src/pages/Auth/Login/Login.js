@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {required, length, email} from '../../../util/validators/validators';
 import * as actions from '../../../store/actions/index';
 import {connect} from "react-redux";
-import {Alert} from 'antd';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import { Form, Icon, Input, Button, Checkbox,Modal,Alert} from 'antd';
 import classes from './Login.module.scss';
+
 
 class Login extends Component {
     state = {
@@ -25,6 +25,16 @@ class Login extends Component {
         formIsValid: false
     };
 
+    handleForgotPassword=()=>{
+        this.props.history.push({
+            pathname: '/forgot/'
+        });
+    };
+
+
+    handleResendMailVerification=()=>{
+        this.props.onResendVerificationMail(this.props.mail);
+    };
 
     handleSubmit = e => {
         e.preventDefault();
@@ -35,6 +45,10 @@ class Login extends Component {
         });
     };
 
+    handleModalCancel=()=>{
+        this.props.onAfterSignUp();
+    };
+
     handleSignUpClick=(e)=>{
         e.preventDefault();
         this.props.history.push('/signup');
@@ -43,9 +57,9 @@ class Login extends Component {
     render() {
           let errorMail=null;
         let errorPass=null;
-        if(this.props.afterSignUp){
-            this.props.onAfterSignUp();
-        }
+       /* if(this.props.afterSignUp){
+         //   this.props.onAfterSignUp();
+        }*/
         if(this.props.error){
             if(this.props.error.data.inputField==='email'){
                 errorMail= <Alert
@@ -63,6 +77,15 @@ class Login extends Component {
                     showIcon
                     closable
                     style={{width:'300px'}}
+                />
+            }
+            if(this.props.error.data.inputField==='verify'){
+                errorPass= <Alert
+                    message={<div><span>{this.props.error.data.msg}<Button type='link' onClick={this.handleResendMailVerification}> Resend mail!</Button></span></div>}
+                    type="error"
+                    showIcon
+                    closable
+                    style={{width:'350px'}}
                 />
             }
         }
@@ -96,15 +119,26 @@ class Login extends Component {
                             valuePropName: 'checked',
                             initialValue: true,
                         })(<Checkbox>Remember me</Checkbox>)}
-                        <a className="login-form-forgot" href="/signup">
+                        <Button type='link' className="login-form-forgot" onClick={this.handleForgotPassword}>
                             Forgot password
-                        </a>
+                        </Button>
                         < Button style={{width:'100%'}} type="primary" htmlType="submit" className="login-form-button">
                             Log in
                         </Button>
                         Or <a href='/signup' onClick={this.handleSignUpClick}>register now!</a>
                     </Form.Item>
                 </Form>
+                <Modal
+                    title="Verify email"
+                    visible={this.props.afterSignUp}
+                    onOk={this.handleModalCancel}
+                    onCancel={this.handleModalCancel}
+                    okText='Save'
+                >
+                    <div>
+                        Verify your Email address
+                    </div>
+                </Modal>
             </div>
         )
     }
@@ -115,7 +149,8 @@ const mapStateToProps = state => {
         loading: state.auth.loading,
         error: state.auth.error,
         isAuthenticated: state.auth.token !== null,
-        afterSignUp:state.auth.afterSignUp
+        afterSignUp:state.auth.afterSignUp,
+        mail:state.auth.mail
     }
 };
 
@@ -123,6 +158,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onAuth:(email,password)=>dispatch(actions.auth(email,password)),
         onAfterSignUp:()=>dispatch(actions.afterSignUp()),
+        onResendVerificationMail:(mail)=>dispatch(actions.resendVerificationMail(mail))
     }
 };
 

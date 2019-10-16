@@ -4,7 +4,8 @@ export {auth,
     signUp,
     afterSignUp,
     editProfile,
-    editProfileAvatar
+    editProfileAvatar,
+    resendVerificationMail
 } from './auth';
 
 export{
@@ -13,14 +14,16 @@ export{
     createTeamEnd,
     selectedTeam,
     changeMyState,
+    receiveChangeState,
     openChat,
     sendMessage,
     receiveMessage,
     getUnreadMessage,
-    setSeenMessage,
     getUnreadTeamMessage,
     setSeenTeamMessage,
-    loadMoreMessageUser
+    loadMoreMessageUser,
+    changeSeenUser,
+    setSeenMessageUser,
 }from './team';
 
 export{

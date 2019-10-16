@@ -1,0 +1,42 @@
+
+.ImageControl {
+  justify-content: space-between;
+  display: flex;
+  font-size: 180%;
+  &::selection{
+    background: transparent;
+  }
+
+
+
+  .PreviousIcon {
+    left: 5px;
+    top: 5px;
+    cursor: pointer;
+    &:hover {
+      color: #ffd400;
+    }
+  }
+
+  .NextIcon {
+    cursor: pointer;
+    right: 5px;
+    top: 5px;
+    &:hover {
+    color: #8cfe56;
+    }
+  }
+
+}
+
+.stagod{
+  position: absolute;
+  width: 100%;
+  img {
+    user-select: none !important;
+
+    &::selection {
+      background: white !important;
+    }
+  }
+}

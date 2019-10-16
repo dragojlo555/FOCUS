@@ -8,7 +8,12 @@ const initialState = {
     user:null,
     loading:false,
     afterSignUp:false,
-    socket:null
+    socket:null,
+    mail:null
+};
+
+const start=(state,action)=>{
+  return updateObject(state,{});
 };
 
 const signUpFailed=(state,action)=>{
@@ -26,6 +31,7 @@ const afterSignUp=(state,action)=>{
 const authFail=(state,action)=>{
   return updateObject(state,{
       loading:false,
+      mail:action.email,
       error:action.error
   })
 };
@@ -67,6 +73,7 @@ const reducer = (state= initialState,action)=>{
       case actionTypes.AFTER_SIGN_UP:return afterSignUp(state,action);
       case actionTypes.SIGN_UP_FAILED:return signUpFailed(state,action);
       case actionTypes.EDIT_PROFILE_SUCCESS:return editProfileSuccess(state,action);
+      case actionTypes.START:return start(state,action);
       default: return state;
   }
 };

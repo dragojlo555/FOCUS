@@ -21,6 +21,16 @@ const getUpdateUnreadMessage = (state, action) => {
     return updateObject(state, {unread: updateUnread});
 };
 
+const changeSeenMess = (state, action) => {
+    let updateMessages = state.messages.slice();
+    updateMessages.forEach(item => {
+        if (item.seenTime == null) {
+            item.seenTime = new Date();
+        }
+    });
+    return updateObject(state, {messages: updateMessages});
+};
+
 const getUpdateTeamUnreadMessage = (state, action) => {
     let updateUnread = state.teamUnread.slice();
     updateUnread[action.data.teamid] = action.data.number;
@@ -102,6 +112,19 @@ const endCreateTeam = (state, action) => {
     });
 };
 
+//after received changing state
+const receiveChangeState = (state, action) => {
+    const select=Object.assign({},state.selectedTeam);
+    let teamUsers = select.teamUsers;
+    teamUsers.forEach(item => {
+        if (item.user.id === action.userId) {
+            item.user.focu.state = action.state;
+        }
+    });
+    select.teamUsers = teamUsers;
+    return updateObject(state, {selectedTeam: select});
+};
+
 //Za chat
 const sendMessage = (state, action) => {
     const messages = [
@@ -113,10 +136,10 @@ const sendMessage = (state, action) => {
     })
 };
 
-const loadMoreMessageUserStart=(state,action)=>{
-  return updateObject(state,{
-      loading:true
-  })
+const loadMoreMessageUserStart = (state, action) => {
+    return updateObject(state, {
+        loading: true
+    })
 };
 
 
@@ -211,7 +234,11 @@ const reducer = (state = initialState, action) => {
         case actionTypes.LOAD_MORE_MESS_USER_FAILED:
             return loadMoreMessageUserFailed(state, action);
         case actionTypes.LOAD_MORE_MESS_USER_START:
-            return loadMoreMessageUserStart(state,action);
+            return loadMoreMessageUserStart(state, action);
+        case actionTypes.CHANGE_SEEN_USER_MESS:
+            return changeSeenMess(state, action);
+        case actionTypes.RECEIVE_CHANGE_STATE:
+            return receiveChangeState(state, action);
         default:
             return state;
     }

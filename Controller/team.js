@@ -4,7 +4,6 @@ const Team=require('../models').Team;
 const Role=require('../models').Role;
 const RoleUserTeam=require('../models').RoleUserTeam;
 const UserTeam=require('../models').UserTeam;
-
 const {validationResult} = require('express-validator/check');
 const sequelize = require('../util/database');
 const Sequelize = require('sequelize');
@@ -29,7 +28,7 @@ exports.getTeam = async (req, res) => {
         const idTeamReq = req.body.idteam;
         let teamUsers = await UserTeam.findAll({
             where: {teamId: idTeamReq, deletedAt: null},
-            include: [{model: User,as:'user', include: [{model: Focus,as:'focu'}]}, {
+            include: [{model: User,as:'user',attributes:['firstName','lastName','avatar','id'], include: [{model: Focus,as:'focu',attributes:['state']}]}, {
                 model: RoleUserTeam,
                 as:'roleUserTeams',
                 where: {deletedAt: null},
@@ -98,9 +97,14 @@ exports.addMember = async (req, res) => {
                 }]
             });
             if (role.roleUserTeams[0].role.code === 'Creator' || role.roleUserTeams[0].role.code === 'Admin') {
-                const userInTeam = await UserTeam.findOne({where: {userId: user.id, teamId: idTeamReq}});
+                const userInTeam = await UserTeam.findOne({raw:'true',where: {userId: user.id, teamId: idTeamReq}});
                 if (userInTeam) {
-                    return res.status(200).json({msg: 'Failed', error: 'User exists in this team'});
+                    if(userInTeam.deletedAt!==null){
+                       UserTeam.update({deletedAt:null},{where:{userId: user.id, teamId: idTeamReq}});
+                        return res.status(200).json({msg: 'Success', error: 'The user returned to the team'});
+                    }else {
+                        return res.status(200).json({msg: 'Failed', error: 'User exists in this team'});
+                    }
                 } else {
                     const newUser = await UserTeam.create({
                         userId: user.id,
@@ -268,7 +272,6 @@ exports.addRole = async (req, res) => {
 
 
 exports.removeRole = async (req, res) => {
-
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json(errors.array());

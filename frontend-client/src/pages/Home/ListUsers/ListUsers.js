@@ -8,9 +8,10 @@ import classes from './ListUsers.module.scss';
 
 class ListUsers extends Component {
 
-    changeState = (data) => {
-        if (this.props.selectedTeam !== null)
-            this.props.onSelectedTeam(this.props.token, this.props.selectedTeam.team.id, false);
+    changeState = (data) => { //receive change state
+        if (this.props.selectedTeam !== null) {
+            this.props.onReceiveChangeState(data.id,data.focu.state);
+        }
     };
 
     componentDidMount() {
@@ -24,7 +25,6 @@ class ListUsers extends Component {
     onSelectUser = (user) => {
         this.setState({selectedUser: user});
         this.props.onOpen('user', user, this.props.userId, this.props.token);
-        this.props.onSetSeenMessageUser(this.props.token, user.id);
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -44,14 +44,18 @@ class ListUsers extends Component {
         const users = this.props.selectedTeam != null ? this.props.selectedTeam.teamUsers.map((value, key) => {
             let userClass = classes.UserCard;
             let status;
+
+            if(new Date(value.user.focu.updatedAt) < new Date(new Date().getTime() - 1000 * 1800)){
+                status='default';
+            }else{
             switch (value.user.focu.state) {
                 case 'work':status='error';break;
                 case 'pause':status='warning';break;
                 case 'break':status='success';break;
                 case 'offline':status='default';break;
                 case 'online':status='processing';break;
-                default:status='offline';
-            }
+                default:status='default';
+            }}
             if (this.props.chatType === 'user' && this.props.openedChat.id === value.user.id) {
                 userClass = [classes.UserCard, classes.SelectedUserCard].join(' ');
             }
@@ -100,7 +104,7 @@ const mapDispatchToProps = dispatch => {
         onOpen: (type, select, homeId, token) => dispatch(actions.openChat(type, select, homeId, token)),
         onSelectedTeam: (token, id, openChat) => dispatch(actions.selectedTeam(token, id, openChat)),
         onCheckUnread: (token, senderid) => dispatch(actions.getUnreadMessage(token, senderid)),
-        onSetSeenMessageUser: (token, senderid) => dispatch(actions.setSeenMessage(token, senderid))
+        onReceiveChangeState:(userId,state)=>dispatch(actions.receiveChangeState(userId,state))
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ListUsers);

@@ -25,7 +25,7 @@ class EditProfile extends Component{
         }
     }
 
-    changeImage=(event)=>{
+    changeImageProfile=(event)=>{
         let img=URL.createObjectURL(event.target.files[0]);
         this.setState(
             {file:img,avatar:event.target.files[0]}
@@ -43,13 +43,11 @@ class EditProfile extends Component{
                 this.props.handleOk();
             }
         });
-
     };
 
     handleModalCancel=()=>{
         this.props.handleCancel();
     };
-
 
     render(){
 
@@ -83,11 +81,11 @@ class EditProfile extends Component{
             okText='Save'
         >
         <div>
-            <div className={classes.ImgUpload} title='Choose avatar'>
+            <div className={classes.ImgUpload} title='Change avatar'>
                 <label htmlFor='file-input'>
                     <img src={this.state.file} alt="Choose"/>
                 </label>
-                <input id ="file-input" type="file" onChange={this.changeImage}/>
+                <input id ="file-input" type="file" onChange={this.changeImageProfile}/>
             </div>
             <Form {...formItemLayout} onSubmit={this.handleSubmit}>
                 <Form.Item label='First name'>

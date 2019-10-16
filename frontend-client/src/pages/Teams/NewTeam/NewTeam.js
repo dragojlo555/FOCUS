@@ -14,7 +14,7 @@ class NewTeam extends Component {
         formIsValid: false
     };
 
-    componentWillUnmount() {
+    UNSAFE_componentWillMount() {
         this.props.onCreateEnd();
     }
 

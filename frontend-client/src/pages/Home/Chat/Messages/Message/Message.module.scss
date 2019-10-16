@@ -14,16 +14,16 @@
   animation-delay: 1s;
 
 
-
   .MessageAvatar{
   }
 
   .MessageContent {
     margin-top: 10px;
     margin-left: 5px;
-    width: 100%;
+    min-width: 150px;
     display: flex;
     flex-flow: column;
+    justify-content: space-between;
     .MessageTime {
       width: 90%;
       text-align: right;
@@ -35,23 +35,35 @@
     }
 
     .MessageText {
-      border-radius:15px;
-      padding: 20px;
+      border-radius:10px;
+      padding: 10px;
       width: 100%;
-
-        background-image: linear-gradient(to right,#2eddff,#55f409 );
-
+      background-color: white;
+      color:black;
+       // background-image: linear-gradient(to right,#2eddff,#55f409 );
       &.TextAway{
      //   background-color: #55f409;
-        background-image: linear-gradient(to right,#55f409,#2eddff );
+        //background-image: linear-gradient(to right,#55f409,#2eddff );
+       // color:white;
+        background-color: #335fff;
+        color:white;
+      //  background-color: #ececf4;
+      }
+      &.Image{
+        border-radius: 10px;
+        background-color: transparent;
+        background-image:unset;
+        padding: 0;
       }
     }
   }
 
-
+.ReactPlayer{
+  border-radius: 10px;
+}
 
   .MessageContent.MessageAway{
-    margin-left: 0;
+    margin-left: auto;
     margin-right: 5px;
   }
 }

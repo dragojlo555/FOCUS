@@ -16,6 +16,12 @@
     }
   }
 
+  .FileUpload{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
   .SendImageWithExit{
     overflow: visible;
     position: relative;

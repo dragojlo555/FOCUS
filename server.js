@@ -6,11 +6,13 @@ const users_route=require('./routes/api/users');
 const chat_route=require('./routes/api/chat');
 const socketIO=require('./util/socket');
 const socketAuth=require('./middleware/is-auth-socket');
-const ChatController=require('./Controller/chat-socket');
+const ChatSocketController=require('./Controller/chat-socket');
 const UserController=require('./Controller/users');
 
 
 const app=express();
+const clients=[];
+exports.socketClients=clients;
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
@@ -44,17 +46,20 @@ try {
         return next(new Error('authentication error'));
     });
     io.on('connection', socket => {
-        console.log('Client connected');
+      //  console.log('Client connected');
         const userId = socket.handshake.query.id;
+        ChatSocketController.addUserInRooms(userId,socket);
         UserController.SocketConnected(userId);
+       // console.log(socket.id);
 
+        clients[userId]=socket.id;
         socket.on('user-message', payload => {
-            ChatController.receiveUserMessage(payload).then(data => {
+            ChatSocketController.receiveUserMessage(payload).then(data => {
                     if (data.receivedUserId !== data.senderUserId) {
-                        io.sockets.emit('user-message-cl-' + data.receivedUserId, data);
-                        io.sockets.emit('user-message-cl-' + data.senderUserId, data);
+                        io.to(clients[data.receivedUserId]).emit('user-message-cl-' + data.receivedUserId, data);
+                        io.to(clients[data.senderUserId]).emit('user-message-cl-' + data.senderUserId, data);
                     } else {
-                        io.sockets.emit('user-message-cl-' + data.receivedUserId, data);
+                        io.to(clients[data.receivedUserId]).emit('user-message-cl-' + data.receivedUserId, data);
                     }
                 }
             ).catch(err => {
@@ -62,17 +67,20 @@ try {
                 }
             );
         });
-        socket.on('team-message', payload => {
-            ChatController.receiveTeamMessage(payload).then(data => {
-                console.log(data.teamid);
-                io.sockets.emit('team-message-cl-' + data.teamid, data);
+        socket.on('team-message', (payload,callback) => {
+            ChatSocketController.receiveTeamMessage(payload).then(data => {
+                io.sockets.to('team-'+data.teamid).emit('team-message-cl-' + data.teamid, data);
             }).catch(err => {
                 console.log(err);
                 io.sockets.emit('team-message-cl', 'null');
-            })
+            });
+            callback('Ack')
+        });
+        socket.on('user-set-seen',(payload)=>{
+            ChatSocketController.setSeenUser(payload.userId,payload.senderId);
         });
         socket.on("disconnect", () => {
-            console.log("user disconnected");
+        //    console.log("user disconnected");
             UserController.SocketDisconnect(userId);
         });
     });

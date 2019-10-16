@@ -76,7 +76,7 @@ render() {
         </> : null;
 
         component = <>
-            <NavigationItem link="/" exact>Home</NavigationItem>
+            <NavigationItem link="/home" exact>Home</NavigationItem>
             <NavigationItem link='/teams'>Teams</NavigationItem>
             <Menu
                 className={menuClass}

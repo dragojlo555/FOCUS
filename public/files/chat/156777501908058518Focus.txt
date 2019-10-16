@@ -1,0 +1,3 @@
+Osvjezavanje stanja popraviti ona vremena
+Kako bi idealan api trebao izgledati
+

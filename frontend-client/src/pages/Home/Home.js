@@ -16,7 +16,7 @@ class Home extends Component {
                 <ListUsers/>
             </div>
             <div className={classes.ChatBox}>
-                <Chat/>
+                <Chat match={this.props.match} history={this.props.history}/>
             </div>
         </div>);
     }

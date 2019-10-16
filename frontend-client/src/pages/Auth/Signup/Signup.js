@@ -58,12 +58,15 @@ class Signup extends Component {
 
     handleSubmit = e => {
         e.preventDefault();
-        console.log('Dobraaa');
         this.props.form.validateFieldsAndScroll((err, values) => {
+            /*
             if(this.state.avatar==null){
                 message.error('Please choose an avatar!!!');
             }console.log('Blizuu');
             if (!err && !(this.state.avatar===null)) {
+                this.props.onSignUp(values.email,values.password,values.firstname,values.lastname,this.state.avatar,values.prefix+';'+values.phone);
+            }*/
+            if(!err){
                 this.props.onSignUp(values.email,values.password,values.firstname,values.lastname,this.state.avatar,values.prefix+';'+values.phone);
             }
         });
@@ -73,11 +76,9 @@ class Signup extends Component {
 
     render() {
         let redirect=null;
-        console.log(this.props.afterSignUp);
         if(this.props.afterSignUp){
             redirect=<Redirect to='/'/>
         }
-
         const { getFieldDecorator } = this.props.form;
 
         const formItemLayout = {

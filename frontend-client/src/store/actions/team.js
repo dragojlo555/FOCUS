@@ -25,6 +25,12 @@ export const createTeamStart = () => {
     }
 };
 
+export const changeSeenUser = () => {
+    return {
+        type: actionTypes.CHANGE_SEEN_USER_MESS
+    };
+};
+
 export const createTeamSuccess = (data) => {
     return {
         data: data,
@@ -107,14 +113,6 @@ export const selectedTeamSuccess = (data) => {
     }
 };
 
-/*
-export const teamAfterLogout=()=>{
-    return{
-        type:actionTypes.TEAM_AFTER_LOGOUT
-    }
-}
-;*/
-
 export const selectedTeamStart = () => {
     return {
         type: actionTypes.TEAM_SELECTED_START,
@@ -163,11 +161,18 @@ export const openedChat = (typeChat, select, messages) => {
 //chat action
 export const openChat = (type, select, homeId, token) => {
     return dispatch => {
-        const data = {
+        let data = {
             receivedid: homeId,
             senderid: select.id
         };
-        let url = type === 'user' ? 'chat/user' : 'chat/team';
+        let url = 'chat/user';
+        if (type === 'team') {
+            url = 'chat/team';
+            data = {
+                // senderid: select.id
+                teamid: select.id
+            }
+        }
         let options = {
             method: 'GET',
             url: url,
@@ -186,35 +191,43 @@ export const openChat = (type, select, homeId, token) => {
     }
 };
 
-export const loadMoreMessageUserSuccess=(messages)=>{
+export const loadMoreMessageUserSuccess = (messages) => {
     const sortMessages = messages.slice().sort((a, b) => a.id - b.id);
-        return{
-            type:actionTypes.LOAD_MORE_MESS_USER_SUCCESS,
-            messages:sortMessages
-        }
+    return {
+        type: actionTypes.LOAD_MORE_MESS_USER_SUCCESS,
+        messages: sortMessages
+    }
 };
 
-export const loadMoreMessageUserFailed=()=>{
-  return{
-      type:actionTypes.LOAD_MORE_MESS_USER_FAILED,
-  }
+export const loadMoreMessageUserFailed = () => {
+    return {
+        type: actionTypes.LOAD_MORE_MESS_USER_FAILED,
+    }
 };
 
-export const loadMoreMeessageUserStart=()=>{
-  return{
-      type:actionTypes.LOAD_MORE_MESS_USER_START
-  }
+export const loadMoreMeessageUserStart = () => {
+    return {
+        type: actionTypes.LOAD_MORE_MESS_USER_START
+    }
 };
 
 
-export const loadMoreMessageUser = (token, senderid, lastid,type) => {
+export const loadMoreMessageUser = (token, senderid, lastid, type) => {
     return dispatch => {
         dispatch(loadMoreMeessageUserStart());
-        const data = {
+        let data = {
             senderid: senderid,
-            lastid:lastid
+            lastid: lastid
         };
-        const url=(type==='user')?'chat/user/load':'chat/team/load';
+        let url = 'chat/user/load';
+        if (type === 'team') {
+            url = 'chat/team/load';
+            data={
+                teamid: senderid,
+                lastid: lastid
+            }
+        }
+
         let options = {
             method: 'GET',
             url: url,
@@ -226,16 +239,17 @@ export const loadMoreMessageUser = (token, senderid, lastid,type) => {
             }
         };
         axios(options).then(response => {
-           // console.log(response.data);
-         //   dispatch(loadMoreMessageUserSuccess(response.data.messages));
-            setTimeout(()=>{dispatch(loadMoreMessageUserSuccess(response.data.messages));},2000);
+            // console.log(response.data);
+            //   dispatch(loadMoreMessageUserSuccess(response.data.messages));
+            setTimeout(() => {
+                dispatch(loadMoreMessageUserSuccess(response.data.messages));
+            }, 200);
         }).catch(err => {
-             dispatch(loadMoreMessageUserFailed());
-          //  console.log(err);
+            dispatch(loadMoreMessageUserFailed());
+            //  console.log(err);
         });
     }
 };
-
 
 export const changeMyStateFinsished = (state) => {
     return {
@@ -265,7 +279,9 @@ export const getUnreadMessageUserSuccess = (data) => {
     }
 };
 
-export const setSeenMessageUserSuccess = (senderId) => {
+export const setSeenMessageUser = (socket,userId,senderId) => {
+    const payload = {userId: userId, senderId: senderId};
+    socket.emit('user-set-seen', payload);
     return {
         type: actionTypes.SET_SEEN_USER_MESSAGE,
         senderid: senderId
@@ -364,36 +380,16 @@ export const setSeenTeamMessage = (token, teamid) => {
             console.log(err);
         });
     }
-
-
 };
 
-
-export const setSeenMessage = (token, senderid) => {
-    return dispatch => {
-        const data = {
-            senderid: senderid
-        };
-        const url = 'chat/user/seen';
-        let options = {
-            method: 'POST',
-            url: url,
-            data: data,
-            headers: {
-                'Authorization': `bearer ${token}`,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json;charset=UTF-8'
-            }
-        };
-        axios(options).then(response => {
-            dispatch(setSeenMessageUserSuccess(response.data.senderid));
-        }).catch(err => {
-            // dispatch(selectedTeamFailed(err.data));
-            console.log(err);
-        });
+export const receiveChangeState=(userId,state)=>{
+    console.log(userId,state);
+    return{
+        type:actionTypes.RECEIVE_CHANGE_STATE,
+        state:state,
+        userId:userId
     }
 };
-
 
 export const changeMyState = (token, state) => {
     return dispatch => {

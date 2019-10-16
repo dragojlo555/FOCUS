@@ -2,26 +2,51 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="01a3d9b4-5f98-4f7f-bc7e-a8ca504a4680" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/config/config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sequelizerc.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/appconfig.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/assets/upload.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/Auth/ResetPassword/ResetPassword.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/Auth/ResetPassword/ResetPassword.module.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/ImageView/ImageView.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/ImageView/ImageView.module.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/UploadFiles/UploadFiles.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/UploadFiles/UploadFiles.module.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/middleware/team-role.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/files/mail.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/files/pomodoro.PNG" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controller/chat-socket.js" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/chat-socket.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controller/chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/chat.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controller/team.js" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/team.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controller/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/users.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/axios-conf.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/axios-conf.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/InputFieldChat/InputFieldChat.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/InputFieldChat/InputFieldChat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/InputFieldChat/InputFieldChat.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/InputFieldChat/InputFieldChat.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/components/Navigation/Navigation.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/components/Navigation/Navigation.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/components/Profile/EditProfile/EditProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/components/Profile/EditProfile/EditProfile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Auth/Login/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Auth/Login/Login.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Auth/Signup/Signup.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Auth/Signup/Signup.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/focus.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/reminder.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/role-user-team.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/role.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/team.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/teamReminder.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/teamReminderSeen.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/user-team.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/user.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Chat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Messages/Message/Message.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Messages/Message/Message.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Messages/Message/Message.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Messages/Message/Message.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Messages/Messages.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Messages/Messages.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/ListUsers/ListUsers.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/ListUsers/ListUsers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/Menu/TeamListMenu/TeamListMenu.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Menu/TeamListMenu/TeamListMenu.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Teams/NewTeam/NewTeam.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Teams/NewTeam/NewTeam.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/store/actions/actionTypes.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/store/actions/actionTypes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/store/actions/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/store/actions/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/store/actions/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/store/actions/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/store/actions/team.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/store/actions/team.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/store/reducers/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/store/reducers/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/store/reducers/team.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/store/reducers/team.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/is-auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/is-auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api/chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api/chat.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/api/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api/users.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
     </list>
@@ -44,6 +69,7 @@
   <component name="ProjectId" id="1P66cE4TIMW0C7AWd7eFgWkp60T" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="11.9.0" />
@@ -58,21 +84,21 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="MTConfigurable" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Drago\WebstormProjects\focus\public\files" />
+      <recent name="C:\Users\Drago\WebstormProjects\focus\frontend-client\src\assets" />
+      <recent name="C:\Users\Drago\WebstormProjects\focus\frontend-client\src\pages\Home\Chat" />
+      <recent name="C:\Users\Drago\WebstormProjects\focus\frontend-client\src\pages\Home\PomodoroTimer" />
+      <recent name="C:\Users\Drago\WebstormProjects\focus\util" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Drago\WebstormProjects\focus" />
       <recent name="C:\Users\Drago\WebstormProjects\focus\frontend-client" />
       <recent name="C:\Users\Drago\WebstormProjects\focus\frontend-client\src\assets" />
       <recent name="C:\Users\Drago\WebstormProjects\focus\public\images" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Drago\WebstormProjects\focus\frontend-client\src\assets" />
-      <recent name="C:\Users\Drago\WebstormProjects\focus\frontend-client\src\pages\Home\Chat" />
-      <recent name="C:\Users\Drago\WebstormProjects\focus\frontend-client\src\pages\Home\PomodoroTimer" />
-      <recent name="C:\Users\Drago\WebstormProjects\focus\util" />
-      <recent name="C:\Users\Drago\WebstormProjects\focus" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -188,7 +214,30 @@
       <workItem from="1565334827423" duration="14473000" />
       <workItem from="1565522112514" duration="226000" />
       <workItem from="1565522373343" duration="23000" />
-      <workItem from="1565678415706" duration="22715000" />
+      <workItem from="1565678415706" duration="24726000" />
+      <workItem from="1565850876486" duration="24541000" />
+      <workItem from="1565895226238" duration="127000" />
+      <workItem from="1566283432624" duration="21932000" />
+      <workItem from="1566382472906" duration="705000" />
+      <workItem from="1567020332712" duration="1098000" />
+      <workItem from="1567060388800" duration="24054000" />
+      <workItem from="1567153396985" duration="31000" />
+      <workItem from="1567153503005" duration="194000" />
+      <workItem from="1567153720755" duration="1938000" />
+      <workItem from="1567155702644" duration="724000" />
+      <workItem from="1567156450743" duration="3073000" />
+      <workItem from="1567159724220" duration="12591000" />
+      <workItem from="1567187075790" duration="16000" />
+      <workItem from="1567752718657" duration="20689000" />
+      <workItem from="1568357235784" duration="18178000" />
+      <workItem from="1568627504018" duration="8352000" />
+      <workItem from="1568876463156" duration="18326000" />
+      <workItem from="1569479941822" duration="88000" />
+      <workItem from="1569480147134" duration="23771000" />
+      <workItem from="1570085785926" duration="20181000" />
+      <workItem from="1570517674663" duration="23122000" />
+      <workItem from="1571121699096" duration="24928000" />
+      <workItem from="1571208515297" duration="5286000" />
     </task>
     <task id="LOCAL-00001" summary="login,registration,creating teams">
       <created>1553797379645</created>

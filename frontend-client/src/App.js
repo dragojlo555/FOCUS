@@ -10,6 +10,7 @@ import Layout from './components/Layout/Layout';
 import Logout from './pages/Auth/Logout/Logout';
 import Teams from './pages/Teams/Teams';
 import 'antd/dist/antd.css';
+import ResetPassword from "./components/Auth/ResetPassword/ResetPassword";
 
 
 
@@ -24,7 +25,8 @@ class App extends Component {
         let routes = (
             <Switch>
                 <Route path='/signup' component={Signup}/>
-                <Route path='/' exact component={Login}/>
+                <Route  path='/forgot' component={ResetPassword}/>
+                <Route path='/' component={Login}/>
                 <Redirect to='/'/>
             </Switch>
         );
@@ -32,10 +34,9 @@ class App extends Component {
             routes = (
                     <Switch>
                         <Route path='/logout' component={Logout}/>
-                        <Route path='/teams' component={Teams}>
-                        </Route>
-                        <Route path='/' exact component={Home}/>
-                        <Redirect to='/'/>
+                        <Route path='/teams' component={Teams}/>
+                        <Route path='/home' component={Home}/>
+                        <Redirect to='/home'/>
                     </Switch>
             );
         }
