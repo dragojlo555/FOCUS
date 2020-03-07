@@ -4,6 +4,9 @@ import * as actions from '../../../store/actions/index';
 import {connect} from "react-redux";
 import { Form, Icon, Input, Button, Checkbox,Modal,Alert} from 'antd';
 import classes from './Login.module.scss';
+import socketIOClient from 'socket.io-client';
+
+
 
 
 class Login extends Component {
@@ -22,8 +25,11 @@ class Login extends Component {
                 validators: [required, length({min: 6})]
             }
         },
-        formIsValid: false
+        formIsValid: false,
+        socket:null
     };
+
+
 
     handleForgotPassword=()=>{
         this.props.history.push({
@@ -31,10 +37,29 @@ class Login extends Component {
         });
     };
 
+    handleGoogleSignIn=()=>{
+        this.props.onSignInWithGoogle();
+
+    };
 
     handleResendMailVerification=()=>{
         this.props.onResendVerificationMail(this.props.mail);
+
     };
+    componentDidMount() {
+       const socket=socketIOClient('https://us-api.stg.mobileguardian.com/screenshare');
+       socket.emit('classSubscribe',{message:{id:5644654631}});
+
+       console.log(socket);
+            socket.on('classSubscribe',(res)=>{
+                console.log(res);
+            });
+            socket.on('screenShareReceive',res=>{
+            console.log(res);
+            });
+
+
+    }
 
     handleSubmit = e => {
         e.preventDefault();
@@ -56,7 +81,7 @@ class Login extends Component {
 
     render() {
           let errorMail=null;
-        let errorPass=null;
+          let errorPass=null;
        /* if(this.props.afterSignUp){
          //   this.props.onAfterSignUp();
         }*/
@@ -120,11 +145,17 @@ class Login extends Component {
                             initialValue: true,
                         })(<Checkbox>Remember me</Checkbox>)}
                         <Button type='link' className="login-form-forgot" onClick={this.handleForgotPassword}>
-                            Forgot password
+                            Forgot password?
                         </Button>
                         < Button style={{width:'100%'}} type="primary" htmlType="submit" className="login-form-button">
-                            Log in
+                            Sign in
                         </Button>
+                        <a href='http://localhost:5000/api/users/auth/google'>
+                        < Button onClick={this.handleGoogleSignIn} type="primary" className={classes.GoogleButton}>
+                            <Icon className={classes.GoogleIcon} type="google-plus" />
+                            Sign in with Google
+                        </Button>
+                       </a>
                         Or <a href='/signup' onClick={this.handleSignUpClick}>register now!</a>
                     </Form.Item>
                 </Form>
@@ -134,9 +165,10 @@ class Login extends Component {
                     onOk={this.handleModalCancel}
                     onCancel={this.handleModalCancel}
                     okText='Save'
+                    footer={<Button onClick={this.handleModalCancel} type='primary'>Ok</Button>}
                 >
                     <div>
-                        Verify your Email address
+                        Please, verify your Email address!!!
                     </div>
                 </Modal>
             </div>
@@ -158,7 +190,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onAuth:(email,password)=>dispatch(actions.auth(email,password)),
         onAfterSignUp:()=>dispatch(actions.afterSignUp()),
-        onResendVerificationMail:(mail)=>dispatch(actions.resendVerificationMail(mail))
+        onResendVerificationMail:(mail)=>dispatch(actions.resendVerificationMail(mail)),
     }
 };
 

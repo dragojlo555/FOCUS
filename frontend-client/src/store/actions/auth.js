@@ -1,12 +1,18 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-conf';
 import {init, close} from '../../confSocketIO';
-
+import Cokkies from 'js-cookie';
 
 
 export const start=()=>{
   return{
     type:actionTypes.START
+  }
+};
+
+export const changeSounds =()=>{
+  return{
+   type:actionTypes.CHANGE_SOUNDS
   }
 };
 
@@ -18,6 +24,8 @@ export const authStart = () => {
 };
 
 export const authSuccess = (token, userId, user) => {
+    localStorage.setItem('token',token);
+    localStorage.setItem('userId',userId);
     const socket = init(token, userId);
     return {
         type: actionTypes.AUTH_SUCCESS,
@@ -118,7 +126,6 @@ export const auth = (email, password) => {
             }
         ).catch(err => {
                 dispatch(authFail(err.response,email));
-               // console.log('Error')
             }
         );
     }
@@ -143,11 +150,9 @@ export const signUp = (email, password, firstname, lastname, img, phone) => {
             }
         };
         axios(options).then(response => {
-            //   console.log(response);
             dispatch(signUpSuccess());
         }).catch(error => {
                 dispatch(signUpFailed(error.response));
-                //console.log(error.response.data);
             }
         );
     }
@@ -172,10 +177,7 @@ export const editProfileAvatar = (token, firstname, lastname, phone, avatar) => 
             }
         };
         axios(options).then(response => {
-            //   console.log(response);
-            //    console.log(response.data);
             dispatch(editProfileSuccess(response.data.user));
-
         }).catch(error => {
                 //  dispatch(signUpFailed(error.response));
                // console.log(error.response.data);
@@ -201,12 +203,9 @@ export const resendVerificationMail = (mail) => {
             }
         };
         axios(options).then(response => {
-          //  console.log(response);
-            // console.log(response.data.user);
            // dispatch(editProfileSuccess(response.data.user));
         }).catch(error => {
                 //  dispatch(signUpFailed(error.response));
-               // console.log(error.response);
             }
         )
 
@@ -235,8 +234,6 @@ export const editProfile = (token, firstname, lastname, phone) => {
             }
         };
         axios(options).then(response => {
-            //   console.log(response);
-            // console.log(response.data.user);
             dispatch(editProfileSuccess(response.data.user));
 
         }).catch(error => {
@@ -250,12 +247,18 @@ export const editProfile = (token, firstname, lastname, phone) => {
 
 export const authCheckState = () => {
     return dispatch => {
-        const token = localStorage.getItem('token');
+        let token = localStorage.getItem('token');
+        let cookieExpire=false;
+        if(!token){
+            cookieExpire=true;
+            token=Cokkies.get('token');
+           Cokkies.remove('token');
+        }
         if (!token) {
             dispatch(logout());
         } else {
             const expirationDate = new Date(localStorage.getItem('expirationDate'));
-            if (expirationDate <= new Date()) {
+            if (expirationDate <= new Date() && cookieExpire===false) {
                 dispatch(logout());
             } else {
                 const url = 'users/info';
@@ -269,8 +272,10 @@ export const authCheckState = () => {
                     }
                 };
                 axios(options).then(response => {
+                    const expirationTime = new Date(new Date().getTime() + 1000 * 3600);
+                    localStorage.setItem('expirationDate', expirationTime);
                     dispatch(authSuccess(token, response.data.user.id, response.data.user));
-                    dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000));
+                    dispatch(checkAuthTimeout((expirationTime.getTime() - new Date().getTime()) / 1000));
                 }).catch(error => {
                     dispatch(logout());
                 });

@@ -1,4 +1,7 @@
 import axios from 'axios';
+import store from './store/reducers/auth';
+import {logout} from "./store/actions";
+
 export const URL = "http://localhost:5000/";
 export const URLT = URL;
 const baseURLApi = URL + 'api/';
@@ -10,12 +13,18 @@ const instance = axios.create({
     baseURL: baseURLApi
 });
 
+export const  getAvatar=(avatar)=>{
+    return   avatar?avatar.startsWith('http')?avatar:URL +avatar : DEFAULT_USER_AVATAR;
+};
+
+const {dispatch} = store;
 instance.interceptors.response.use(response => {
     return response;
 }, error => {
     const {config,response: {status}} = error;
     if (status === 401) {
-        if(config){}
+        dispatch(logout());
+        return Promise.reject(error);
     }
     return Promise.reject(error);
 });

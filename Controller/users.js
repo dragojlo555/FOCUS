@@ -1,5 +1,4 @@
-const User = require('../models').User;
-const Focus = require('../models').Focus;
+
 const {validationResult} = require('express-validator/check');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -8,6 +7,9 @@ const nodemailer = require('nodemailer');
 const cryptoRandomString = require('crypto-random-string');
 const config = require('../config/appconfig');
 const sequelize = require('sequelize');
+const User = require('../models').User;
+const Focus = require('../models').Focus;
+const keys=require('../config/keys');
 const op = sequelize.Op;
 
 exports.getDefault = (req, res) => {
@@ -29,12 +31,12 @@ exports.allUser = (req, res) => {
 };
 
 exports.checkExistMail = async (req, res) => {
+    try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({err: errors.array(), mail: req.query});
     }
     const reqMail = req.query.mail;
-    try {
         const user = await User.findOne({where: {mail: reqMail}});
         if (user) {
             res.status(200).json({msg: 'Success', user: user, exist: true});
@@ -49,6 +51,7 @@ exports.checkExistMail = async (req, res) => {
 };
 
 exports.createUser = async (req, res) => {
+    try {
     const pass = req.body.password;
     const emailReq = req.body.email;
     const firstNameReq = req.body.firstname;
@@ -60,12 +63,10 @@ exports.createUser = async (req, res) => {
     }
 
     const phoneReq = req.body.phone;
-
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json(errors.array());
     }
-    try {
         let hash = await bcrypt.hash(pass, 10);
         let mailVerify = cryptoRandomString({length: 24, type: 'url-safe'});
         let NewUser = await User.create({
@@ -82,7 +83,7 @@ exports.createUser = async (req, res) => {
                 state: 'work',
                 userId: NewUser.id
             });
-            sendVerifyMail(emailReq, firstNameReq, mailVerify);
+          await  sendVerifyMail(emailReq, firstNameReq, mailVerify);
         }
         return res.status(200).json({message: 'Success', user: NewUser});
     } catch (err) {
@@ -105,12 +106,12 @@ exports.logoutUser = async (req, res) => {
 };
 
 
-exports.loginUser = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({err: errors.array(), mail: req.body});
-    }
+exports.loginUser = async (req, res, next) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({err: errors.array(), mail: req.body});
+        }
         let user = await User.findOne({where: {mail: req.body.email}});
         if (user && user.verifyMail === null) {
             const success = await bcrypt.compare(req.body.password, user.password);
@@ -120,7 +121,7 @@ exports.loginUser = async (req, res) => {
                         email: user.mail,
                         userId: user.id.toString()
                     },
-                    'secret',
+                    keys.jtwsecret,
                     {expiresIn: '1h'}
                 );
                 await User.update({
@@ -129,33 +130,36 @@ exports.loginUser = async (req, res) => {
                 }, {where: {id: user.id}});
                 return res.status(200).json({user: user, token: token, userId: user.id.toString(), expireIn: '1'});
             } else {
-
                 return res.status(401).json({msg: 'Wrong password !!!', inputField: 'password'});
             }
         } else {
             if (user.verifyMail !== null) {
-                return res.status(401).json({msg: 'Verify Your Email Address.', inputField: 'verify'});
+                return res.status(401).json({msg: 'Please ,verify Your Email Address.', inputField: 'verify'});
             }
             return res.status(401).json({msg: 'A user with this email could not be found.', inputField: 'email'});
         }
     } catch (err) {
-        console.log(err);
-        return res.status(500).json({msg: 'Failed'});
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };
 
 
 exports.info = async (req, res) => {
     try {
+        console.log('Dragomir');
         const user = await User.findOne({where: {id: req.userId}, include: [{model: Focus, as: 'focu'}]});
         res.status(200).json({msg: 'Success', user: user})
     } catch (error) {
-        res.status(500).json({msg: 'Failed', error: error})
+        res.status(500).json({msg: 'Failed', error: error.message})
     }
 };
 
 
 exports.changeProfileFull = async (req, res) => {
+    try {
     const firstNameReq = req.body.firstname;
     const lastNameReq = req.body.lastname;
     const avatarReq = req.file.path;
@@ -166,7 +170,6 @@ exports.changeProfileFull = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json(errors.array());
     }
-    try {
         let result = await User.update({
             firstName: firstNameReq,
             lastName: lastNameReq,
@@ -187,7 +190,9 @@ exports.changeProfileFull = async (req, res) => {
     }
 };
 
+
 exports.changeProfile = async (req, res) => {
+    try {
     const firstNameReq = req.body.firstname;
     const lastNameReq = req.body.lastname;
     const phoneReq = req.body.phone;
@@ -197,7 +202,6 @@ exports.changeProfile = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json(errors.array());
     }
-    try {
         let result = await User.update({
             firstName: firstNameReq,
             lastName: lastNameReq,
@@ -252,7 +256,11 @@ exports.changeMyState = async (req, res) => {
             userId: req.userId,
             updatedAt: Date.now()
         }, {where: {userId: req.userId}});
-        let update = await User.findOne({where: {id: req.userId},attributes:['id'], include: {model: Focus, as: 'focu',attributes:['state']}});
+        let update = await User.findOne({
+            where: {id: req.userId},
+            attributes: ['id'],
+            include: {model: Focus, as: 'focu', attributes: ['state']}
+        });
         socketIO.getIO().sockets.emit('change-state', update);
         res.status(200).json({msg: 'Success', user: update, updated: result[0]});
     } catch (err) {
@@ -265,12 +273,12 @@ exports.verification = async (req, res) => {
     try {
         let update = await User.findOne({where: {mail: req.query.mail, verifyMail: null}});
         if (update) {
-            return res.redirect('http://localhost:3000/');
+            return res.redirect(config.redirect);
         }
         if (req.query.token) {
             let update = await User.update({verifyMail: null}, {where: {verifyMail: req.query.token}});
             if (update[0] === 1) {
-                return res.redirect('http://localhost:3000/');
+                return res.redirect(config.redirect);
             } else {
                 return res.status(400).json({msg: 'Failed', error: 'Update failed !!!'});
             }
@@ -388,11 +396,11 @@ const sendPasswordResetMail = async (mail, firstName, code) => {
 };
 
 exports.resendMailVerification = async (req, res) => {
+    try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json(errors.array());
     }
-    try {
         let code = cryptoRandomString({length: 24, type: 'url-safe'});
         let name = 'User';
         let user = await User.findOne({where: {mail: req.query.mail}});
@@ -401,18 +409,18 @@ exports.resendMailVerification = async (req, res) => {
             sendVerifyMail(req.query.mail, name, code);
         }
         return res.status(200).json({msg: 'Success'});
-    } catch (err) {
+    }catch (err) {
         if (!err.statusCode) err.statusCode = 500;
         return res.status(err.statusCode).json({msg: 'Failed', error: err.message});
     }
 };
 
 exports.resetPassword = async (req, res) => {
+    try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json(errors.array());
     }
-    try {
         let code = cryptoRandomString({length: 6, characters: '0123456789'});
         let user = await User.findOne({where: {mail: req.query.mail}});
         if (user) {
@@ -464,5 +472,30 @@ exports.confirmResetPassword = async (req, res) => {
         if (!err.statusCode) err.statusCode = 500;
         return res.status(err.statusCode).json({msg: 'Failed', error: err.message});
     }
+};
+
+exports.changePassword = async (req, res) => {
+    try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json(errors.array());
+    }
+        const oldPasswod = req.body.old;
+        const newPassword = req.body.new;
+        const confirm = req.body.confirm;
+    } catch (err) {
+        if (!err.statusCode) err.statusCode = 500;
+        return res.status(err.statusCode).json({msg: 'Failed', error: err.message});
+    }
+};
+
+exports.authGoogleCallback=async (req,res)=>{
+  try{
+      res.cookie('token',req.user.token, { maxAge: 3600*1000});
+      res.redirect('http://localhost:3000');
+  } catch(err){
+      if (!err.statusCode) err.statusCode = 500;
+      return res.status(err.statusCode).json({msg: 'Failed', error: err.message});
+  }
 };
 

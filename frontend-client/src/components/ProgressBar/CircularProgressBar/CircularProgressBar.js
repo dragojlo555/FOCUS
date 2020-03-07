@@ -13,7 +13,7 @@ const CircularProgressBar = (props) => {
     if(props.session.current==='pause'){color='orange'}else if(props.session.current==='break')color='lime';
     return (
         <div className={classes.CircularProgressBar}>
-            <CustomCircular  percentage={percentage} styles={{
+            <CustomCircular  percentage={percentage}  styles={{
                 // Customize the root svg element
                 root: {
                     fill:'volcano'
@@ -63,8 +63,6 @@ const CircularProgressBar = (props) => {
         </div>
 
     )
-
-
 };
 
 

@@ -1,9 +1,9 @@
-const User=require('../models').User;
-const Focus=require('../models').Focus;
-const Team=require('../models').Team;
-const Role=require('../models').Role;
-const RoleUserTeam=require('../models').RoleUserTeam;
-const UserTeam=require('../models').UserTeam;
+const User = require('../models').User;
+const Focus = require('../models').Focus;
+const Team = require('../models').Team;
+const Role = require('../models').Role;
+const RoleUserTeam = require('../models').RoleUserTeam;
+const UserTeam = require('../models').UserTeam;
 const {validationResult} = require('express-validator/check');
 const sequelize = require('../util/database');
 const Sequelize = require('sequelize');
@@ -12,33 +12,43 @@ const op = Sequelize.Op;
 
 exports.allUsers = (req, res) => {
     const idTeamReq = req.body.idteam;
-    UserTeam.findAll({where: {teamId: idTeamReq, deletedAt: null}, include: [{model: User,as:'user'}]}).then(data =>
+    UserTeam.findAll({where: {teamId: idTeamReq, deletedAt: null}, include: [{model: User, as: 'user'}]}).then(data =>
         res.status(200).json({msg: 'Success', users: data})
     ).catch(err => {
-        res.status(400).json({msg: 'Failed', error: err});
+        res.status(500).json({msg: 'Failed', error: err});
     })
 };
 
 exports.getTeam = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json(errors.array());
-    }
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json(errors.array());
+        }
         const idTeamReq = req.body.idteam;
         let teamUsers = await UserTeam.findAll({
             where: {teamId: idTeamReq, deletedAt: null},
-            include: [{model: User,as:'user',attributes:['firstName','lastName','avatar','id'], include: [{model: Focus,as:'focu',attributes:['state']}]}, {
+            include: [{
+                model: User,
+                as: 'user',
+                attributes: ['firstName', 'lastName', 'avatar', 'id'],
+                include: [{model: Focus, as: 'focu', attributes: ['state']}]
+            }, {
                 model: RoleUserTeam,
-                as:'roleUserTeams',
+                as: 'roleUserTeams',
                 where: {deletedAt: null},
-                include: [{model: Role,as:'role'}]
+                include: [{model: Role, as: 'role'}]
             }]
         });
-        let team = await Team.findOne({where: {id: idTeamReq}, include: [{model: User,as:'user'}]});
+        let team = await Team.findOne({where: {id: idTeamReq}, include: [{model: User, as: 'user'}]});
         let role = await UserTeam.findOne({
             where: {userId: req.userId, deletedAt: null},
-            include: [{model: RoleUserTeam,as:'roleUserTeams',where: {deletedAt: null}, include: [{model: Role,as:'role'}]}]
+            include: [{
+                model: RoleUserTeam,
+                as: 'roleUserTeams',
+                where: {deletedAt: null},
+                include: [{model: Role, as: 'role'}]
+            }]
         });
         res.status(200).json({msg: 'Success', team: team, teamUsers: teamUsers, myRole: role});
     } catch (err) {
@@ -48,61 +58,67 @@ exports.getTeam = async (req, res) => {
 };
 
 exports.create = (req, res) => {
-    let idTeam = null;
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json(errors.array());
-    }
-    const teamNameReq = req.body.name;
-    const avatarReq = req.file.path;
-
-    console.log('Create team');
-    Team.create({
-        creatorUserId: req.userId,
-        name: teamNameReq,
-        avatar: avatarReq
-    }).then(team => {
-            idTeam = team.id;
-            return UserTeam.create({
-                userId: req.userId,
-                teamId: team.id
-            });
+    try {
+        let idTeam = null;
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json(errors.array());
         }
-    ).then(userTeam => {
-        return RoleUserTeam.create({
-            userTeamId: userTeam.id,
-            roleId: 1
+        const teamNameReq = req.body.name;
+        const avatarReq = req.file.path;
+        Team.create({
+            creatorUserId: req.userId,
+            name: teamNameReq,
+            avatar: avatarReq
+        }).then(team => {
+                idTeam = team.id;
+                return UserTeam.create({
+                    userId: req.userId,
+                    teamId: team.id
+                });
+            }
+        ).then(userTeam => {
+            return RoleUserTeam.create({
+                userTeamId: userTeam.id,
+                roleId: 1
+            });
+        }).then(roleUserTeam => {
+            return res.status(201).json({msg: 'Success', data: {id: idTeam, name: teamNameReq}, team: roleUserTeam});
+        }).catch(err => {
+            return res.status(500).json({msg: 'Failed', error: err});
         });
-    }).then(roleUserTeam => {
-        return res.status(201).json({msg: 'Success', data: {id: idTeam, name: teamNameReq}, team: roleUserTeam});
-    }).catch(err => {
-        return res.status(500).json({msg: 'Failed', error: err});
-    });
+    } catch (err) {
+        if (!err.statusCode) err.statusCode = 505;
+        return res.status(err.statusCode).json({msg: 'Failed', error: err.message});
+    }
 };
 
 
 exports.addMember = async (req, res) => {
-    const mailNewUser = req.body.email;
-    const idTeamReq = req.body.idteam;
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json(errors.array());
-    }
     try {
+        const mailNewUser = req.body.email;
+        const idTeamReq = req.body.idteam;
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json(errors.array());
+        }
         const user = await User.findOne({where: {mail: mailNewUser}});
         if (user) {
             const role = await UserTeam.findOne({
                 where: {userId: req.userId, deletedAt: null, teamId: idTeamReq}, include: [{
-                    model: RoleUserTeam,as:'roleUserTeams' ,where: {deletedAt: null}, include: [{model: Role,as:'role'}]
+                    model: RoleUserTeam,
+                    as: 'roleUserTeams',
+                    where: {deletedAt: null},
+                    include: [{model: Role, as: 'role'}]
                 }]
             });
             if (role.roleUserTeams[0].role.code === 'Creator' || role.roleUserTeams[0].role.code === 'Admin') {
-                const userInTeam = await UserTeam.findOne({raw:'true',where: {userId: user.id, teamId: idTeamReq}});
+                const userInTeam = await UserTeam.findOne({raw: 'true', where: {userId: user.id, teamId: idTeamReq}});
                 if (userInTeam) {
-                    if(userInTeam.deletedAt!==null){
-                       UserTeam.update({deletedAt:null},{where:{userId: user.id, teamId: idTeamReq}});
+                    if (userInTeam.deletedAt !== null) {
+                        UserTeam.update({deletedAt: null}, {where: {userId: user.id, teamId: idTeamReq}});
                         return res.status(200).json({msg: 'Success', error: 'The user returned to the team'});
-                    }else {
+                    } else {
                         return res.status(200).json({msg: 'Failed', error: 'User exists in this team'});
                     }
                 } else {
@@ -132,11 +148,11 @@ exports.addMember = async (req, res) => {
 
 
 exports.getAllTeamByUser = async (req, res) => {
-    const userReq = req.userId;
     try {
+        const userReq = req.userId;
         const teams = await UserTeam.findAll({
             where: {userId: userReq, deletedAt: null},
-            include: [{model: Team,as:'team', required: true, where: {}}]
+            include: [{model: Team, as: 'team', required: true, where: {}}]
         });
         res.status(200).json({msg: 'Success', data: teams});
     } catch (err) {
@@ -147,13 +163,11 @@ exports.getAllTeamByUser = async (req, res) => {
 
 
 exports.removeMember = async (req, res) => {
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(422).json(errors.array());
-    }
-
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json(errors.array());
+        }
         const idUserReq = req.body.iduser;
         const idTeamReq = req.body.idteam;
 
@@ -190,13 +204,12 @@ exports.removeMember = async (req, res) => {
 
 
 exports.changeRole = async (req, res) => {
+    try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json(errors.array());
     }
-
     const tran = await sequelize.transaction();
-    try {
         const idTeamUserReq = req.body.idteamuser;
         const idRoleReq = req.body.idrole;
         const idOldRoleReq = req.body.oldidrole;
@@ -204,37 +217,44 @@ exports.changeRole = async (req, res) => {
         let requestUser = await UserTeam.findOne({
             where: {userId: req.userId, deletedAt: null},
             include: [{
-                model: RoleUserTeam,as:'roleUserTeams', include: [{
-                    model: Role,as:'role',
+                model: RoleUserTeam, as: 'roleUserTeams', include: [{
+                    model: Role, as: 'role',
                     where: {
                         [op.or]: [
-                            {code:'Creator'},
-                            {code:'Admin'}]}
+                            {code: 'Creator'},
+                            {code: 'Admin'}]
+                    }
                 }
                 ]
             }]
         });
-           if(requestUser) {
-                 await RoleUserTeam.update({deletedAt:Date.now()},{where:{userTeamId:idTeamUserReq,roleId:idOldRoleReq},tran},tran);
-                 let temp = await RoleUserTeam.findOne({
-                       where: {userTeamId: idTeamUserReq, deletedAt: null},
-                       include: [{model: Role,as:'role', where: {[op.or]:[{id: idRoleReq},{code:'Creator'}]}
-                       }]
-                   },{tran});
-                   if (temp) {
-                       const error = new Error('The user already has that role!!!');
-                       error.statusCode = 401;
-                       throw error;
-                   } else {
-                       let userteamrole = await RoleUserTeam.create({userTeamId: idTeamUserReq, roleId: idRoleReq});
-                       await tran.commit();
-                       return   res.status(200).json({msg: 'Success', data: userteamrole});
-                   }
-           }else{
-               const error = new Error('Error delete role!!!');
-               error.statusCode = 401;
-               throw error;
-           }
+        if (requestUser) {
+            await RoleUserTeam.update({deletedAt: Date.now()}, {
+                where: {
+                    userTeamId: idTeamUserReq,
+                    roleId: idOldRoleReq
+                }, tran
+            }, tran);
+            let temp = await RoleUserTeam.findOne({
+                where: {userTeamId: idTeamUserReq, deletedAt: null},
+                include: [{
+                    model: Role, as: 'role', where: {[op.or]: [{id: idRoleReq}, {code: 'Creator'}]}
+                }]
+            }, {tran});
+            if (temp) {
+                const error = new Error('The user already has that role!!!');
+                error.statusCode = 401;
+                throw error;
+            } else {
+                let userteamrole = await RoleUserTeam.create({userTeamId: idTeamUserReq, roleId: idRoleReq});
+                await tran.commit();
+                return res.status(200).json({msg: 'Success', data: userteamrole});
+            }
+        } else {
+            const error = new Error('Error delete role!!!');
+            error.statusCode = 401;
+            throw error;
+        }
     } catch (err) {
         await tran.rollback();
         if (!err.statusCode) err.statusCode = 500;
@@ -244,17 +264,16 @@ exports.changeRole = async (req, res) => {
 
 
 exports.addRole = async (req, res) => {
+    try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json(errors.array());
     }
-
-    try {
         const idTeamUserReq = req.body.idteamuser;
         const idRoleReq = req.body.idrole;
         let temp = await RoleUserTeam.findOne({
             where: {userTeamId: idTeamUserReq, deletedAt: null},
-            include: [{model: Role,as:'role', where: {id: idRoleReq}}]
+            include: [{model: Role, as: 'role', where: {id: idRoleReq}}]
         });
         if (temp) {
             const error = new Error('The user already has that role!!!');
@@ -272,11 +291,11 @@ exports.addRole = async (req, res) => {
 
 
 exports.removeRole = async (req, res) => {
+    try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json(errors.array());
     }
-    try {
         const idTeamUserReq = req.body.idteamuser;
         const idRoleReq = req.body.idrole;
         let update = await RoleUserTeam.update({deletedAt: Date.now()}, {

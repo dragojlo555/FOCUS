@@ -5,7 +5,8 @@ export {auth,
     afterSignUp,
     editProfile,
     editProfileAvatar,
-    resendVerificationMail
+    resendVerificationMail,
+    changeSounds,
 } from './auth';
 
 export{

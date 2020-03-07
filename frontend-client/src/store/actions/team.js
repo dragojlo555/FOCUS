@@ -70,6 +70,7 @@ export const createTeam = (name, img, token) => {
         axios(options).then(response => {
             // console.log(response.data);
             dispatch(createTeamSuccess(response.data));
+            dispatch(getMyTeams(token));
         }).catch(err => {
             //console.log(err);
             dispatch(createTeamFailed(err.data));
@@ -383,7 +384,6 @@ export const setSeenTeamMessage = (token, teamid) => {
 };
 
 export const receiveChangeState=(userId,state)=>{
-    console.log(userId,state);
     return{
         type:actionTypes.RECEIVE_CHANGE_STATE,
         state:state,

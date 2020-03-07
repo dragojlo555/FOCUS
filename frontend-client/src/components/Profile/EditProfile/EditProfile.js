@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import {connect} from "react-redux";
 import {Form, Input, Select, Modal} from 'antd';
-import {DEFAULT_USER_AVATAR,URLT} from "../../../axios-conf";
+import {DEFAULT_USER_AVATAR} from "../../../axios-conf";
 import classes from "./EditProfile.module.scss";
 import  * as actions from '../../../store/actions/index';
 const { Option } = Select;
@@ -18,10 +18,10 @@ class EditProfile extends Component{
             this.props.form.setFieldsValue({
                 'firstname': this.props.user.firstName,
                 'lastname':this.props.user.lastName,
-                'phone':this.props.user.phone.split(';')[1],
-                'prefix':this.props.user.phone.split(';')[0],
+                'phone':this.props.user.phone?this.props.user.phone.split(';')[1]:'',
+                'prefix':this.props.user.phone?this.props.user.phone.split(';')[0]:'',
             });
-            this.setState({file:URLT+this.props.user.avatar});
+            this.setState({file:this.props.user.avatar});
         }
     }
 

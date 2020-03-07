@@ -2,51 +2,49 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="01a3d9b4-5f98-4f7f-bc7e-a8ca504a4680" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/config/appconfig.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend-client/src/assets/upload.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/Auth/ResetPassword/ResetPassword.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/Auth/ResetPassword/ResetPassword.module.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/ImageView/ImageView.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/ImageView/ImageView.module.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/UploadFiles/UploadFiles.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/UploadFiles/UploadFiles.module.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/middleware/team-role.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/files/mail.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/files/pomodoro.PNG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/PreviewFile/PreviewFile.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/YoutubePlayer/TouTubePlayer.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/Profile/ChangePassword/ChangePassword.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/components/Profile/ChangePassword/ChangePassword.module.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/pages/Stock/Stock.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/pages/Stock/Stock.module.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/pages/Stock/StockPage/StockPage.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend-client/src/pages/Stock/StockPage/StockPage.module.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/middleware/myPassport.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Controller/chat-socket.js" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/chat-socket.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Controller/chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/chat.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controller/team.js" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/team.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controller/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/users.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/appconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/appconfig.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/axios-conf.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/axios-conf.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/InputFieldChat/InputFieldChat.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/InputFieldChat/InputFieldChat.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/InputFieldChat/InputFieldChat.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/components/ChatComponent/InputFieldChat/InputFieldChat.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/components/Auth/ResetPassword/ResetPassword.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/components/Auth/ResetPassword/ResetPassword.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/components/Logo/Logo.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/components/Logo/Logo.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/components/Navigation/Navigation.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/components/Navigation/Navigation.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/components/Profile/EditProfile/EditProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/components/Profile/EditProfile/EditProfile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/components/ProgressBar/CircularProgressBar/CircularProgressBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/components/ProgressBar/CircularProgressBar/CircularProgressBar.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Auth/Login/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Auth/Login/Login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Auth/Signup/Signup.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Auth/Signup/Signup.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Auth/Login/Login.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Auth/Login/Login.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Chat.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Messages/Message/Message.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Messages/Message/Message.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Messages/Message/Message.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Messages/Message/Message.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Messages/Messages.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Chat/Messages/Messages.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Home.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/ListUsers/ListUsers.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/ListUsers/ListUsers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Home/Menu/TeamListMenu/TeamListMenu.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Home/Menu/TeamListMenu/TeamListMenu.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Teams/InfoTeam/InfoTeam.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Teams/InfoTeam/InfoTeam.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/pages/Teams/NewTeam/NewTeam.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/pages/Teams/NewTeam/NewTeam.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/store/actions/actionTypes.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/store/actions/actionTypes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/store/actions/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/store/actions/auth.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/store/actions/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/store/actions/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/store/actions/team.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/store/actions/team.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend-client/src/store/reducers/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/store/reducers/auth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend-client/src/store/reducers/team.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend-client/src/store/reducers/team.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/is-auth-socket.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/is-auth-socket.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/middleware/is-auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/is-auth.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api/chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api/chat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api/teams.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api/teams.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/api/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api/users.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
     </list>
@@ -237,7 +235,16 @@
       <workItem from="1570085785926" duration="20181000" />
       <workItem from="1570517674663" duration="23122000" />
       <workItem from="1571121699096" duration="24928000" />
-      <workItem from="1571208515297" duration="5286000" />
+      <workItem from="1571208515297" duration="21994000" />
+      <workItem from="1571813434891" duration="20731000" />
+      <workItem from="1571904146400" duration="29150000" />
+      <workItem from="1572264925238" duration="175000" />
+      <workItem from="1572420835714" duration="28453000" />
+      <workItem from="1572514071519" duration="16506000" />
+      <workItem from="1572939195464" duration="3857000" />
+      <workItem from="1573731493782" duration="98000" />
+      <workItem from="1574422391767" duration="4177000" />
+      <workItem from="1583580382891" duration="2257000" />
     </task>
     <task id="LOCAL-00001" summary="login,registration,creating teams">
       <created>1553797379645</created>

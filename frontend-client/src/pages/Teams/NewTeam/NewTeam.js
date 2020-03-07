@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import classes from './NewTeam.module.scss';
 import {connect} from 'react-redux';
-import {DEFAULT_TEAM_AVATAR}from '../../../axios-conf';
+import {DEFAULT_TEAM_AVATAR} from '../../../axios-conf';
 import * as actions from '../../../store/actions/index';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import {Form, Input, Modal, Alert, Button, message} from 'antd';
@@ -11,26 +11,38 @@ class NewTeam extends Component {
     state = {
         file: DEFAULT_TEAM_AVATAR,
         avatar: null,
-        formIsValid: false
+        formIsValid: false,
+        name: ''
     };
 
     UNSAFE_componentWillMount() {
         this.props.onCreateEnd();
     }
 
+    handleChangeName = (e) => {
+        if (e.target.value !== '' && this.state.avatar !== null) {
+            this.setState({formIsValid: true})
+        }
+        this.setState({name: e.target.value});
+    };
 
-
-    handleModalOk=()=>{
+    handleModalOk = () => {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                if(this.state.avatar){
+                if (this.state.avatar) {
                     this.props.onCreateTeam(values.teamname, this.state.avatar, this.props.token);
-                }else{
+                } else {
                     message.error('Please choose an avatar!!!');
                 }
                 this.props.handleClose();
             }
         });
+    };
+
+    verifyValidForm = () => {
+        if (this.state.name !== '' && this.state.avatar !== null) {
+            this.setState({formIsValid: true})
+        }
     };
 
     changeImage = (event) => {
@@ -39,52 +51,54 @@ class NewTeam extends Component {
             let img = URL.createObjectURL(event.target.files[0]);
             this.setState(
                 {file: img, avatar: event.target.files[0]}
-            );
+                , this.verifyValidForm);
         }
     };
 
-    closeDialogAfterCreateHandler=()=>{
-      this.props.cancel();
-      this.setState({avatar:null,file:'http://localhost:5000/public/images/no-profile.jpg'});
-      setTimeout(this.props.onCreateEnd,1000);
+    closeDialogAfterCreateHandler = () => {
+        this.props.cancel();
+        this.setState({avatar: null, file: DEFAULT_TEAM_AVATAR});
+        setTimeout(this.props.onCreateEnd, 1000);
     };
 
     render() {
 
-        const { getFieldDecorator } = this.props.form;
+        const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             labelCol: {
-                xs: { span: 24 },
-                sm: { span: 6 },
+                xs: {span: 24},
+                sm: {span: 6},
             },
             wrapperCol: {
-                xs: { span: 24 },
-                sm: { span: 16 },
+                xs: {span: 24},
+                sm: {span: 16},
             },
         };
-        let dialog= <Modal
+        let dialog = <Modal
             title="New Team"
             visible={this.props.visible}
             onOk={this.handleModalOk}
             onCancel={this.props.handleClose}
             okText='Confirm'
+            footer={<><Button onClick={this.props.handleClose}>Cancel</Button> <Button onClick={this.handleModalOk}
+                disabled={!this.state.formIsValid} type='primary'>Confirm</Button> </>}
         >
             <div>
                 <div className={classes.ImgUploadNewTeam} title='Choose avatar'>
                     <label htmlFor='file-input'>
                         <img src={this.state.file} alt="Choose"/>
                     </label>
-                    <input id ="file-input" type="file" onChange={this.changeImage}/>
+                    <input id="file-input" accept=".png,.jpg,.jpeg,.png" type="file" onChange={this.changeImage}/>
                 </div>
                 <Form {...formItemLayout} onSubmit={this.handleSubmit}>
                     <Form.Item label='Team name'>
-                        {getFieldDecorator('teamname',{
-                            rules: [{ required: true, message: 'Please input team name!', whitespace: true },
+                        {getFieldDecorator('teamname', {
+                            rules: [{required: true, message: 'Please input team name!', whitespace: true},
                                 {
-                                    min:3,message:'Name to short!'
+                                    min: 3, message: 'Name to short!'
                                 }
                             ],
-                        })(<Input/>)}
+                        })(<Input onChange={this.handleChangeName}/>)}
                     </Form.Item>
                 </Form>
             </div>
@@ -94,9 +108,9 @@ class NewTeam extends Component {
             dialog = <Spinner/>;
         }
 
-        if ( this.props.createTeamData !=null) {
-            if(this.props.createTeamData.msg==='Success'){
-                dialog=<div>
+        if (this.props.createTeamData != null) {
+            if (this.props.createTeamData.msg === 'Success') {
+                dialog = <div>
                     <Alert
                         message="Success Tips"
                         description={this.props.createTeamData.data.name}
@@ -106,16 +120,16 @@ class NewTeam extends Component {
                         onClose={this.closeDialogAfterCreateHandler}
                     />
                 </div>
-            }else{
-                dialog=<div>Failed
-                    <Button  onClick={this.props.cancel}>Cancel</Button>
+            } else {
+                dialog = <div>Failed
+                    <Button onClick={this.props.cancel}>Cancel</Button>
                 </div>
             }
         }
 
         return (
             <>
-            {dialog}
+                {dialog}
             </>
         )
     }
@@ -138,5 +152,5 @@ const mapDispatchToPros = dispatch => {
     }
 };
 
-const WrappedNewTeam = Form.create({ name: 'newTeam' })(NewTeam);
+const WrappedNewTeam = Form.create({name: 'newTeam'})(NewTeam);
 export default connect(mapStateToProps, mapDispatchToPros)(WrappedNewTeam);

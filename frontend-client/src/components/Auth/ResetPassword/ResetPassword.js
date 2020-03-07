@@ -116,7 +116,6 @@ class ResetPassword extends Component {
     render() {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {};
-        console.log(this.state.mailError);
         return (
             <Modal
                 className={classes.ResetPassword}

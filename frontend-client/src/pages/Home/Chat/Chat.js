@@ -7,8 +7,8 @@ import countSound from './messcounter.mp3';
 import * as actions from "../../../store/actions";
 import Messages from './Messages/Messages';
 import InputFieldChat from '../../../components/ChatComponent/InputFieldChat/InputFieldChat';
-import ImageView from "../../../components/ChatComponent/ImageView/ImageView"
-import {Route} from 'react-router-dom'
+import ImageView from "../../../components/ChatComponent/ImageView/ImageView";
+import {Route} from 'react-router-dom';
 
 class Chat extends Component {
 
@@ -111,10 +111,11 @@ class Chat extends Component {
         this.props.socket.off('user-message-cl-' + this.props.user.id);
         if (this.props.openedChat)
             this.props.socket.off('team-message-cl-' + this.props.openedChat.id);
+        if(this.props.myTeams){
         this.props.myTeams.forEach((value, key) => {
             this.props.socket.off('team-message-cl-' + value.team.id);
             this.props.socket.on('team-message-cl-' + value.team.id);
-        });
+        });}
     }
 
     sendMessageHandler = (message, type) => {

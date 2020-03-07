@@ -9,7 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     phone: DataTypes.STRING,
     auth_key:DataTypes.STRING,
     resetToken:DataTypes.STRING,
-    verifyMail:DataTypes.STRING
+    verifyMail:DataTypes.STRING,
+    googleId:DataTypes.STRING
   }, {});
   User.associate = function(models) {
     User.hasOne(models.Focus,{foreignKey:'userId',targetKey:'id',as:'focu'});

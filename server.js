@@ -1,37 +1,51 @@
-const express=require('express');
-const sequelize = require('./util/database');
-const bodyParser=require('body-parser');
-const teams_route=require('./routes/api/teams');
-const users_route=require('./routes/api/users');
-const chat_route=require('./routes/api/chat');
-const socketIO=require('./util/socket');
-const socketAuth=require('./middleware/is-auth-socket');
-const ChatSocketController=require('./Controller/chat-socket');
-const UserController=require('./Controller/users');
+const express = require('express');
+const bodyParser = require('body-parser');
+const teams_route = require('./routes/api/teams');
+const users_route = require('./routes/api/users');
+const chat_route = require('./routes/api/chat');
+const socketIO = require('./util/socket');
+const socketAuth = require('./middleware/is-auth-socket');
+const ChatSocketController = require('./Controller/chat-socket');
+const UserController = require('./Controller/users');
+const pasport = require('passport');
+const app = express();
+const clients = [];
+exports.socketClients = clients;
 
-
-const app=express();
-const clients=[];
-exports.socketClients=clients;
-
-app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
+
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin, Access-Control-Allow-Headers');
     next();
-
 });
-app.use('/public',express.static('public'));
 
-app.get('/', (req, res) => res.send('Hello World'));
-app.use('/api/users',users_route);
-app.use('/api/team',teams_route);
-app.use('/api/chat',chat_route);
+app.use('/public', express.static('public'));
 
-const port=process.env.PORT || 5000;
+app.use(pasport.initialize());
+
+
+app.get('/', (req, res) => {
+    return res.status(200).json({ok: 'Hello'})
+});
+
+app.use('/api/users', users_route);
+app.use('/api/team', teams_route);
+app.use('/api/chat', chat_route);
+
+//this code catch next(err)
+app.use((error, req, res, next) => {
+    const status = error.statusCode || 500;
+    const message = error.message;
+    const data = error.data;
+    res.status(status).json({message: message, data: data});
+});
+
+
+const port = process.env.PORT || 5000;
 
 try {
     const server = app.listen(port);
@@ -46,13 +60,11 @@ try {
         return next(new Error('authentication error'));
     });
     io.on('connection', socket => {
-      //  console.log('Client connected');
+        //  console.log('Client connected');
         const userId = socket.handshake.query.id;
-        ChatSocketController.addUserInRooms(userId,socket);
+        ChatSocketController.addUserInRooms(userId, socket);
         UserController.SocketConnected(userId);
-       // console.log(socket.id);
 
-        clients[userId]=socket.id;
         socket.on('user-message', payload => {
             ChatSocketController.receiveUserMessage(payload).then(data => {
                     if (data.receivedUserId !== data.senderUserId) {
@@ -67,23 +79,23 @@ try {
                 }
             );
         });
-        socket.on('team-message', (payload,callback) => {
+        socket.on('team-message', (payload, callback) => {
             ChatSocketController.receiveTeamMessage(payload).then(data => {
-                io.sockets.to('team-'+data.teamid).emit('team-message-cl-' + data.teamid, data);
+                io.sockets.to('team-' + data.teamid).emit('team-message-cl-' + data.teamid, data);
             }).catch(err => {
                 console.log(err);
                 io.sockets.emit('team-message-cl', 'null');
             });
             callback('Ack')
         });
-        socket.on('user-set-seen',(payload)=>{
-            ChatSocketController.setSeenUser(payload.userId,payload.senderId);
+        socket.on('user-set-seen', (payload) => {
+            ChatSocketController.setSeenUser(payload.userId, payload.senderId);
         });
         socket.on("disconnect", () => {
-        //    console.log("user disconnected");
+            //    console.log("user disconnected");
             UserController.SocketDisconnect(userId);
         });
     });
-}catch(err){
+} catch (err) {
     console.log(err);
 }

@@ -1,11 +1,6 @@
 import React, {Component} from 'react';
 import classes from './Messages.module.scss'
 import Message from './Message/Message';
-//import InputFieldChat from "../../../../components/ChatComponent/InputFieldChat/InputFieldChat";
-//import ImageView from "../../../../components/ChatComponent/ImageView/ImageView";
-
-
-
 
 class Messages extends Component {
 

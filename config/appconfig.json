@@ -3,5 +3,6 @@
     "mail": "focusassistantc45@gmail.com",
     "password": "1kosarka1"
   },
-  "address": "http://localhost:5000/api"
+  "address": "http://localhost:5000/api",
+  "redirect": "http://localhost:3000/"
 }

@@ -12,9 +12,6 @@ import Teams from './pages/Teams/Teams';
 import 'antd/dist/antd.css';
 import ResetPassword from "./components/Auth/ResetPassword/ResetPassword";
 
-
-
-
 class App extends Component {
 
     componentDidMount() {

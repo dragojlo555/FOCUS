@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import * as actions from "../../../store/actions/index";
 import {connect} from "react-redux";
 import {Badge, Avatar,} from "antd";
-import {URL, DEFAULT_USER_AVATAR} from '../../../axios-conf';
 import ListUsersHeader from '../../../components/ChatComponent/ListUsersHeader/ListUsersHeader';
 import classes from './ListUsers.module.scss';
+import {getAvatar} from "../../../axios-conf";
 
 class ListUsers extends Component {
 
@@ -62,7 +62,7 @@ class ListUsers extends Component {
             return <div onClick={() => {
                 this.onSelectUser(value.user)
             }} key={value.user.id} className={userClass}><Badge count={value.user.id === parseInt(this.props.userId)?0:this.props.unread[value.user.id]}>
-                <Avatar shape="square" src={value.user.avatar ? URL + value.user.avatar : DEFAULT_USER_AVATAR}/>
+                <Avatar shape="square" src={getAvatar(value.user.avatar)}/>
             </Badge>
                 <div className={classes.NameUser}>
                 <span>{

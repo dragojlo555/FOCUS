@@ -2,8 +2,9 @@ import React, {PureComponent} from 'react';
 import classes from "./Message.module.scss";
 import {Avatar, Icon} from "antd";
 import Moment from 'react-moment';
-import {DEFAULT_USER_AVATAR, URL} from "../../../../../axios-conf";
-import ReactPlayer from "react-player";
+import {URL, getAvatar} from "../../../../../axios-conf";
+import YouTubePlayer from '../../../../../components/ChatComponent/YoutubePlayer/TouTubePlayer';
+import PreviewFile from "../../../../../components/ChatComponent/PreviewFile/PreviewFile";
 
 class Message extends PureComponent {
 
@@ -20,48 +21,26 @@ class Message extends PureComponent {
         });
     };
 
-
     render() {
-        let files = this.props.content.split('$$').map(el => {
-            return el!==''?<div key={el}>
-                <Icon type="cloud-download"/>
-                <a rel="noopener noreferrer" style={{color:!this.props.home?'white':'#335fff'}} href={URL + el.split(';')[0]} target='_blank' download>{el.split(';')[1]}</a>
-            </div>:null
-        });
         return (
             <li className={classes.Message}>
                 {this.props.home ? <div title={this.props.user.firstName + ' ' + this.props.user.lastName}
                                         className={classes.MessageAvatar}><Avatar size='large'
-                                                                                  src={this.props.user.avatar ? URL + this.props.user.avatar : DEFAULT_USER_AVATAR}/>
+                                                                                  src={getAvatar(this.props.user.avatar)}/>
                 </div> : null}
                 <div
                     className={this.props.home ? classes.MessageContent : [classes.MessageContent, classes.MessageAway].join(' ')}>
                     <span
                         className={this.props.home ? [classes.MessageText, (this.props.contentType === 'image' || this.props.contentType === 'youtube') ? classes.Image : null].join(' ') : [classes.MessageText, classes.TextAway, (this.props.contentType === 'image' || this.props.contentType === 'youtube') ? classes.Image : null].join(' ')}>
                         {this.props.contentType === 'text' ? this.props.content : this.props.contentType === 'youtube' ?
-                            <div style={{width: '100%'}}>
-                                <ReactPlayer url={'https://www.youtube.com/watch?v=' + this.props.content}
-                                             width='100%'
-                                             config={{
-                                                 youtube: {
-                                                     playerVars: {
-                                                         showinfo: 1, controls: 1, origin: 'http://localhost:3000',
-                                                         enablejsapi: 1,
-                                                     }
-                                                 }
-                                             }}
-                                /></div>
+                            <YouTubePlayer content={this.props.content}/>
                             : this.props.contentType !== 'file' ? <div onClick={() => {
                                 this.handleOpenImage(this.props.content, this.props.time, this.props.idMessage)
                             }}><img style={{cursor: 'pointer'}} className={classes.ReactPlayer}
                                     alt="no"
                                     width='100%'
                                     src={URL + this.props.content}/>
-                            </div> : <div>
-                                {
-                                    files
-                                }
-                            </div>}
+                            </div> : <PreviewFile content={this.props.content} home={this.props.home}/>}
                     </span>
                     <div
                         className={this.props.home ? classes.MessageTime : [classes.MessageTime, classes.TimeAway].join(' ')}>
@@ -74,7 +53,7 @@ class Message extends PureComponent {
                 {!this.props.home ? <div className={classes.MessageAvatar}
                                          title={this.props.user.firstName + ' ' + this.props.user.lastName}>
                     <Avatar size='large'
-                            src={this.props.user.avatar ? URL + this.props.user.avatar : DEFAULT_USER_AVATAR}/>
+                            src={getAvatar(this.props.user.avatar)}/>
                 </div> : null}
             </li>
         )

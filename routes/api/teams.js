@@ -1,9 +1,12 @@
 const express = require('express');
 const {body} = require('express-validator/check');
 const router = express.Router();
+const passport=require('passport');
 const teamController = require('../../Controller/team');
 const isauth=require('../../middleware/is-auth');
 const upload=require('../../middleware/upload-image');
+
+
 
 router.post('/create',isauth,[upload.single('image'),body('name').trim().not().isEmpty()],teamController.create);
 router.post('/user',[body('email').isEmail().withMessage('Please enter valid email!!!'),body('idteam').isNumeric()],isauth,teamController.addMember);

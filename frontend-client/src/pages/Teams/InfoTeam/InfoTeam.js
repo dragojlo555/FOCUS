@@ -5,7 +5,7 @@ import {email, required} from "../../../util/validators/validators";
 import {connect} from "react-redux";
 import axios from "../../../axios-conf";
 import * as actions from '../../../store/actions/index';
-import {URL,DEFAULT_USER_AVATAR,DEFAULT_TEAM_AVATAR} from '../../../axios-conf';
+import {URL,DEFAULT_TEAM_AVATAR,getAvatar} from '../../../axios-conf';
 import {Route} from 'react-router-dom';
 import SetRole from '../SetRole/SetRole';
 
@@ -127,7 +127,7 @@ class InfoTeam extends Component {
                              })
                              }>
                                  <List.Item.Meta
-                                     avatar={item.user.avatar?<Avatar src={URL+ item.user.avatar}/>:<Avatar src={DEFAULT_USER_AVATAR}/>}
+                                     avatar={<Avatar src={getAvatar(item.user.avatar)}/>}
                                      title={item.user.firstName + ' ' + item.user.lastName}
                                      description={item.roleUserTeams.map((value, key) => {
                                          return value.role.code;

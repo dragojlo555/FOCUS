@@ -5,6 +5,9 @@ import classes from './Home.module.scss';
 import HomeMenu from './Menu/HomeMenu';
 import ListUsers from './ListUsers/ListUsers';
 import Chat from './Chat/Chat';
+import {Route} from 'react-router-dom'
+import ChangePassword from "../../components/Profile/ChangePassword/ChangePassword";
+
 class Home extends Component {
 
     render() {
@@ -18,6 +21,8 @@ class Home extends Component {
             <div className={classes.ChatBox}>
                 <Chat match={this.props.match} history={this.props.history}/>
             </div>
+            <Route path={this.props.match.path + '/password/'}
+                   render={(props) => <ChangePassword {...this.props}/>}/>
         </div>);
     }
 }
