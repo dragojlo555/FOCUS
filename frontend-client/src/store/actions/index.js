@@ -31,3 +31,7 @@ export{
     setPomodoroTimerSession,
     setPomodoroTimerDuration
 }from './pomodoro'
+
+export {
+    getAll
+}from './stock'

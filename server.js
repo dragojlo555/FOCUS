@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const teams_route = require('./routes/api/teams');
 const users_route = require('./routes/api/users');
 const chat_route = require('./routes/api/chat');
+const stock_route = require('./routes/api/stock');
 const socketIO = require('./util/socket');
 const socketAuth = require('./middleware/is-auth-socket');
 const ChatSocketController = require('./Controller/chat-socket');
@@ -35,6 +36,7 @@ app.get('/', (req, res) => {
 app.use('/api/users', users_route);
 app.use('/api/team', teams_route);
 app.use('/api/chat', chat_route);
+app.use('/api/stock',stock_route);
 
 //this code catch next(err)
 app.use((error, req, res, next) => {
