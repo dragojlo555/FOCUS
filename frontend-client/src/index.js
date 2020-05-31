@@ -11,6 +11,7 @@ import thunk from 'redux-thunk';
 import authReducer from './store/reducers/auth';
 import teamReducer from './store/reducers/team';
 import pomodoroReducer from './store/reducers/pomodoro';
+import stockReducer from './store/reducers/stock';
 
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -18,7 +19,8 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const appReducer = combineReducers({
         auth: authReducer,
         team: teamReducer,
-        pomodoro:pomodoroReducer
+        pomodoro:pomodoroReducer,
+        stock:stockReducer
     }
 );
 /*

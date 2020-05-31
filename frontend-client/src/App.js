@@ -11,6 +11,7 @@ import Logout from './pages/Auth/Logout/Logout';
 import Teams from './pages/Teams/Teams';
 import 'antd/dist/antd.css';
 import ResetPassword from "./components/Auth/ResetPassword/ResetPassword";
+import Stock from "./pages/Stock/Stock";
 
 class App extends Component {
 
@@ -32,6 +33,7 @@ class App extends Component {
                     <Switch>
                         <Route path='/logout' component={Logout}/>
                         <Route path='/teams' component={Teams}/>
+                        <Route path='/stock' component={Stock}/>
                         <Route path='/home' component={Home}/>
                         <Redirect to='/home'/>
                     </Switch>
