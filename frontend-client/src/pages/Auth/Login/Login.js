@@ -39,7 +39,6 @@ class Login extends Component {
 
     handleGoogleSignIn=()=>{
         this.props.onSignInWithGoogle();
-
     };
 
     handleResendMailVerification=()=>{

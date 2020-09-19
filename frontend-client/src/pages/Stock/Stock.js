@@ -16,7 +16,7 @@ class Stock extends Component{
                     <StockList/>
             </div>
             <div className={classes.ChatBox}>
-
+                <StockPage/>
             </div>
         </div>);
 

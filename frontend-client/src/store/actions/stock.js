@@ -9,6 +9,12 @@ export const getAllStockCollection =(stock,error)=>{
     }
 };
 
+export const addCustomStock=()=>{
+  return{
+      type:actionTypes.ADD_CUSTOM_STOCK
+  }
+};
+
 export const getAll = () => {
     return dispatch => {
         const data = {};

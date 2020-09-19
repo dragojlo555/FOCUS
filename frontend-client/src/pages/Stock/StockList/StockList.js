@@ -1,33 +1,25 @@
 import React,{Component} from "react";
-import {connect} from 'react-redux';
+import {connect,useDispatch,useSelector} from 'react-redux';
+import {Button} from "antd";
+import {addCustomStock} from "../../../store/actions/stock";
 
 
-class StockList extends Component{
+const StockList=(props)=>{
+    const dispatch = useDispatch();
+    const store=useSelector(state=>state.stock);
 
-
-    render(){
         return(
             <>
                 <div>
-                    Drago Vrban
+                    {store.stock}'
                 </div>
+                <Button onClick={()=>{console.log("Pericaaa")}}>Drugi klik</Button>
+                <Button onClick={()=>{dispatch(addCustomStock())}}>Please click</Button>
             </>
         )
-    }
 
 }
-const mapStateToProps = state =>{
-  return{
-      stock:state.stock.stock,
-      selected:state.stock.selected
-  }
-};
-
-const mapDispatchToProps = dispatch =>{
-    return{
-
-    }
-};
 
 
-export default connect(mapStateToProps,mapDispatchToProps)(StockList);
+
+export default StockList;

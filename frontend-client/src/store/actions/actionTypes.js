@@ -44,4 +44,5 @@ export const RESET_POMODORO = "RESET_POMODORO";
 
 //STOCK
 export const GET_ALL_STOCK="GET_ALL_STOCK";
+export const ADD_CUSTOM_STOCK="ADD_CUSTOM_STOCK";
 
